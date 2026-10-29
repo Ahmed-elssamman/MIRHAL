@@ -33,7 +33,7 @@ async function account() {
   });
 }
 beforeAll(async () => {
-  execFileSync('node_modules/.bin/prisma', ['migrate', 'deploy'], {
+  execFileSync(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], {
     env: process.env,
     stdio: 'pipe',
   });
@@ -61,6 +61,18 @@ afterAll(async () => {
 });
 
 describe('Security boundaries under malformed requests and concurrent account changes', () => {
+  it('rolls back attachment content with its enclosing transaction', async () => {
+    const storage = app.get(AttachmentStorage);
+    let key = '';
+    await expect(
+      db.$transaction(async (tx) => {
+        key = await storage.put(Buffer.from('rollback fixture'), tx);
+        throw new Error('abort fixture');
+      }),
+    ).rejects.toThrow('abort fixture');
+    expect(await db.attachmentContent.findUnique({ where: { storageKey: key } })).toBeNull();
+  });
+
   it('durably retries attachment erasure after a storage failure and worker restart', async () => {
     const user = await account();
     const storage = app.get(AttachmentStorage);
@@ -101,10 +113,10 @@ describe('Security boundaries under malformed requests and concurrent account ch
         where: { storageKey: key },
         data: { retryAt: new Date(0) },
       });
-      const restarted = new AttachmentCleanup(db, new AttachmentStorage());
+      const restarted = new AttachmentCleanup(db, new AttachmentStorage(db));
       await restarted.drain();
       expect(await db.attachmentDeletion.count({ where: { storageKey: key } })).toBe(0);
-      await expect(storage.read(key)).rejects.toMatchObject({ code: 'ENOENT' });
+      await expect(storage.read(key)).rejects.toThrow('Attachment not found');
       await restarted.drain();
     } finally {
       remove.mockRestore();

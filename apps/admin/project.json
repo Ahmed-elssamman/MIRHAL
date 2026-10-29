@@ -54,7 +54,7 @@
       "options": {
         "port": 4201,
         "host": "0.0.0.0",
-        "proxyConfig": "apps/admin/proxy.conf.json"
+        "proxyConfig": "apps/admin/proxy.conf.mjs"
       },
       "configurations": {
         "production": {

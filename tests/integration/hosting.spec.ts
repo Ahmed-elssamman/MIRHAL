@@ -13,7 +13,7 @@ import { MailAdapter } from '../../apps/api/src/auth/mail.adapter';
 let app: INestApplication;
 let db: Database;
 beforeAll(async () => {
-  execFileSync('node_modules/.bin/prisma', ['migrate', 'deploy'], {
+  execFileSync(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], {
     env: process.env,
     stdio: 'pipe',
   });

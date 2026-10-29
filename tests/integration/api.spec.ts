@@ -32,7 +32,7 @@ const body = {
 };
 const http = () => request(app.getHttpServer());
 beforeAll(async () => {
-  execFileSync('node_modules/.bin/prisma', ['migrate', 'deploy'], {
+  execFileSync(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], {
     env: process.env,
     stdio: 'pipe',
   });

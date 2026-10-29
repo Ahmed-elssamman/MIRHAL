@@ -60,7 +60,6 @@
     "@nestjs/throttler": "^6.4.0",
     "@primeuix/themes": "2.0.3",
     "@prisma/client": "6.19.3",
-    "@vercel/blob": "^2.8.0",
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",

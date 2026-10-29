@@ -831,6 +831,12 @@ model AttachmentDeletion {
   @@index([retryAt, createdAt])
 }
 
+model AttachmentContent {
+  storageKey String @id
+  data       Bytes
+  size       Int
+}
+
 model AuditLog {
   id        String   @id @default(cuid())
   actorId   String?

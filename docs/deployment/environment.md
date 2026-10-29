@@ -1,5 +1,7 @@
 # Environment variables and placement
 
+**Current storage configuration:** feedback attachment bytes are stored in PostgreSQL using the existing `DATABASE_URL`. The older Blob and filesystem storage guidance below describes the previous release and does not apply after the attachment-content migration. The application caps attachment content at 100 MiB; monitor Neon database and backup capacity separately.
+
 For the confirmed production projects, follow the [operator setup runbook](operator-setup.md) for the exact Render and Resend dashboard steps.
 
 For a fresh local setup, copy `.env.example` to an ignored local `.env`. **This workspace's existing ignored `.env` points to the confirmed production Neon database; do not replace it casually or run local reset/seed commands against it.** Use a separate local PostgreSQL database for development and `TEST_DATABASE_URL` only for disposable tests. Keep all real credentials out of Git, docs, browser assets, and logs. `DATABASE_URL`, `DIRECT_URL`, SMTP credentials, and `RESEND_API_KEY` belong only to the API process.
