@@ -940,3 +940,32 @@ model RateLimitBucket {
 
   @@index([expiresAt])
 }
+
+enum OutboxStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  DEAD_LETTER
+}
+
+model OutboxJob {
+  id             String       @id @default(cuid())
+  channel        String
+  eventType      String
+  payload        String
+  idempotencyKey String       @unique
+  status         OutboxStatus @default(PENDING)
+  attemptCount   Int          @default(0)
+  maxAttempts    Int          @default(5)
+  nextAttemptAt  DateTime     @default(now())
+  processedAt    DateTime?
+  lastErrorCode  String?
+  lastError      String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([status, nextAttemptAt])
+  @@index([channel, status])
+}
+

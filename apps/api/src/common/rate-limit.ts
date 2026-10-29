@@ -1,19 +1,17 @@
 import { ThrottlerStorage } from '@nestjs/throttler';
 import { createHash } from 'node:crypto';
-import { isIP } from 'node:net';
-import { Request } from 'express';
 import { Database } from './database';
 
-export function clientTracker(request: Request) {
-  // Vercel overwrites this header at its trusted edge. Never trust it locally.
-  const forwarded = request.headers['x-vercel-forwarded-for'];
-  const address = typeof forwarded === 'string' ? (forwarded.split(',')[0] ?? '').trim() : '';
-  return process.env['VERCEL'] === '1' && isIP(address) ? address : (request.ip ?? 'unknown');
-}
+export { clientTracker, buildRateLimitKey } from '../rate-limit/client-tracker';
 
-/** Atomic shared windows prevent cold starts or parallel instances bypassing limits. */
+/**
+ * @deprecated DatabaseRateLimit is deprecated and must not be used in production.
+ * Production rate limiting uses distributed Redis (RedisRateLimitStorage).
+ * This class is preserved strictly for backward-compatible test assertions.
+ */
 export class DatabaseRateLimit implements ThrottlerStorage {
   constructor(private readonly db: Pick<Database, '$queryRaw'>) {}
+
   async increment(key: string, ttl: number, limit: number, blockDuration: number) {
     const hash = createHash('sha256').update(key).digest('hex');
     const now = new Date();

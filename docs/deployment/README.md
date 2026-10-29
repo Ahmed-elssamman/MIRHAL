@@ -27,6 +27,17 @@ Use [render.yaml](../../render.yaml) as the web service blueprint. It runs `npm 
 
 The blueprint selects Render Free. A free service may sleep when idle; the first API request after sleep can be slow. Background challenge, attachment, and expired-record maintenance runs in the standalone API process only while it is awake. Continuous availability and reliably timed work require a non-sleeping service or a proper scheduled worker. No self-ping is configured. For persistent feedback screenshots, set the existing private Vercel Blob token as `BLOB_READ_WRITE_TOKEN` on Render or configure an absolute `UPLOAD_DIR` on an attached disk. Standalone production startup requires one of these settings. Render's ephemeral filesystem is not sufficient.
 
+### Rate Limiting & Redis
+
+Production rate limiting is decoupled from the database and runs on Redis. Set `REDIS_URL` in the Render environment (pointing to Upstash Redis or a managed Redis instance). The rate limiter uses atomic Redis Lua scripts to track request counts and apply lockout windows. In local testing or development, `RATE_LIMIT_MODE=memory` is supported; production strictly rejects in-memory rate limiting at startup.
+
+### Background Worker & Transactional Outbox
+
+Asynchronous tasks (such as transactional emails and notification dispatches) are persisted to the database via the `OutboxJob` table and processed asynchronously.
+
+- **Dedicated Worker Service**: On Render or any container host, launch `npm run worker` as a background worker process.
+- **Scheduled / Serverless Batch**: Run `npm run worker -- --once` or invoke the authenticated `/api/internal/maintenance` endpoint on a periodic schedule (e.g. Render Cron or external cron).
+
 ## Vercel customer and admin
 
 The browser keeps calling relative `/api`, preserving host scoped HttpOnly cookies. The owner confirmed the existing `lifequest-web` and `lifequest-admin` projects as the targets; their Ready production aliases are `https://lifequest-web-cyan.vercel.app` and `https://lifequest-admin.vercel.app`. Set `VERCEL_WEB_ORIGIN`, `VERCEL_ADMIN_ORIGIN`, and `VERCEL_API_ORIGIN` to exact HTTPS origins without trailing slashes in the trusted packaging shell, then run `npm run vercel:package:render`. This command requires all three origins and will not build the older Vercel API function if the Render origin is missing. The web artifact routes `/api/*` to the Render API; admin routes through the customer origin. Public pages are prerendered; other customer routes use the client shell. The ignored `.local/vercel/web` and `.local/vercel/admin` folders are linked to the confirmed projects. Deploy the generated prebuilt output with:

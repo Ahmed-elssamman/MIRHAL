@@ -1,10 +1,11 @@
-import { Controller, Get, Inject, Req, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Inject, Optional, Req, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { timingSafeEqual } from 'node:crypto';
 import { Public } from './http';
 import { Database } from './database';
 import { ChallengeLifecycleService } from '../social/challenge-lifecycle.service';
 import { AttachmentCleanup } from '../core/attachment-cleanup';
+import { OutboxWorker } from '../notifications/outbox/outbox.worker';
 
 export async function cleanupExpiredRecords(db: Database) {
   const now = new Date();
@@ -24,6 +25,7 @@ export class MaintenanceController {
     @Inject(Database) private readonly db: Database,
     @Inject(ChallengeLifecycleService) private readonly lifecycle: ChallengeLifecycleService,
     @Inject(AttachmentCleanup) private readonly cleanup: AttachmentCleanup,
+    @Optional() @Inject(OutboxWorker) private readonly outboxWorker?: OutboxWorker,
   ) {}
   @Public()
   @Get()
@@ -36,6 +38,7 @@ export class MaintenanceController {
     await this.lifecycle.tick();
     await cleanupExpiredRecords(this.db);
     await this.cleanup.drain();
+    await this.outboxWorker?.processBatch(50);
     return { success: true };
   }
 }
