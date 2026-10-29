@@ -1,6 +1,7 @@
 import { unsavedChangesGuard } from '@lifequest/forms';
 import { Routes } from '@angular/router';
 import { authGuard, onboardingCompleteGuard } from '@lifequest/auth';
+import { NotFoundPage } from './features/not-found/not-found';
 export const routes: Routes = [
   {
     path: '',
@@ -111,5 +112,5 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: 'today' },
+  { path: '**', component: NotFoundPage },
 ];

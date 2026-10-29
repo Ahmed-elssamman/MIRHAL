@@ -28,8 +28,21 @@ try {
     assert.equal(response.status, 200, path);
     assert.match(response.headers.get('cache-control'), /no-cache/, path);
     assert.equal(response.headers.get('x-powered-by'), null);
-    if (path === '/' || path === '/help') assert.match(await response.text(), /<h1\b/);
+    if (path === '/' || path === '/help') {
+      const html = await response.text();
+      assert.match(html, /<h1\b/, `${path} includes its primary content in HTML`);
+      assert.match(html, /<meta name="robots" content="index,follow">/);
+      assert.match(html, /<html lang="ar" dir="rtl"/);
+      assert.match(html, /<meta name="description" content="[^"]+">/);
+      assert.match(html, /<meta property="og:title" content="[^"]+">/);
+      assert.doesNotMatch(html, /<meta name="robots" content="noindex,nofollow">/);
+      if (path === '/') assert.match(html, /<title>مِرحال \| حياتك، رحلتك<\/title>/);
+      if (path === '/help')
+        assert.match(html, /<title>كيف يعمل مِرحال \| نمو شخصي خطوة بخطوة<\/title>/);
+    }
   }
+  const privatePage = await (await fetch(`${base}/index.csr.html`)).text();
+  assert.match(privatePage, /<meta name="robots" content="noindex,nofollow">/);
   const html = await (await fetch(base)).text();
   const bundle = html.match(/src="(main-[^"]+\.js)"/)?.[1];
   assert.ok(bundle, 'The prerendered page loads a hashed client bundle');
