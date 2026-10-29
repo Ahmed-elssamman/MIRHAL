@@ -54,6 +54,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
     let code = 'INTERNAL_ERROR';
     let message = 'Something went wrong. Please try again.';
     let details: unknown = undefined;
+    let retryAfter: unknown = undefined;
     if (error instanceof HttpException) {
       status = error.getStatus();
       const body = error.getResponse();
@@ -62,8 +63,14 @@ export class ApiExceptionFilter implements ExceptionFilter {
         const data = body as Record<string, unknown>;
         message =
           typeof data['message'] === 'string' ? data['message'] : 'Please check your request.';
-        code = typeof data['code'] === 'string' ? data['code'] : `HTTP_${status}`;
+        code =
+          typeof data['code'] === 'string'
+            ? data['code']
+            : status === HttpStatus.TOO_MANY_REQUESTS
+              ? 'TOO_MANY_REQUESTS'
+              : `HTTP_${status}`;
         details = data['details'];
+        retryAfter = data['retryAfter'];
       }
     } else if (
       error instanceof Error &&
@@ -106,6 +113,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
       code,
       message,
       ...(details ? { details } : {}),
+      ...(retryAfter !== undefined ? { retryAfter } : {}),
       requestId: request.requestId,
       timestamp: new Date().toISOString(),
     });

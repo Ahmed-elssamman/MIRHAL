@@ -25,6 +25,8 @@ For a fresh local setup, copy `.env.example` to an ignored local `.env`. **This 
 | `VERCEL_API_ORIGIN`                                                   | Packaging shell                | —                                       | Exact Render API origin | Routes customer `/api` to Render  |
 | `BLOB_READ_WRITE_TOKEN`                                               | —                              | Secret for existing private Vercel Blob | —                       | Persistent feedback screenshots   |
 | `UPLOAD_DIR`                                                          | Private local directory        | Alternative persistent storage path     | —                       | Feedback screenshots              |
+| `REDIS_URL`                                                           | `redis://127.0.0.1:6379`       | Upstash or Redis connection URL         | —                       | Multi-instance rate limiting      |
+| `RATE_LIMIT_MODE`                                                     | `memory` (dev/test only)       | `redis`                                 | —                       | Rate limiter adapter selection    |
 
 Confirmed public values for the selected Vercel projects:
 
