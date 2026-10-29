@@ -1,5 +1,3 @@
-import { isAbsolute } from 'node:path';
-
 export class StartupConfigurationError extends Error {}
 
 export function validateStartupEnvironment() {
@@ -16,13 +14,6 @@ export function validateStartupEnvironment() {
   if (!Number.isInteger(port) || port < 1 || port > 65535)
     throw new StartupConfigurationError('PORT must be a valid TCP port.');
   if (process.env['NODE_ENV'] === 'production') {
-    if (process.env['VERCEL'] !== '1' && !process.env['BLOB_READ_WRITE_TOKEN']) {
-      const uploadDir = process.env['UPLOAD_DIR'];
-      if (!uploadDir || !isAbsolute(uploadDir))
-        throw new StartupConfigurationError(
-          'Persistent private upload storage requires BLOB_READ_WRITE_TOKEN or an absolute UPLOAD_DIR on an attached disk.',
-        );
-    }
     for (const name of ['WEB_ORIGIN', 'ADMIN_ORIGIN', 'APP_URL']) {
       try {
         const url = new URL(process.env[name]!);

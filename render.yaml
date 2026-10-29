@@ -27,5 +27,3 @@ services:
         sync: false
       - key: SMTP_FROM
         sync: false
-      - key: BLOB_READ_WRITE_TOKEN
-        sync: false

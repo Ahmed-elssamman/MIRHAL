@@ -25,7 +25,7 @@ Start with the [operator setup runbook](operator-setup.md) for the remaining Ren
 
 Use [render.yaml](../../render.yaml) as the web service blueprint. It runs `npm ci && npm run db:generate && npm run build:api`, then `npm run start:prod`. The health check is `/api/health`. Staff can inspect provider configuration without sending mail at `/api/admin/health`; this reports configured, disabled, or incomplete and does not verify real delivery. Configure variables from [environment.md](environment.md). The API listens on Render's `PORT` and `0.0.0.0`; Nest shutdown hooks disconnect Prisma. Exact Vercel origins are required for CORS. The API has no public Swagger endpoint in production.
 
-The blueprint selects Render Free. A free service may sleep when idle; the first API request after sleep can be slow. Background challenge, attachment, and expired-record maintenance runs in the standalone API process only while it is awake. Continuous availability and reliably timed work require a non-sleeping service or a proper scheduled worker. No self-ping is configured. For persistent feedback screenshots, set the existing private Vercel Blob token as `BLOB_READ_WRITE_TOKEN` on Render or configure an absolute `UPLOAD_DIR` on an attached disk. Standalone production startup requires one of these settings. Render's ephemeral filesystem is not sufficient.
+The blueprint selects Render Free. A free service may sleep when idle; the first API request after sleep can be slow. Background challenge, attachment, and expired-record maintenance runs in the standalone API process only while it is awake. Continuous availability and reliably timed work require a non-sleeping service or a proper scheduled worker. Feedback screenshots are stored in PostgreSQL, with a 100 MiB shared attachment limit and a 2 MiB per-file limit. Monitor database capacity and backup usage independently of this application quota.
 
 ## Vercel customer and admin
 
@@ -36,7 +36,7 @@ vercel deploy --prebuilt --prod --yes --cwd .local/vercel/web
 vercel deploy --prebuilt --prod --yes --cwd .local/vercel/admin
 ```
 
-Do not run `npm run vercel:configure` for this split deployment; it configures the old bundled Vercel API and disables email. Review the generated routes and test a preview before production deployment. The customer Vercel project still has `DATABASE_URL`, `BLOB_READ_WRITE_TOKEN`, and `CRON_SECRET` for its current API function. After the Render cutover is verified and no Vercel API function remains, remove those legacy private variables from the frontend project. The Blob token must be configured on Render first if private uploads use that store.
+Do not run `npm run vercel:configure` for this split deployment; it configures the old bundled Vercel API and disables email. Review the generated routes and test before production deployment. PostgreSQL stores feedback attachments; the Render API does not require a Blob token.
 
 ## Email and checks
 

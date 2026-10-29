@@ -15,8 +15,9 @@ await db.$disconnect();
 url.pathname = '/' + name;
 try {
   execFileSync(
-    'node_modules/.bin/prisma',
+    process.execPath,
     [
+      'node_modules/prisma/build/index.js',
       'migrate',
       'diff',
       '--from-migrations',

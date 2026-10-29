@@ -57,7 +57,7 @@ async function fixture(role: Role = 'USER') {
   return { id: user.id, email, cookie: 'lq_session=' + session.token };
 }
 beforeAll(async () => {
-  execFileSync('node_modules/.bin/prisma', ['migrate', 'deploy'], {
+  execFileSync(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], {
     env: process.env,
     stdio: 'pipe',
   });

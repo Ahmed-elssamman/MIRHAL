@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 describe('auth email', () => {
-  it('rejects missing persistent storage in standalone production', () => {
+  it('accepts database-backed storage in standalone production', () => {
     process.env['NODE_ENV'] = 'production';
     process.env['DATABASE_URL'] = 'postgresql://example.test/db';
     process.env['DIRECT_URL'] = 'postgresql://example.test/db';
@@ -21,8 +21,6 @@ describe('auth email', () => {
     process.env['MAIL_MODE'] = 'disabled';
     delete process.env['BLOB_READ_WRITE_TOKEN'];
     delete process.env['UPLOAD_DIR'];
-    expect(validateStartupEnvironment).toThrow(/Persistent private upload storage/);
-    process.env['BLOB_READ_WRITE_TOKEN'] = 'test-only';
     expect(validateStartupEnvironment).not.toThrow();
   });
 

@@ -62,32 +62,25 @@ export class AttachmentsController {
       throw new NotFoundException();
     if ((await this.db.feedbackAttachment.count({ where: { feedbackId: id } })) >= 3)
       throw new BadRequestException('You can attach up to three images to a conversation.');
-    const key = await this.storage.put(file.buffer);
-    try {
-      return await this.db.atomic(user.id, async (tx) => {
-        if (
-          !(await tx.feedback.findFirst({ where: { id, userId: user.id }, select: { id: true } }))
-        )
-          throw new NotFoundException();
-        if ((await tx.feedbackAttachment.count({ where: { feedbackId: id } })) >= 3)
-          throw new BadRequestException('You can attach up to three images to a conversation.');
-        const name =
-          file.originalname.replace(/[^\p{L}\p{N}_. -]/gu, '_').slice(0, 120) || 'Screenshot';
-        return tx.feedbackAttachment.create({
-          data: {
-            feedbackId: id,
-            name,
-            mimeType: png ? 'image/png' : 'image/jpeg',
-            size: file.size,
-            storageKey: key,
-          },
-          select: attachmentSelect,
-        });
+    return this.db.atomic(user.id, async (tx) => {
+      if (!(await tx.feedback.findFirst({ where: { id, userId: user.id }, select: { id: true } })))
+        throw new NotFoundException();
+      if ((await tx.feedbackAttachment.count({ where: { feedbackId: id } })) >= 3)
+        throw new BadRequestException('You can attach up to three images to a conversation.');
+      const name =
+        file.originalname.replace(/[^\p{L}\p{N}_. -]/gu, '_').slice(0, 120) || 'Screenshot';
+      const key = await this.storage.put(file.buffer, tx);
+      return tx.feedbackAttachment.create({
+        data: {
+          feedbackId: id,
+          name,
+          mimeType: png ? 'image/png' : 'image/jpeg',
+          size: file.size,
+          storageKey: key,
+        },
+        select: attachmentSelect,
       });
-    } catch (error) {
-      await this.storage.remove(key);
-      throw error;
-    }
+    });
   }
   @Get(':feedbackId/attachments/:id')
   async download(

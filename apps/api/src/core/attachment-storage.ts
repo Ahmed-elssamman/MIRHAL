@@ -1,65 +1,39 @@
-import { Injectable } from '@nestjs/common';
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { Inject, Injectable, ServiceUnavailableException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
-import { put, get, del } from '@vercel/blob';
+import { Database } from '../common/database';
 
-/** Private Blob storage on Vercel; persistent local files for standalone servers. */
+// Bound total attachment bytes independently of the number of feedback threads.
+const STORAGE_LIMIT = 100 * 1024 * 1024;
+const FILE_LIMIT = 2 * 1024 * 1024;
+
 @Injectable()
 export class AttachmentStorage {
-  private readonly root = resolve(process.env['UPLOAD_DIR'] ?? '.local/uploads');
-  private get cloud() {
-    if (process.env['VERCEL'] && !process.env['BLOB_READ_WRITE_TOKEN'])
-      throw new Error('Private attachment storage is not configured');
-    return Boolean(process.env['BLOB_READ_WRITE_TOKEN']);
-  }
-  async put(data: Buffer) {
+  constructor(@Inject(Database) private readonly db: Database) {}
+
+  async put(data: Buffer, tx?: Prisma.TransactionClient): Promise<string> {
+    if (!data.length || data.length > FILE_LIMIT) throw new Error('Invalid attachment size');
+    if (!tx) return this.db.$transaction((client) => this.put(data, client));
+    // Serialize quota checks across API instances until the enclosing transaction commits.
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(726381947)`;
+    const usage = await tx.attachmentContent.aggregate({ _sum: { size: true } });
+    if ((usage._sum.size ?? 0) + data.length > STORAGE_LIMIT)
+      throw new ServiceUnavailableException('Attachment storage is full.');
     const key = randomUUID();
-    if (this.cloud) {
-      await put(`feedback/${key}`, data, { access: 'private', addRandomSuffix: false });
-      return key;
-    }
-    await mkdir(this.root, { recursive: true, mode: 0o700 });
-    await writeFile(this.path(key), data, { mode: 0o600, flag: 'wx' });
+    await tx.attachmentContent.create({
+      data: { storageKey: key, data: Uint8Array.from(data), size: data.length },
+    });
     return key;
   }
-  async read(key: string) {
-    this.path(key);
-    if (this.cloud) {
-      const result = await get(`feedback/${key}`, { access: 'private' });
-      if (!result || result.statusCode !== 200 || !result.stream)
-        throw new Error('Attachment not found');
-      const reader = result.stream.getReader();
-      const chunks: Uint8Array[] = [];
-      let size = 0;
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          size += value.byteLength;
-          if (size > 2 * 1024 * 1024) throw new Error('Attachment exceeds size limit');
-          chunks.push(value);
-        }
-        return Buffer.concat(chunks);
-      } finally {
-        await reader.cancel();
-      }
-    }
-    return readFile(this.path(key));
+
+  async read(key: string): Promise<Buffer> {
+    const item = await this.db.attachmentContent.findUnique({ where: { storageKey: key } });
+    if (!item) throw new Error('Attachment not found');
+    return Buffer.from(item.data);
   }
+
   async remove(key: string) {
-    this.path(key);
-    if (this.cloud) {
-      await del(`feedback/${key}`);
-      return;
-    }
-    await unlink(this.path(key)).catch((error: NodeJS.ErrnoException) => {
-      if (error.code !== 'ENOENT') throw error;
-    });
-  }
-  private path(key: string) {
-    if (!/^[a-f0-9-]{36}$/.test(key)) throw new Error('Invalid storage reference');
-    return resolve(this.root, key);
+    await this.db.attachmentContent.deleteMany({ where: { storageKey: key } });
   }
 }
 
