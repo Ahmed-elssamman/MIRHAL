@@ -1,23 +1,40 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Preferences } from '@lifequest/utilities';
-import { Celebrations } from '@lifequest/data-access';
+import { Celebrations, LoadingService } from '@lifequest/data-access';
 import { LevelCelebration } from '../../../../libs/ui/src/level-celebration';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
-import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlays } from '../../../../libs/ui/src/overlays';
 @Component({
   selector: 'lq-root',
   imports: [RouterOutlet, Overlays, LevelCelebration],
-  template:
-    '<router-outlet />@defer (on idle) { <lq-overlays /> } @defer (when celebrations.level()) { <lq-level-celebration /> }',
+  template: `
+    @if (loading.isLoading()) {
+      <div
+        role="progressbar"
+        [attr.aria-label]="preferences.t('Loading page', 'جارٍ تحميل الصفحة')"
+        class="fixed inset-x-0 top-0 z-[9999] h-1 overflow-hidden bg-brand/20 shadow-sm"
+      >
+        <div class="loading-bar h-full bg-brand"></div>
+      </div>
+    }
+    <router-outlet />@defer (on idle) { <lq-overlays /> } @defer (when celebrations.level()) { <lq-level-celebration /> }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   readonly celebrations = inject(Celebrations);
-  private readonly preferences = inject(Preferences);
+  readonly preferences = inject(Preferences);
+  readonly loading = inject(LoadingService);
   private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
   private readonly title = inject(Title);
@@ -28,11 +45,19 @@ export class App {
       this.updateMetadata(english);
     });
     this.router.events
-      .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(),
-      )
-      .subscribe(() => this.updateMetadata(this.preferences.language() === 'en'));
+      .pipe(takeUntilDestroyed())
+      .subscribe((event) => {
+        if (event instanceof NavigationStart) {
+          this.loading.setNavigating(true);
+        } else if (
+          event instanceof NavigationEnd ||
+          event instanceof NavigationCancel ||
+          event instanceof NavigationError
+        ) {
+          this.loading.setNavigating(false);
+          this.updateMetadata(this.preferences.language() === 'en');
+        }
+      });
   }
 
   private updateMetadata(english: boolean) {

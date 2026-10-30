@@ -50,6 +50,7 @@ export class TodayPage {
   readonly quests = new Remote<Page<Quest>>(this.api, 'quests?limit=10');
   readonly questRequested = signal(false);
   readonly busy = signal('');
+  readonly pendingTaskIds = signal<Set<string>>(new Set());
   readonly scheduled = computed(() => this.habits.data()?.items ?? []);
   readonly scheduledCount = computed(() => this.habits.data()?.total ?? 0);
   readonly completeCount = computed(() => this.habits.data()?.completedCount ?? 0);
@@ -93,21 +94,38 @@ export class TodayPage {
     }
   }
   async completeTask(id: string) {
-    if (this.busy()) return;
-    this.busy.set(id);
+    if (this.pendingTaskIds().has(id)) return;
+    this.pendingTaskIds.update((set) => new Set(set).add(id));
+    const previous = this.tasks.data();
+
+    // Optimistically remove from today's list immediately (< 50ms acknowledgment)
+    this.tasks.data.update((current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        items: current.items.filter((item) => item.id !== id),
+        total: Math.max(0, current.total - 1),
+      };
+    });
+
     try {
       const result = await this.api.patch<{ awarded: number }>(`tasks/${id}`, {
         status: 'COMPLETED',
       });
       this.toasts.success(
         this.i18n.t('One less thing on your mind.', 'شيء أقل يشغل بالك.'),
-        `+${result.awarded} XP`,
+        result.awarded ? `+${result.awarded} XP` : undefined,
       );
-      await this.tasks.load();
     } catch (error) {
+      // Rollback on failure
+      this.tasks.data.set(previous);
       this.toasts.error(error);
     } finally {
-      this.busy.set('');
+      this.pendingTaskIds.update((set) => {
+        const next = new Set(set);
+        next.delete(id);
+        return next;
+      });
     }
   }
   async completeQuestItem(questId: string, itemId: string) {

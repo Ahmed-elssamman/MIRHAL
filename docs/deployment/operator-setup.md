@@ -25,9 +25,8 @@ These dashboard and DNS steps follow [Resend's domain guide](https://resend.com/
    | `APP_URL`               | `https://lifequest-web-cyan.vercel.app`          |
    | `RESEND_API_KEY`        | Private sending key from Resend                  |
    | `SMTP_FROM`             | Sender on the verified Resend domain             |
-   | `BLOB_READ_WRITE_TOKEN` | Private token for the existing Vercel Blob store |
 
-   The Blueprint sets `NODE_ENV=production`, `EMAIL_PROVIDER=resend`, and `MAIL_MODE=enabled`. Render supplies `PORT`. MIRHAL uses opaque database sessions, so no JWT secret is required. If the Blob token is unavailable, use an absolute `UPLOAD_DIR` on an attached persistent disk instead; the free service's ephemeral filesystem is not sufficient for feedback attachments.
+   The Blueprint sets `NODE_ENV=production`, `EMAIL_PROVIDER=resend`, and `MAIL_MODE=production`. Configure the Resend key and verified sender in Render before expecting auth emails; optionally set `SUPPORT_EMAIL` for the email footer. Render supplies `PORT`. MIRHAL uses opaque database sessions, so no JWT secret is required. Feedback attachment bytes are stored in PostgreSQL using the existing database connection; no Blob token or attached disk is required by the Render API.
 
 3. Deploy the Blueprint. Record only the public Render HTTPS service URL. Open `<render-origin>/api/health` and confirm HTTP 200 with `status: ok`. The health endpoint checks PostgreSQL without sending an email. Inspect Render logs if startup fails; the application reports missing variable names without printing their values.
 
@@ -37,6 +36,6 @@ Render's [Blueprint specification](https://render.com/docs/blueprint-spec) confi
 
 1. In a trusted packaging shell or ignored local `.env`, set `VERCEL_WEB_ORIGIN=https://lifequest-web-cyan.vercel.app`, `VERCEL_ADMIN_ORIGIN=https://lifequest-admin.vercel.app`, and `VERCEL_API_ORIGIN=<actual Render HTTPS origin>`. Do not include trailing slashes. These are public routing values, not browser secrets.
 2. Run `npm run vercel:package:render`. Inspect `.local/vercel/web/.vercel/output/config.json`: customer `/api/*` must route to Render, admin `/api/*` through the customer origin, and there must be no customer API function or cron. A Vercel preview can check static assets and route behavior before the production deploy commands in the [deployment guide](README.md). The preview origin is not in Render's production CORS allowlist, so authenticate and test cookies on the confirmed production aliases after cutover.
-3. After both production frontends and the Render API pass the [live smoke test](smoke.md), remove legacy `DATABASE_URL`, `BLOB_READ_WRITE_TOKEN`, and `CRON_SECRET` from the **customer Vercel project's** environment. The Blob token must already be configured on Render before removing it from Vercel. Do not remove these variables while the old Vercel API is still serving users.
+3. After both production frontends and the Render API pass the [live smoke test](smoke.md), remove legacy `DATABASE_URL`, `BLOB_READ_WRITE_TOKEN`, and `CRON_SECRET` from the **customer Vercel project's** environment. Do not remove these variables while the old Vercel API is still serving users.
 
 Do not run `npm run vercel:configure` for this cutover; it configures the previous Vercel API function and disables email. Do not merge PR #1 until the release branch and any Vercel Git auto-deploy behavior are reviewed. The code change does not require a database reset or a new seed run.

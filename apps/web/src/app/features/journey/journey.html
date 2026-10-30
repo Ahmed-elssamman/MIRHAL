@@ -8,20 +8,29 @@
     )
   "
 >
-  <label class="field-label" for="journey-month">{{
-    i18n.t('Choose a chapter', 'اختر فصلاً')
-  }}</label
-  ><input
-    id="journey-month"
-    #monthPicker
-    class="field w-auto"
-    type="month"
-    min="2020-01"
-    [max]="maxMonth"
-    [value]="month()"
-    [disabled]="resource.loading() || saving()"
-    (change)="load(monthPicker.value)"
-  />
+  <div class="w-full min-w-0 sm:w-64">
+    <label class="field-label mb-2 block" for="journey-month">{{
+      i18n.t('Choose a chapter', 'اختر فصلاً')
+    }}</label>
+    <p-datepicker
+      inputId="journey-month"
+      [ngModel]="selectedMonthDate()"
+      [ngModelOptions]="{ standalone: true }"
+      (ngModelChange)="selectMonth($event)"
+      [minDate]="minMonthDate"
+      [maxDate]="maxMonthDate"
+      [disabled]="resource.loading() || saving()"
+      [readonlyInput]="true"
+      [showIcon]="true"
+      iconDisplay="input"
+      view="month"
+      dateFormat="MM yy"
+      [appendTo]="'body'"
+      styleClass="w-full"
+      inputStyleClass="w-full"
+      [ariaLabel]="i18n.t('Choose a chapter by month and year', 'اختر فصلاً حسب الشهر والسنة')"
+    />
+  </div>
 </lq-page-header>
 @if (resource.loading() && !resource.data()) {
   <lq-skeleton />

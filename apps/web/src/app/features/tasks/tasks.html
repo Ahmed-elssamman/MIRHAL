@@ -67,7 +67,7 @@
               ? 'border-mint bg-mint text-mint-ink'
               : 'border-line hover:border-brand'
           "
-          [disabled]="busy() === task.id"
+          [disabled]="pendingTaskIds().has(task.id)"
           [attr.aria-label]="
             (task.status === 'COMPLETED'
               ? i18n.t('Reopen ', 'إعادة فتح ')

@@ -121,7 +121,7 @@ describe('Authentication state and navigation', () => {
     TestBed.inject(AuthStore).setUser({ ...user, role: 'ADMIN' });
     expect(await TestBed.runInInjectionContext(() => adminGuard(route, state))).toBe(true);
   });
-  it('clears stale sessions when a protected request expires', async () => {
+  it('clears stale sessions when a protected request expires and refresh fails', async () => {
     const auth = TestBed.inject(AuthStore);
     auth.setUser(user);
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
@@ -131,9 +131,30 @@ describe('Authentication state and navigation', () => {
     TestBed.inject(HttpTestingController)
       .expectOne('/api/goals')
       .flush({}, { status: 401, statusText: 'Unauthorized' });
+    TestBed.inject(HttpTestingController)
+      .expectOne('/api/auth/refresh')
+      .flush({}, { status: 401, statusText: 'Unauthorized' });
     expect(await pending).toBeInstanceOf(HttpErrorResponse);
     expect(auth.user()).toBeNull();
+    expect(auth.status()).toBe('unauthenticated');
     expect(navigate).toHaveBeenCalledWith(['/auth/login']);
+  });
+  it('retries request when token refresh succeeds', async () => {
+    const auth = TestBed.inject(AuthStore);
+    auth.setUser(user);
+    const pending = TestBed.inject(Api).get<{ items: [] }>('goals');
+    TestBed.inject(HttpTestingController)
+      .expectOne('/api/goals')
+      .flush({}, { status: 401, statusText: 'Unauthorized' });
+    TestBed.inject(HttpTestingController)
+      .expectOne('/api/auth/refresh')
+      .flush({ user });
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    TestBed.inject(HttpTestingController)
+      .expectOne('/api/goals')
+      .flush({ items: [] });
+    expect(await pending).toEqual({ items: [] });
+    expect(auth.status()).toBe('authenticated');
   });
   it('coalesces only safe reference reads', async () => {
     const api = TestBed.inject(Api);

@@ -3,19 +3,19 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Api, errorMessage, Profile } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { Preferences } from '@lifequest/utilities';
-import { Icon, PageHeader } from '@lifequest/ui';
+import { Icon, PageHeader, Skeleton } from '@lifequest/ui';
 import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms';
 import { SecuritySettings } from './security';
 @Component({
   selector: 'lq-settings',
-  imports: [UnsavedForm, ReactiveFormsModule, PageHeader, Icon, FormField, SecuritySettings],
+  imports: [UnsavedForm, ReactiveFormsModule, PageHeader, Icon, FormField, SecuritySettings, Skeleton],
   templateUrl: './settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsPage {
   private readonly api = inject(Api);
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(AuthStore);
+  readonly auth = inject(AuthStore);
   readonly i18n = inject(Preferences);
   readonly saving = signal(false);
   readonly saved = signal(false);

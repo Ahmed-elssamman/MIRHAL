@@ -1,14 +1,16 @@
 import { Body, Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { z } from 'zod';
 import {
   challengeAcceptSchema,
   challengeSchema,
   emailSchema,
+  inviteResolveSchema,
   InputOf,
   paginationSchema,
 } from '@lifequest/contracts';
-import { CurrentUser, Identity, Validate } from '../common/http';
+import { CurrentUser, Identity, Public, Validate } from '../common/http';
 import { FriendsService } from './friends.service';
 import { ChallengesService } from './challenges.service';
 @ApiTags('Friends and challenges')
@@ -18,13 +20,27 @@ export class SocialController {
     @Inject(FriendsService) private readonly friends: FriendsService,
     @Inject(ChallengesService) private readonly challenges: ChallengesService,
   ) {}
+  @Public()
+  @Get('friends/invitations/resolve')
+  resolveInvitation(@Query(new Validate(inviteResolveSchema)) query: InputOf<typeof inviteResolveSchema>) {
+    return this.friends.resolveInvitation(query.token);
+  }
+  @Post('friends/invitations/accept')
+  acceptInvitation(
+    @CurrentUser() user: Identity,
+    @Body(new Validate(inviteResolveSchema)) input: InputOf<typeof inviteResolveSchema>,
+  ) {
+    return this.friends.acceptInvitation(user.id, input.token);
+  }
   @Get('friends') listFriends(
     @CurrentUser() user: Identity,
     @Query(new Validate(paginationSchema)) query: InputOf<typeof paginationSchema>,
   ) {
     return this.friends.list(user.id, query);
   }
-  @Post('friends') requestFriend(
+  @Post('friends')
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
+  requestFriend(
     @CurrentUser() user: Identity,
     @Body(new Validate(emailSchema)) input: InputOf<typeof emailSchema>,
   ) {

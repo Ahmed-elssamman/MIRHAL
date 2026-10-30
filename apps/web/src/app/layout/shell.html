@@ -25,63 +25,44 @@
         </div>
       </div>
     }
-    <div>
-      <button
-        type="button"
-        class="flex min-h-11 w-full items-center gap-3 rounded-xl px-4 py-2 text-start text-xs font-medium text-muted transition-colors hover:bg-brand-soft hover:text-brand"
-        [attr.aria-expanded]="moreOpen()"
-        (click)="moreOpen.update((open) => !open)"
-      >
-        <lq-icon name="more" [size]="18" />{{ i18n.t('More', 'المزيد') }}
-        <lq-icon
-          class="ms-auto transition-transform"
-          [class.rotate-180]="moreOpen()"
-          name="chevron-down"
-          [size]="16"
-        />
-      </button>
-      @if (moreOpen()) {
-        <div class="mt-1 space-y-0.5 ps-3">
-          @for (item of more; track item.path) {
-            <a
-              [routerLink]="item.path"
-              routerLinkActive="bg-brand-soft !text-brand font-semibold"
-              ariaCurrentWhenActive="page"
-              (click)="menuOpen.set(false)"
-              class="flex min-h-10 items-center gap-3 rounded-xl px-4 py-2 text-xs font-medium text-muted transition-colors hover:bg-brand-soft hover:text-brand"
-              ><lq-icon [name]="item.icon" [size]="17" />{{ i18n.t(item.title, item.ar) }}</a
-            >
-          }
-        </div>
-      }
-    </div>
+    @if (i18n.showAdditionalNavigation()) {
+      <div>
+        <button
+          type="button"
+          class="flex min-h-11 w-full items-center gap-3 rounded-xl px-4 py-2 text-start text-xs font-medium text-muted transition-colors hover:bg-brand-soft hover:text-brand"
+          [attr.aria-expanded]="moreOpen()"
+          (click)="moreOpen.update((open) => !open)"
+        >
+          <lq-icon name="more" [size]="18" />{{ i18n.t('More', 'المزيد') }}
+          <lq-icon
+            class="ms-auto transition-transform"
+            [class.rotate-180]="moreOpen()"
+            name="chevron-down"
+            [size]="16"
+          />
+        </button>
+        @if (moreOpen()) {
+          <div class="mt-1 space-y-0.5 ps-3">
+            @for (item of more; track item.path) {
+              <a
+                [routerLink]="item.path"
+                routerLinkActive="bg-brand-soft !text-brand font-semibold"
+                ariaCurrentWhenActive="page"
+                (click)="menuOpen.set(false)"
+                class="flex min-h-10 items-center gap-3 rounded-xl px-4 py-2 text-xs font-medium text-muted transition-colors hover:bg-brand-soft hover:text-brand"
+                ><lq-icon [name]="item.icon" [size]="17" />{{ i18n.t(item.title, item.ar) }}</a
+              >
+            }
+          </div>
+        }
+      </div>
+    }
   </nav>
   <div class="mt-7 border-t border-line pt-4">
     <a routerLink="/help" class="flex min-h-10 items-center gap-3 px-4 text-xs text-muted"
       ><lq-icon name="help" [size]="18" />{{ i18n.t('How MIRHAL works', 'كيف يعمل مِرحال') }}</a
-    ><a
-      routerLink="/settings"
-      (click)="menuOpen.set(false)"
-      class="flex min-h-10 items-center gap-3 px-4 text-xs text-muted"
-      ><lq-icon name="settings" [size]="18" />{{ i18n.t('Settings', 'الإعدادات') }}</a
     >
   </div>
-  <a routerLink="/profile" class="mt-4 flex items-center gap-3 rounded-xl border border-line p-3"
-    ><span
-      class="flex size-9 shrink-0 items-center justify-center rounded-full bg-violet text-sm font-semibold text-violet-700"
-      ><lq-avatar
-        [src]="auth.user()?.profile?.avatarUrl"
-        [name]="auth.user()?.profile?.displayName ?? ''"
-        [size]="36" /></span
-    ><span class="min-w-0"
-      ><span class="block truncate text-xs font-semibold">{{
-        auth.user()?.profile?.displayName
-      }}</span
-      ><span class="mt-0.5 block text-[10px] text-muted">{{
-        i18n.t('Your personal journey', 'رحلتك الشخصية')
-      }}</span></span
-    ><lq-icon class="ms-auto text-muted" name="chevron-right" [size]="16"
-  /></a>
 </ng-template>
 <aside
   class="fixed inset-y-0 start-0 z-30 hidden w-60 overflow-y-auto border-e border-line bg-surface px-4 py-7 lg:block"
@@ -97,55 +78,129 @@
 /></p-drawer>
 <div class="min-h-screen lg:ps-60">
   <header
-    class="flex h-20 items-center justify-between gap-3 border-b border-line bg-surface/80 px-4 sm:px-7 xl:px-10"
+    class="flex h-16 items-center justify-between gap-2 border-b border-line bg-header/95 px-3 sm:h-20 sm:gap-3 sm:px-7 xl:px-10"
   >
     <div class="flex min-w-0 items-center gap-3">
       <button
+        type="button"
         class="icon-button lg:hidden"
         (click)="menuOpen.set(true)"
         [attr.aria-label]="i18n.t('Open navigation', 'افتح القائمة')"
       >
-        <lq-icon name="menu" /></button
-      ><span class="hidden text-xs text-muted sm:block">{{
-        i18n.t('Your space to grow', 'مساحتك للنمو')
-      }}</span
-      ><span class="text-[11px] text-muted sm:hidden">{{
-        i18n.t('Your Life. Your Journey.', 'حياتك. رحلتك.')
-      }}</span>
+        <lq-icon name="menu" />
+      </button>
+      <a routerLink="/today" [attr.aria-label]="i18n.t('MIRHAL home', 'الرئيسية في مِرحال')">
+        <lq-logo [compact]="true" />
+      </a>
+      <span class="hidden text-xs text-muted sm:block">
+        {{ i18n.t('Your space to grow', 'مساحتك للنمو') }}
+      </span>
     </div>
     <div class="flex items-center gap-1 sm:gap-3">
       <span class="me-3 hidden text-[11px] text-muted md:block">{{
         today | date: 'EEEE, MMM d'
-      }}</span
-      ><a
+      }}</span>
+      <a
         routerLink="/tasks"
-        class="icon-button hidden sm:flex"
-        [attr.aria-label]="i18n.t('Find a task', 'ابحث عن مهمة')"
-        ><lq-icon name="search" [size]="19" /></a
-      ><button
+        class="icon-button hidden sm:inline-flex"
+        [attr.aria-label]="i18n.t('Open tasks', 'افتح المهام')"
+      >
+        <lq-icon name="tasks" [size]="19" />
+      </a>
+      <button
+        type="button"
         class="icon-button text-xs font-semibold"
         (click)="auth.changeLanguage()"
         [disabled]="auth.languageSaving()"
         [attr.aria-label]="i18n.t('Switch to Arabic', 'التبديل للإنجليزية')"
       >
-        {{ i18n.t('ع', 'EN') }}</button
-      ><a
-        routerLink="/notifications"
+        {{ i18n.t('ع', 'EN') }}
+      </button>
+      <button
+        type="button"
         class="icon-button"
         [attr.aria-label]="i18n.t('Notifications', 'الإشعارات')"
-        ><lq-icon name="bell" [size]="19" /></a
-      ><span class="mx-1 hidden h-7 w-px bg-line sm:block"></span
-      ><a
-        routerLink="/profile"
-        [attr.aria-label]="i18n.t('Your profile', 'ملفك الشخصي')"
-        class="flex size-9 items-center justify-center rounded-full bg-mint text-xs font-bold text-mint-ink"
-        ><lq-avatar
-          [src]="auth.user()?.profile?.avatarUrl"
-          [name]="auth.user()?.profile?.displayName ?? ''"
-          [size]="36"
-      /></a>
+        aria-haspopup="dialog"
+        (click)="notificationsOpen.set(true)"
+      >
+        <lq-icon name="bell" [size]="19" />
+      </button>
+      <div class="relative" data-profile-control>
+        <button
+          data-profile-trigger
+          type="button"
+          class="flex size-11 items-center justify-center rounded-full bg-brand-soft text-brand"
+          [attr.aria-label]="
+            i18n.t('Account for ', 'الحساب: ') + (auth.user()?.profile?.displayName ?? '')
+          "
+          [attr.aria-expanded]="profileOpen()"
+          aria-controls="profile-actions"
+          (click)="profileOpen.update((open) => !open)"
+        >
+          <lq-avatar
+            [src]="auth.user()?.profile?.avatarUrl"
+            [name]="auth.user()?.profile?.displayName ?? ''"
+            [size]="36"
+          />
+        </button>
+        @if (profileOpen()) {
+          <section
+            id="profile-actions"
+            class="absolute end-0 top-full z-50 mt-2 w-64 max-w-[calc(100vw-1.5rem)] rounded-2xl border border-line bg-menu p-2 shadow-xl"
+            [attr.aria-label]="i18n.t('Account actions', 'إجراءات الحساب')"
+          >
+            <div class="border-b border-line px-3 py-2">
+              <p class="truncate text-sm font-semibold">{{ auth.user()?.profile?.displayName }}</p>
+              <p class="mt-1 truncate text-xs text-muted">{{ auth.user()?.email }}</p>
+            </div>
+            <a
+              routerLink="/profile"
+              (click)="closeProfileMenu()"
+              class="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm hover:bg-hover"
+            >
+              <lq-icon name="user" [size]="17" />{{ i18n.t('Profile', 'الملف الشخصي') }}
+            </a>
+            <a
+              routerLink="/friends"
+              (click)="closeProfileMenu()"
+              class="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm hover:bg-hover"
+            >
+              <lq-icon name="users" [size]="17" />{{ i18n.t('Friends', 'الأصدقاء') }}
+            </a>
+            <a
+              routerLink="/settings"
+              (click)="closeProfileMenu()"
+              class="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm hover:bg-hover"
+            >
+              <lq-icon name="settings" [size]="17" />{{ i18n.t('Settings', 'الإعدادات') }}
+            </a>
+            @if (!install.installed() && (install.canInstall() || install.hasGuidance())) {
+              <button
+                type="button"
+                (click)="installationHelp()"
+                class="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-start text-sm hover:bg-hover"
+              >
+                <lq-icon name="download" [size]="17" />{{
+                  i18n.t('Install MIRHAL', 'تثبيت مِرحال')
+                }}
+              </button>
+            }
+            <button
+              type="button"
+              (click)="logout()"
+              [disabled]="loggingOut()"
+              class="mt-1 flex min-h-11 w-full items-center gap-3 rounded-xl border-t border-line px-3 pt-2 text-start text-sm text-danger hover:bg-danger-soft"
+            >
+              <lq-icon name="logout" [size]="17" />{{ i18n.t('Log out', 'تسجيل الخروج') }}
+            </button>
+          </section>
+        }
+      </div>
     </div>
   </header>
+  @if (notificationsOpen()) {
+    <lq-notification-overlay (close)="notificationsOpen.set(false)" />
+  }
   @if (auth.languageError()) {
     <p role="alert" class="mx-5 mt-3 rounded-xl bg-coral p-3 text-sm text-orange-900">
       {{ auth.languageError() }}
@@ -155,6 +210,20 @@
     id="main-content"
     class="mx-auto max-w-[1520px] px-4 pb-28 pt-6 sm:px-7 sm:pt-8 lg:pb-10 xl:px-10"
   >
+    @if (!online()) {
+      <p
+        role="status"
+        class="mb-4 rounded-xl border border-warning/30 bg-warning-soft px-4 py-3 text-sm text-warning-ink"
+      >
+        {{
+          i18n.t(
+            'You are offline. MIRHAL needs an internet connection to load and save your account.',
+            'أنت غير متصل. يحتاج مِرحال إلى اتصال بالإنترنت لعرض حسابك وحفظ التغييرات.'
+          )
+        }}
+      </p>
+    }
+    <lq-install-experience />
     @if (auth.verificationDeliveryFailed()) {
       <aside
         role="alert"
@@ -162,8 +231,8 @@
       >
         <span class="min-w-0 flex-1">{{
           i18n.t(
-            'Verification email could not be sent. You can resend it from Settings.',
-            'تعذّر إرسال رسالة التأكيد. يمكنك إعادة إرسالها من الإعدادات.'
+            'The email provider did not accept the verification request. You can retry from Settings.',
+            'لم يقبل مزود البريد طلب التأكيد. يمكنك المحاولة مجدداً من الإعدادات.'
           )
         }}</span>
         <a routerLink="/settings" class="btn btn-secondary min-h-11">{{
@@ -197,5 +266,13 @@
         }}</span></a
       >
     }
+    <button
+      type="button"
+      class="flex min-h-16 min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl px-1 text-[9px] font-medium text-muted"
+      (click)="menuOpen.set(true)"
+      [attr.aria-label]="i18n.t('More navigation', 'المزيد من التنقل')"
+    >
+      <lq-icon name="more" [size]="20" /><span>{{ i18n.t('More', 'المزيد') }}</span>
+    </button>
   </nav>
 </div>

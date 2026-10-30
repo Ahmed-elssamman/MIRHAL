@@ -22,9 +22,13 @@
       <button
         class="btn btn-secondary text-xs"
         (click)="verify()"
-        [disabled]="capabilities.data()?.emailDelivery !== true"
+        [disabled]="busy() || capabilities.data()?.emailDelivery !== true"
       >
-        {{ i18n.t('Send verification', 'أرسل التأكيد') }}
+        {{
+          busy()
+            ? i18n.t('Sending request…', 'جارٍ إرسال الطلب…')
+            : i18n.t('Send verification', 'أرسل التأكيد')
+        }}
       </button>
       @if (capabilities.data()?.emailDelivery === false) {
         <p class="text-xs text-muted">

@@ -14,24 +14,21 @@
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
 } @else if (resource.data(); as data) {
   <div class="animate-enter">
-    <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <p class="eyebrow mb-2">
-          {{ i18n.t('A NEW DAY, A LITTLE POSSIBILITY', 'يوم جديد، وإمكانية جديدة') }}
-        </p>
-        <h1 class="page-title">
-          {{ i18n.t('Good to see you, ', 'سعداء بوجودك، ') }}{{ firstName() }}
-          <span class="inline-block text-2xl text-amber-500">✦</span>
-        </h1>
-        <p class="mt-2 text-xs text-muted sm:text-sm">
-          {{ i18n.t('Let’s make a little room for what matters.', 'لنصنع مساحة صغيرة لما يهمك.') }}
-        </p>
-      </div>
+    <lq-page-header
+      [eyebrow]="i18n.t('A NEW DAY, A LITTLE POSSIBILITY', 'يوم جديد، وإمكانية جديدة')"
+      [title]="i18n.t('Good to see you, ', 'سعداء بوجودك، ') + firstName()"
+      [description]="
+        i18n.t(
+          'Let’s make a little room for what matters. An overview of your momentum and next meaningful steps.',
+          'لنصنع مساحة صغيرة لما يهمك. نظرة عامة على تقدمك وخطواتك التالية ذات الأثر.'
+        )
+      "
+    >
       <a routerLink="/today" class="btn btn-secondary text-xs"
         ><lq-icon name="calendar" [size]="15" />{{ i18n.t('My daily plan', 'خطتي اليومية')
         }}<lq-icon name="arrow-up-right" [size]="15"
       /></a>
-    </div>
+    </lq-page-header>
     <section class="relative mb-6 overflow-hidden rounded-2xl bg-[#302943] p-6 text-white sm:p-8">
       <div
         class="pointer-events-none absolute -end-14 -top-32 size-[360px] rounded-full border border-white/[0.06]"

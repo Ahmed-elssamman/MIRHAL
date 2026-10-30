@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Api, errorMessage, Profile } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Avatar, Icon, PageHeader } from '@lifequest/ui';
+import { Avatar, Icon, PageHeader, Skeleton } from '@lifequest/ui';
 import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-profile',
@@ -17,13 +17,17 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
     PageHeader,
     Icon,
     FormField,
+    Skeleton,
   ],
   template: `<lq-page-header
       [eyebrow]="i18n.t('THE PERSON BEHIND THE PROGRESS', 'الشخص وراء التقدم')"
       [title]="i18n.t('A little about you.', 'قليل عنك.')"
       [description]="i18n.t('Make this space feel like your own.', 'اجعل هذه المساحة تشبهك.')"
     />
-    <div class="grid items-start gap-6 lg:grid-cols-[1fr_1.6fr]">
+    @if (!auth.user()) {
+      <lq-skeleton />
+    } @else {
+      <div class="grid items-start gap-6 lg:grid-cols-[1fr_1.6fr]">
       <section class="card p-8 text-center">
         <lq-avatar
           [name]="auth.user()?.profile?.displayName ?? ''"
@@ -116,7 +120,8 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
           </button>
         </form>
       </section>
-    </div>`,
+    </div>
+  }`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfilePage {

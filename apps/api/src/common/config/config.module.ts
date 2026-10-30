@@ -5,14 +5,13 @@ import { databaseConfig } from './database.config';
 import { authConfig } from './auth.config';
 import { mailConfig } from './mail.config';
 import { rateLimitConfig } from './rate-limit.config';
-import { storageConfig } from './storage.config';
 import { validateEnvironment } from './env.schema';
 
 @Module({
   imports: [
     NestConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig, authConfig, mailConfig, rateLimitConfig, storageConfig],
+      load: [appConfig, databaseConfig, authConfig, mailConfig, rateLimitConfig],
       validate: validateEnvironment,
     }),
   ],

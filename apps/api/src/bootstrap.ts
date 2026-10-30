@@ -6,6 +6,32 @@ import helmet from 'helmet';
 import { json, NextFunction, Response } from 'express';
 import { randomUUID } from 'node:crypto';
 import { ApiExceptionFilter, ApiRequest } from './common/http';
+export function isAllowedOrigin(origin: string | undefined, allowedOrigins: string[]): boolean {
+  if (!origin) return false;
+  if (allowedOrigins.includes(origin)) return true;
+  if (process.env['NODE_ENV'] !== 'production') {
+    try {
+      const url = new URL(origin);
+      if (
+        url.protocol === 'http:' &&
+        ['4200', '4201', '4300', '4301'].includes(url.port || '80')
+      ) {
+        const host = url.hostname;
+        if (
+          host === 'localhost' ||
+          host === '127.0.0.1' ||
+          host.startsWith('192.168.') ||
+          host.startsWith('10.') ||
+          /^172\.(1[6-9]|2\d|3[01])\./.test(host)
+        ) {
+          return true;
+        }
+      }
+    } catch {}
+  }
+  return false;
+}
+
 export function configureApp(app: INestApplication) {
   const origins = [
     process.env['WEB_ORIGIN'] ?? 'http://localhost:4200',
@@ -14,7 +40,16 @@ export function configureApp(app: INestApplication) {
   app.setGlobalPrefix('api');
   app.use(helmet());
   app.enableCors({
-    origin: origins,
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      if (!origin || isAllowedOrigin(origin, origins)) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'X-Requested-With', 'X-Request-Id'],
@@ -25,7 +60,7 @@ export function configureApp(app: INestApplication) {
     response.setHeader('Cache-Control', 'no-store');
     if (
       !['GET', 'HEAD', 'OPTIONS'].includes(request.method) &&
-      (!request.headers.origin || !origins.includes(request.headers.origin))
+      (!request.headers.origin || !isAllowedOrigin(request.headers.origin, origins))
     ) {
       response.status(403).json({
         code: 'INVALID_ORIGIN',

@@ -5,6 +5,7 @@ export interface MailConfig {
   enabled: boolean;
   provider: 'file' | 'smtp' | 'resend' | 'memory';
   from?: string;
+  supportEmail?: string;
   appUrl: string;
   smtp: {
     host?: string;
@@ -37,6 +38,7 @@ export const mailConfig = registerAs('mail', (): MailConfig => {
     enabled: mode !== 'disabled',
     provider,
     from: process.env['SMTP_FROM'],
+    supportEmail: process.env['SUPPORT_EMAIL'] || undefined,
     appUrl: process.env['APP_URL'] ?? 'http://localhost:4200',
     smtp: {
       host: process.env['SMTP_HOST'],

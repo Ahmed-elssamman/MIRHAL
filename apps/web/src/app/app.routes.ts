@@ -1,6 +1,6 @@
 import { unsavedChangesGuard } from '@lifequest/forms';
 import { Routes } from '@angular/router';
-import { authGuard, onboardingCompleteGuard } from '@lifequest/auth';
+import { authGuard, onboardingCompleteGuard, unauthGuard } from '@lifequest/auth';
 import { NotFoundPage } from './features/not-found/not-found';
 export const routes: Routes = [
   {
@@ -17,6 +17,7 @@ export const routes: Routes = [
   },
   {
     path: 'auth/:mode',
+    canActivate: [unauthGuard],
     loadComponent: () => import('../../../../libs/auth/src/auth-page').then((m) => m.AuthPage),
   },
   {

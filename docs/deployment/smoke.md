@@ -25,7 +25,7 @@ Run this only after the reviewed Neon migrations, Render API, Resend domain, and
 
 ## Storage, localization, and operation
 
-1. Upload a small feedback image as a test user, open it as its owner, and confirm an anonymous request is denied. After a planned Render restart or redeploy, confirm the file remains available from the configured private Blob store or attached disk. Remove test data afterward.
+1. Upload a small feedback image as a test user, open it as its owner, and confirm an anonymous request is denied. After a planned Render restart or redeploy, confirm the file remains available from PostgreSQL. Remove test data afterward.
 2. Check Arabic and English on the primary customer and admin routes at narrow and wide widths. Open dialogs, tables, charts, notifications, and settings, switch directions, refresh, and check for mixed labels, clipped content, and horizontal overflow. Review older custom content in the admin editor for missing Arabic fields.
 3. Inspect Render startup and request logs for API, database, email, and CORS errors. Confirm logs do not contain credentials, cookies, reset links, verification tokens, or personal message content.
 4. If Render Free is selected, allow an idle period and record cold-start impact. Free sleep is expected. Use an always-on instance if continuous availability or reliably timed maintenance is required.

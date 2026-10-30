@@ -18,7 +18,7 @@ Shared forms show client/server field errors, associate errors with inputs, and 
 - Challenge activation freezes eligible habits, schedules, units, reward caps, metric configuration, timezone and improvement baselines. New version 2 challenges score frozen habit points independently of XP; existing version 1 agreements retain their original semantics. Results are deterministic, versioned and immutable once final. Missing observations cannot improve a lower-is-better score. Cooperative totals respect sharing permissions and blocked connections.
 - Long habit streaks are calculated from complete indexed evidence in PostgreSQL rather than truncated client history. Unit/domain and integration cases cover daily, custom and weekly schedules, including a 1,100-day history.
 - Profiles, notes, check-ins and exact behavioral logs stay private. Account deletion cancels unfinished challenges and erases personal content and screenshot files, invalidates sessions and pseudonymizes retained integrity evidence. Exports are audited.
-- Screenshot uploads accept PNG/JPEG signatures, enforce 2 MB and three-image limits, use private randomized storage keys, require ownership or support authorization to download, and force attachment disposition. Production requires persistent `UPLOAD_DIR` storage.
+- Screenshot uploads accept PNG/JPEG signatures, enforce 2 MB and three-image limits, use private randomized storage keys, require ownership or support authorization to download, force attachment disposition, and persist bytes in PostgreSQL.
 - Argon2id passwords, hashed opaque sessions/recovery tokens, HttpOnly cookies, strict origins, Helmet, rate limits, validated DTOs, safe errors and request IDs are implemented. Production email uses configurable TLS SMTP; development messages stay in ignored private files.
 
 ## Verification
@@ -32,7 +32,7 @@ Ignored local artifacts include build/test logs, browser screenshots/traces, cov
 - Angular 21 + PrimeNG 21 uses supported peers. Old Angular peer overrides and unused Angular animations/theme presets were removed; see ADR 001.
 - Historical monthly logs, check-ins and XP use the selected calendar month. Goal/project progress and adherence schedules use current configuration; the UI discloses this rather than presenting reconstructed historical facts.
 - Offline support caches the application shell and visited static chunks. Private API data and mutations are never cached or replayed.
-- Screenshot storage is local and private during development; Vercel production uses a private Blob store with API authorization. Self-hosted installations need persistent storage, backups and a deployment-specific retention policy.
+- Screenshot bytes are stored in PostgreSQL with API authorization. Self-hosted installations need database backups and a deployment-specific retention policy.
 - Profile images currently use local landscape presets or initials. External image URLs and arbitrary avatar uploads are intentionally unsupported.
 - Challenge notifications are delivered through in-app reads and the simple lifecycle worker. Redis and WebSockets are not needed for the implemented interaction model.
 - The previous customer/API and separate administration release is on Vercel; the MIRHAL migration and three pending migrations are locally verified but not deployed. Email delivery is explicitly disabled on the existing release. SMTP credentials, legal retention settings and deployment automation remain environment-specific; see the deployment guide.

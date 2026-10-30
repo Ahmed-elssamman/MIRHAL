@@ -6,6 +6,7 @@ import {
   ErrorState,
   HabitRow,
   Icon,
+  PageHeader,
   Progress,
   ProgressRing,
   SectionTitle,
@@ -16,6 +17,7 @@ import {
   selector: 'lq-dashboard',
   imports: [
     RouterLink,
+    PageHeader,
     LocalizedDatePipe,
     Icon,
     ErrorState,

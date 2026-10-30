@@ -24,7 +24,7 @@ services:
       - key: EMAIL_PROVIDER
         value: resend
       - key: MAIL_MODE
-        value: enabled
+        value: production
       - key: RESEND_API_KEY
         sync: false
       - key: SMTP_FROM

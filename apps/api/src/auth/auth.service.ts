@@ -13,6 +13,7 @@ import { InputOf, registerSchema } from '@lifequest/contracts';
 import { Database } from '../common/database';
 import { hashToken } from './auth.guard';
 import { MailAdapter } from './mail.adapter';
+import { notify } from '../common/notifications';
 export const safeUser = {
   id: true,
   email: true,
@@ -54,16 +55,78 @@ export class AuthService {
       select: safeUser,
     });
     const session = await this.createSession(user.id);
-    let verificationEmail: 'sent' | 'disabled' | 'unavailable' = 'disabled';
+    let verificationEmail: 'accepted' | 'disabled' | 'unavailable' = 'disabled';
     if (this.mail.enabled) {
       try {
         verificationEmail = (await this.issueEmailToken(user.id, input.email, 'VERIFY_EMAIL'))
-          ? 'sent'
+          ? 'accepted'
           : 'unavailable';
       } catch (error) {
         if (!(error instanceof ServiceUnavailableException)) throw error;
         // The account already exists. Keep it usable and offer verification retry.
         verificationEmail = 'unavailable';
+      }
+    }
+    if (input.inviteToken && this.db.invitation) {
+      try {
+        const tokenHash = hashToken(input.inviteToken);
+        const invitation = await this.db.invitation.findUnique({
+          where: { tokenHash },
+          include: { sender: { select: { id: true, profile: { select: { displayName: true } } } } },
+        });
+        if (
+          invitation &&
+          invitation.status === 'PENDING' &&
+          invitation.expiresAt > new Date() &&
+          invitation.email.toLowerCase() === input.email.toLowerCase()
+        ) {
+          const pairKey = [invitation.senderId, user.id].sort().join(':');
+          await this.db.atomic(user.id, async (tx) => {
+            await tx.invitation.update({
+              where: { id: invitation.id },
+              data: { status: 'ACCEPTED', acceptedAt: new Date() },
+            });
+            const existing = await tx.friendship.findUnique({ where: { pairKey } });
+            if (!existing) {
+              await tx.friendship.create({
+                data: {
+                  senderId: invitation.senderId,
+                  receiverId: user.id,
+                  pairKey,
+                  status: 'PENDING',
+                },
+              });
+              await notify(tx, {
+                data: {
+                  userId: user.id,
+                  type: 'FRIEND_REQUEST',
+                  title: 'A little company on your journey',
+                  body: `${invitation.sender.profile?.displayName ?? 'Someone'} sent you a friend request.`,
+                  arabic: {
+                    title: 'رفيق جديد في رحلتك',
+                    body: `أرسل ${invitation.sender.profile?.displayName ?? 'أحد المستخدمين'} إليك طلب صداقة.`,
+                  },
+                  href: '/friends',
+                },
+              });
+              await notify(tx, {
+                data: {
+                  userId: invitation.senderId,
+                  type: 'FRIEND_ACCEPT',
+                  title: 'Your friend joined MIRHAL',
+                  body: `${input.displayName} joined MIRHAL from your invitation!`,
+                  arabic: {
+                    title: 'انضم صديقك إلى مِرحال',
+                    body: `انضم ${input.displayName} إلى مِرحال بدعوتك!`,
+                  },
+                  href: '/friends',
+                },
+              });
+            }
+          });
+        }
+      } catch {
+        // Invitation linking failure does not invalidate successful account registration.
       }
     }
     return { user, ...session, verificationEmail };
@@ -156,7 +219,9 @@ export class AuthService {
         if (!(error instanceof ServiceUnavailableException)) throw error;
       }
     }
-    return { message: 'If an account exists, recovery instructions are on their way.' };
+    return {
+      message: 'For privacy, the same response is returned whether or not an account exists.',
+    };
   }
   async consume(token: string, purpose: TokenPurpose, password?: string) {
     const passwordHash = password
@@ -167,7 +232,7 @@ export class AuthService {
           parallelism: 1,
         })
       : undefined;
-    return this.db.$transaction(async (tx) => {
+    const result = await this.db.$transaction(async (tx) => {
       const record = await tx.authToken.findUnique({ where: { tokenHash: hashToken(token) } });
       if (!record || record.usedAt || record.expiresAt < new Date() || record.purpose !== purpose)
         throw new BadRequestException('This link has expired or has already been used.');
@@ -177,6 +242,13 @@ export class AuthService {
         data: { usedAt: new Date() },
       });
       if (claimed.count !== 1) throw new BadRequestException('This link has already been used.');
+      const passwordResetRecipient =
+        purpose === 'RESET_PASSWORD'
+          ? await tx.user.findUniqueOrThrow({
+              where: { id: record.userId },
+              select: { email: true, profile: { select: { language: true } } },
+            })
+          : undefined;
       await tx.user.update({
         where: { id: record.userId },
         data: purpose === 'VERIFY_EMAIL' ? { emailVerifiedAt: new Date() } : { passwordHash },
@@ -188,7 +260,28 @@ export class AuthService {
           data: { usedAt: new Date() },
         });
       }
-      return { success: true };
+      return {
+        passwordResetNotice: passwordResetRecipient
+          ? {
+              email: passwordResetRecipient.email,
+              language: (passwordResetRecipient.profile?.language === 'en' ? 'en' : 'ar') as
+                'en' | 'ar',
+              eventId: record.id,
+            }
+          : undefined,
+      };
     });
+    if (result.passwordResetNotice) {
+      try {
+        await this.mail.sendPasswordChanged(
+          result.passwordResetNotice.email,
+          result.passwordResetNotice.eventId,
+          result.passwordResetNotice.language,
+        );
+      } catch {
+        // Password reset is already committed; a failed security notice cannot undo it.
+      }
+    }
+    return { success: true };
   }
 }

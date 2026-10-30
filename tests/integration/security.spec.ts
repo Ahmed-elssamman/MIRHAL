@@ -917,6 +917,10 @@ describe('Authentication recovery, privacy and operational control', () => {
     expect(
       (await post('auth/reset-password', user.cookie, { token, password: nextPassword })).status,
     ).toBe(201);
+    const notice = app.get(MailAdapter).outbox.find((item) => item.purpose === 'PASSWORD_CHANGED');
+    expect(notice?.to).toBe(user.email);
+    expect(new URL(notice!.url).pathname).toBe('/auth/login');
+    expect(new URL(notice!.url).search).toBe('');
     expect(
       (await post('auth/reset-password', user.cookie, { token, password: nextPassword })).status,
     ).toBe(400);

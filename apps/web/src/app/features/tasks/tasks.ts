@@ -42,6 +42,7 @@ export class TasksPage {
   readonly open = signal(false);
   readonly saving = signal(false);
   readonly busy = signal('');
+  readonly pendingTaskIds = signal<Set<string>>(new Set());
   readonly error = signal('');
   readonly filter = signal('ALL');
   readonly search = signal('');
@@ -58,6 +59,9 @@ export class TasksPage {
     dueDate: [''],
     estimatedMinutes: [25],
   });
+  constructor() {
+    if (this.route.snapshot.queryParamMap.get('quickAdd') === 'task') this.create();
+  }
   create() {
     this.editing.set(null);
     this.form.reset({ projectId: this.projectId ?? '', priority: 'MEDIUM', estimatedMinutes: 25 });
@@ -122,22 +126,42 @@ export class TasksPage {
     }
   }
   async toggle(task: Task) {
-    if (this.busy()) return;
-    this.busy.set(task.id);
+    if (this.pendingTaskIds().has(task.id)) return;
+    this.pendingTaskIds.update((set) => new Set(set).add(task.id));
+    const previous = this.resource.data();
+    const nextStatus = task.status === 'COMPLETED' ? 'ACTIVE' : 'COMPLETED';
+
+    // Optimistically update status in local signal immediately (< 50ms acknowledgment)
+    this.resource.data.update((current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        items: current.items.map((item) =>
+          item.id === task.id ? { ...item, status: nextStatus } : item,
+        ),
+      };
+    });
+
     try {
       const result = await this.api.patch<{ awarded: number }>(`tasks/${task.id}`, {
-        status: task.status === 'COMPLETED' ? 'ACTIVE' : 'COMPLETED',
+        status: nextStatus,
       });
-      if (result.awarded)
+      if (result.awarded) {
         this.toasts.success(
           this.i18n.t('One step forward.', 'خطوة للأمام.'),
           `+${result.awarded} XP`,
         );
-      await this.resource.load();
+      }
     } catch (error) {
+      // Rollback on failure
+      this.resource.data.set(previous);
       this.toasts.error(error);
     } finally {
-      this.busy.set('');
+      this.pendingTaskIds.update((set) => {
+        const next = new Set(set);
+        next.delete(task.id);
+        return next;
+      });
     }
   }
   setFilter(status: string) {
