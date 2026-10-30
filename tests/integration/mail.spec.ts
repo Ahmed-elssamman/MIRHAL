@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MailAdapter } from '../../apps/api/src/auth/mail.adapter';
 import { renderAuthEmail } from '../../apps/api/src/auth/mail.templates';
 import { validateStartupEnvironment } from '../../apps/api/src/common/startup';
+import { classifyDeliveryError } from '../../apps/api/src/mail/mail.types';
 
 const original = { ...process.env };
 afterEach(() => {
@@ -11,8 +12,18 @@ afterEach(() => {
 });
 
 describe('auth email', () => {
+  it('renders a registered friend request with a friends link and no registration expiry', () => {
+    for (const language of ['en', 'ar'] as const) {
+      const email = renderAuthEmail('FRIEND_REQUEST', language, 'https://web.example.test/friends', { appUrl: 'https://web.example.test', inviterName: '<Sender>' });
+      expect(email.html).toContain('https://web.example.test/friends');
+      expect(email.html).toContain('&lt;Sender&gt;');
+      expect(email.text).not.toContain('expires in 7 days');
+      expect(email.text).not.toContain('تنتهي هذه الدعوة');
+    }
+  });
   it('accepts database-backed storage in standalone production', () => {
     process.env['NODE_ENV'] = 'production';
+    process.env['REDIS_URL'] = 'redis://localhost:6379';
     process.env['DATABASE_URL'] = 'postgresql://example.test/db';
     process.env['DIRECT_URL'] = 'postgresql://example.test/db';
     process.env['WEB_ORIGIN'] = 'https://web.example.test';
@@ -26,6 +37,7 @@ describe('auth email', () => {
 
   it('rejects production origins that browsers cannot send exactly', () => {
     process.env['NODE_ENV'] = 'production';
+    process.env['REDIS_URL'] = 'redis://localhost:6379';
     process.env['DATABASE_URL'] = 'postgresql://example.test/db';
     process.env['DIRECT_URL'] = 'postgresql://example.test/db';
     process.env['WEB_ORIGIN'] = 'https://web.example.test/';
@@ -212,13 +224,15 @@ describe('auth email', () => {
     expect(options.headers.Authorization).toContain('test-only');
     expect(JSON.parse(options.body).from).toBe('Mirhal <mail@example.test>');
     expect(JSON.parse(options.body).html).toContain('lang="ar" dir="rtl"');
-    await expect(
-      mail.send('user@example.test', 'RESET_PASSWORD', 'token2', 'en'),
-    ).rejects.toThrow();
+    const temporary = await mail
+      .send('user@example.test', 'RESET_PASSWORD', 'token2', 'en')
+      .catch((err: unknown) => err);
+    expect(classifyDeliveryError(temporary)).toBe('temporary');
     expect(error.mock.calls[0][0]).toContain('"classification":"temporary"');
-    await expect(
-      mail.send('user@example.test', 'RESET_PASSWORD', 'token3', 'en'),
-    ).rejects.toThrow();
+    const permanent = await mail
+      .send('user@example.test', 'RESET_PASSWORD', 'token3', 'en')
+      .catch((err: unknown) => err);
+    expect(classifyDeliveryError(permanent)).toBe('permanent');
     expect(error.mock.calls[1][0]).toContain('"classification":"permanent"');
     expect(log).toHaveBeenCalledOnce();
   });

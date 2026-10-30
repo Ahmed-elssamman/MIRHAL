@@ -11,8 +11,8 @@ import { ErrorState, Icon, PageHeader, Progress, ProgressRing, Skeleton } from '
       [title]="i18n.t('Every chapter has its milestones.', 'لكل فصل محطاته.')"
       [description]="
         i18n.t(
-          'Quiet consistency. Meaningful firsts. Little reminders of what you can do.',
-          'استمرارية هادئة. بدايات ذات معنى. وتذكيرات بما تستطيع فعله.'
+        'Review the achievements you have unlocked and the progress toward others.',
+        'راجع الإنجازات التي حققتها وتقدمك نحو الإنجازات الأخرى.'
         )
       "
     />

@@ -17,6 +17,7 @@ export interface Area {
   goals?: number;
 }
 export interface Profile {
+  showAdditionalNavigation?: boolean | null;
   displayName: string;
   bio: string;
   timezone: string;

@@ -7,6 +7,8 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TimeoutError } from 'rxjs';
 import { Api, CheckIn, Habit, Page, Quest, Remote, Task, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import {
@@ -61,7 +63,7 @@ export class TodayPage {
   );
   readonly todayTasks = computed(() => this.tasks.data()?.items ?? []);
   readonly nextAction = computed(() =>
-    selectNextAction(this.todayTasks(), this.scheduled(), this.quests.data()?.items ?? []),
+    selectNextAction(this.todayTasks().filter((task) => !this.pendingTaskIds().has(task.id)), this.scheduled(), this.quests.data()?.items ?? []),
   );
   constructor() {
     effect(() => {
@@ -96,30 +98,24 @@ export class TodayPage {
   async completeTask(id: string) {
     if (this.pendingTaskIds().has(id)) return;
     this.pendingTaskIds.update((set) => new Set(set).add(id));
-    const previous = this.tasks.data();
-
-    // Optimistically remove from today's list immediately (< 50ms acknowledgment)
-    this.tasks.data.update((current) => {
-      if (!current) return current;
-      return {
-        ...current,
-        items: current.items.filter((item) => item.id !== id),
-        total: Math.max(0, current.total - 1),
-      };
-    });
-
     try {
       const result = await this.api.patch<{ awarded: number }>(`tasks/${id}`, {
         status: 'COMPLETED',
       });
+      this.tasks.data.update((current) => {
+        if (!current || !current.items.some((item) => item.id === id)) return current;
+        return { ...current, items: current.items.filter((item) => item.id !== id), total: Math.max(0, current.total - 1) };
+      });
+      // A list request started before this mutation may contain stale data.
+      this.tasks.refreshIfLoading();
       this.toasts.success(
         this.i18n.t('One less thing on your mind.', 'شيء أقل يشغل بالك.'),
         result.awarded ? `+${result.awarded} XP` : undefined,
       );
     } catch (error) {
-      // Rollback on failure
-      this.tasks.data.set(previous);
       this.toasts.error(error);
+      if (error instanceof TimeoutError || (error instanceof HttpErrorResponse && error.status === 0))
+        void this.tasks.load();
     } finally {
       this.pendingTaskIds.update((set) => {
         const next = new Set(set);

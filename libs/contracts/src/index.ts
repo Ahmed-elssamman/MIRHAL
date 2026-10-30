@@ -87,6 +87,7 @@ export const profileSchema = patchSchema(
     shareStreak: z.boolean(),
     notificationsEnabled: z.boolean(),
     reducedMotion: z.boolean(),
+    showAdditionalNavigation: z.boolean(),
     preferredRoutine: z.enum(['morning', 'afternoon', 'evening']),
   }),
 );

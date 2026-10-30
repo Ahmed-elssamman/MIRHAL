@@ -3,6 +3,7 @@ import { InputOf, paginationSchema } from '@lifequest/contracts';
 import { pageArgs, pageResult } from '../core/ownership';
 import { notify } from '../common/notifications';
 import { MailAdapter } from '../auth/mail.adapter';
+import { classifyDeliveryError } from '../mail/mail.types';
 import { hashToken } from '../auth/auth.guard';
 import { randomBytes } from 'node:crypto';
 import {
@@ -75,53 +76,60 @@ export class FriendsService {
 
     const receiver = await this.db.user.findUnique({
       where: { email: normalizedEmail },
-      select: { id: true, status: true },
+      select: { id: true, status: true, emailVerifiedAt: true, profile: { select: { notificationsEnabled: true, language: true } } },
     });
     if (!receiver) {
-      if (process.env['NODE_ENV'] !== 'test' && !sender?.emailVerifiedAt)
+      if (!sender.emailVerifiedAt)
         throw new BadRequestException('Verify your email before inviting someone to MIRHAL.');
-      const today = new Date().toISOString().slice(0, 10);
+      this.mail.assertConfigured();
       const inviterName = sender.profile?.displayName ?? 'A MIRHAL friend';
       const language = sender.profile?.language === 'en' ? 'en' : 'ar';
       const rawToken = randomBytes(32).toString('base64url');
       const tokenHash = hashToken(rawToken);
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
-      if (this.db.invitation) {
-        const existing = await this.db.invitation.findFirst({
-          where: { senderId: userId, email: normalizedEmail, status: 'PENDING' },
+      await this.db.atomic(userId, async (tx) => {
+        const existing = await tx.invitation.findFirst({
+          where: {
+            senderId: userId,
+            email: normalizedEmail,
+            status: 'PENDING',
+            expiresAt: { gt: new Date() },
+          },
+          select: { id: true },
         });
-        if (existing) {
-          await this.db.invitation.update({
-            where: { id: existing.id },
-            data: { tokenHash, expiresAt },
-          });
-        } else {
-          await this.db.invitation.create({
-            data: {
-              senderId: userId,
-              email: normalizedEmail,
-              tokenHash,
-              expiresAt,
-            },
-          });
-        }
-      }
+        if (existing)
+          throw new ConflictException('An invitation is already pending for this address.');
+        await tx.invitation.create({
+          data: { senderId: userId, email: normalizedEmail, tokenHash, expiresAt },
+        });
+      });
 
-      await this.mail.sendFriendInvite(
-        normalizedEmail,
-        inviterName,
-        `${userId}:${normalizedEmail}:${today}:${inviterName}:${language}`,
-        language,
-        rawToken,
-      );
+      try {
+        await this.mail.sendFriendInvite(
+          normalizedEmail,
+          inviterName,
+          tokenHash,
+          language,
+          rawToken,
+        );
+      } catch (error) {
+        // A definitive rejection cannot have produced a usable email. Ambiguous failures
+        // stay pending because the provider may already have accepted the message.
+        if (classifyDeliveryError(error) !== 'temporary')
+          await this.db.invitation.updateMany({
+            where: { tokenHash, status: 'PENDING' },
+            data: { status: 'REVOKED' },
+          });
+        throw error;
+      }
       return { channel: 'email' as const, status: 'accepted' as const };
     }
 
     if (receiver.status !== 'ACTIVE' || receiver.id === userId)
       throw new BadRequestException('A request could not be sent to this address.');
     const pairKey = [userId, receiver.id].sort().join(':');
-    return this.db.atomic(userId, async (tx) => {
+    const friendship = await this.db.atomic(userId, async (tx) => {
       const existing = await tx.friendship.findUnique({ where: { pairKey } });
       if (existing) {
         if (existing.status === 'ACCEPTED')
@@ -156,22 +164,51 @@ export class FriendsService {
           href: '/friends',
         },
       });
-      return { channel: 'friendship' as const, id: friendship.id, status: friendship.status };
+      return friendship;
     });
+    let emailStatus: 'accepted' | 'unavailable' | 'disabled' = 'disabled';
+    if (this.mail.enabled && receiver.emailVerifiedAt && receiver.profile?.notificationsEnabled) {
+      try {
+        await this.mail.sendFriendInvite(
+          normalizedEmail,
+          sender.profile?.displayName ?? 'A MIRHAL friend',
+          `${friendship.id}:${friendship.updatedAt.toISOString()}`,
+          receiver.profile.language === 'en' ? 'en' : 'ar',
+          undefined,
+          true,
+        );
+        emailStatus = 'accepted';
+      } catch {
+        // The pending request and in-app notification have already committed.
+        emailStatus = 'unavailable';
+      }
+    }
+    return { channel: 'friendship' as const, id: friendship.id, status: friendship.status, emailStatus };
   }
   async resolveInvitation(token: string) {
-    if (!token || typeof token !== 'string') return { valid: false as const, reason: 'not-found' as const };
+    if (!token || typeof token !== 'string')
+      return { valid: false as const, reason: 'not-found' as const };
     const tokenHash = hashToken(token);
     const invitation = await this.db.invitation.findUnique({
       where: { tokenHash },
       include: { sender: { select: { profile: { select: { displayName: true } } } } },
     });
     if (!invitation) return { valid: false as const, reason: 'not-found' as const };
-    if (invitation.status === 'ACCEPTED') return { valid: false as const, reason: 'already-used' as const };
-    if (invitation.status === 'REVOKED') return { valid: false as const, reason: 'revoked' as const };
+    if (invitation.status === 'ACCEPTED')
+      return { valid: false as const, reason: 'already-used' as const };
+    if (invitation.status === 'REVOKED')
+      return { valid: false as const, reason: 'revoked' as const };
     if (invitation.expiresAt <= new Date()) {
       if (invitation.status === 'PENDING') {
-        await this.db.invitation.update({ where: { id: invitation.id }, data: { status: 'EXPIRED' } });
+        await this.db.invitation.updateMany({
+          where: {
+            id: invitation.id,
+            tokenHash,
+            status: 'PENDING',
+            expiresAt: { lte: new Date() },
+          },
+          data: { status: 'EXPIRED' },
+        });
       }
       return { valid: false as const, reason: 'expired' as const };
     }
@@ -191,48 +228,77 @@ export class FriendsService {
     if (invitation.senderId === userId)
       throw new BadRequestException('You cannot accept your own invitation.');
 
-    const receiver = await this.db.user.findUniqueOrThrow({
-      where: { id: userId },
-      select: { id: true, email: true, profile: { select: { displayName: true } } },
-    });
-
     const pairKey = [invitation.senderId, userId].sort().join(':');
     return this.db.atomic(userId, async (tx) => {
-      await tx.invitation.update({
-        where: { id: invitation.id },
+      const receiver = await tx.user.findUniqueOrThrow({
+        where: { id: userId },
+        select: { email: true, emailVerifiedAt: true },
+      });
+      if (receiver.email.toLowerCase() !== invitation.email.toLowerCase())
+        throw new ForbiddenException('This invitation belongs to a different email address.');
+      if (!receiver.emailVerifiedAt) {
+        const bound = await tx.invitation.updateMany({
+          where: {
+            id: invitation.id,
+            tokenHash,
+            status: 'PENDING',
+            expiresAt: { gt: new Date() },
+            OR: [{ recipientId: null }, { recipientId: userId }],
+          },
+          data: { recipientId: userId },
+        });
+        if (bound.count !== 1)
+          throw new BadRequestException('Invitation is invalid or has expired.');
+        return { success: true as const, status: 'awaiting_verification' as const };
+      }
+      const claimed = await tx.invitation.updateMany({
+        where: { id: invitation.id, tokenHash, status: 'PENDING', expiresAt: { gt: new Date() } },
         data: { status: 'ACCEPTED', acceptedAt: new Date() },
       });
+      if (claimed.count !== 1)
+        throw new BadRequestException('Invitation is invalid or has expired.');
       const existing = await tx.friendship.findUnique({ where: { pairKey } });
       let friendship;
       if (existing) {
-        friendship = await tx.friendship.update({
-          where: { pairKey },
-          data: { status: 'ACCEPTED' },
-        });
+        if (existing.status === 'BLOCKED')
+          throw new ForbiddenException('Cannot use this invitation.');
+        friendship =
+          existing.status === 'REJECTED'
+            ? await tx.friendship.update({
+                where: { pairKey },
+                data: { senderId: invitation.senderId, receiverId: userId, status: 'PENDING' },
+              })
+            : existing;
       } else {
         friendship = await tx.friendship.create({
           data: {
             senderId: invitation.senderId,
             receiverId: userId,
             pairKey,
-            status: 'ACCEPTED',
+            status: 'PENDING',
           },
         });
       }
-      await notify(tx, {
-        data: {
-          userId: invitation.senderId,
-          type: 'FRIEND_ACCEPT',
-          title: 'Your friend joined MIRHAL',
-          body: `${receiver.profile?.displayName ?? 'Your friend'} accepted your invitation!`,
-          arabic: {
-            title: 'انضم صديقك إلى مِرحال',
-            body: `قبل ${receiver.profile?.displayName ?? 'صديقك'} دعوتك بنجاح!`,
+      if (friendship.status === 'PENDING' && (!existing || existing.status === 'REJECTED'))
+        await notify(tx, {
+          data: {
+            userId,
+            type: 'FRIEND_REQUEST',
+            title: 'A little company on your journey',
+            body: 'Your friend sent you a friend request.',
+            arabic: {
+              title: 'رفيق جديد في رحلتك',
+              body: 'أرسل إليك صديقك طلب صداقة.',
+            },
+            href: '/friends',
           },
-          href: '/friends',
-        },
-      });
-      return { success: true, friendshipId: friendship.id };
+        });
+      return {
+        success: true as const,
+        status:
+          friendship.status === 'ACCEPTED' ? ('already_friends' as const) : ('pending' as const),
+        friendshipId: friendship.id,
+      };
     });
   }
   async action(userId: string, id: string, action: string) {

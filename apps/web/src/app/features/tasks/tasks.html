@@ -3,8 +3,8 @@
   [title]="i18n.t('Make space for focused work.', 'اصنع مساحة للعمل بتركيز.')"
   [description]="
     i18n.t(
-      'A clear next action is a little less weight on your mind.',
-      'الخطوة التالية الواضحة تخفف قليلاً من عبء ذهنك.'
+      'Organize tasks, set priorities and dates, and mark each step complete as you go.',
+      'نظّم مهامك وحدد أولوياتها ومواعيدها، وعلّم كل خطوة مكتملة عند إنجازها.'
     )
   "
   ><button class="btn btn-primary" (click)="create()">
@@ -87,6 +87,9 @@
           >
             {{ task.title }}
           </h2>
+          @if (pendingTaskIds().has(task.id)) {
+            <p role="status" class="mt-1 text-xs text-muted">{{ i18n.t('Saving…', 'جارٍ الحفظ…') }}</p>
+          }
           @if (task.description) {
             <p class="mt-1 text-xs leading-6 text-muted">{{ task.description }}</p>
           }

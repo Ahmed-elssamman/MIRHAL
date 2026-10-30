@@ -14,6 +14,7 @@ import {
 import { Meta, Title } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlays } from '../../../../libs/ui/src/overlays';
+import { PwaUpdates } from './pwa/updates';
 @Component({
   selector: 'lq-root',
   imports: [RouterOutlet, Overlays, LevelCelebration],
@@ -27,6 +28,12 @@ import { Overlays } from '../../../../libs/ui/src/overlays';
         <div class="loading-bar h-full bg-brand"></div>
       </div>
     }
+    @if (updates.ready() || updates.unrecoverable()) {
+      <div role="status" class="flex flex-wrap items-center justify-center gap-3 bg-brand-soft px-4 py-3 text-sm text-brand">
+        <span>{{ updates.unrecoverable() ? preferences.t('MIRHAL needs to reload to continue.', 'يحتاج مِرحال إلى إعادة التحميل للمتابعة.') : preferences.t('An update is ready. Save your work before reloading.', 'يتوفر تحديث. احفظ عملك قبل إعادة التحميل.') }}</span>
+        <button type="button" class="btn btn-secondary" (click)="updates.reload()">{{ preferences.t('Reload', 'إعادة التحميل') }}</button>
+      </div>
+    }
     <router-outlet />@defer (on idle) { <lq-overlays /> } @defer (when celebrations.level()) { <lq-level-celebration /> }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,10 +42,12 @@ export class App {
   readonly celebrations = inject(Celebrations);
   readonly preferences = inject(Preferences);
   readonly loading = inject(LoadingService);
+  readonly updates = inject(PwaUpdates);
   private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
+  private navigationId = 0;
   constructor() {
     effect(() => {
       const english = this.preferences.language() === 'en';
@@ -48,13 +57,14 @@ export class App {
       .pipe(takeUntilDestroyed())
       .subscribe((event) => {
         if (event instanceof NavigationStart) {
+          this.navigationId = event.id;
           this.loading.setNavigating(true);
         } else if (
           event instanceof NavigationEnd ||
           event instanceof NavigationCancel ||
           event instanceof NavigationError
         ) {
-          this.loading.setNavigating(false);
+          if (event.id === this.navigationId) this.loading.setNavigating(false);
           this.updateMetadata(this.preferences.language() === 'en');
         }
       });

@@ -89,7 +89,7 @@ export class PwaInstallation {
       await prompt.prompt();
       const choice = await prompt.userChoice;
       if (choice.outcome === 'accepted') {
-        this.installed.set(true);
+        // Acceptance of the browser prompt is not confirmation of installation.
         this.dismissed.set(true);
       } else {
         this.dismiss();

@@ -11,7 +11,9 @@ export class AttachmentCleanup {
   ) {}
   async drain(keys?: string[]) {
     const pending = await this.db.attachmentDeletion.findMany({
-      where: { retryAt: { lte: new Date() }, ...(keys ? { storageKey: { in: keys } } : {}) },
+      // Explicit erasure after account deletion should run now. The scheduled
+      // maintenance pass alone observes retryAt after a storage failure.
+      where: keys ? { storageKey: { in: keys } } : { retryAt: { lte: new Date() } },
       orderBy: [{ retryAt: 'asc' }, { createdAt: 'asc' }],
       take: 100,
     });

@@ -17,6 +17,7 @@ export class SettingsPage {
   private readonly fb = inject(FormBuilder);
   readonly auth = inject(AuthStore);
   readonly i18n = inject(Preferences);
+  private navigationBeforeEdit = this.i18n.showAdditionalNavigation();
   readonly saving = signal(false);
   readonly saved = signal(false);
   readonly error = signal('');
@@ -28,17 +29,22 @@ export class SettingsPage {
     shareStreak: [this.auth.user()?.profile.shareStreak ?? false],
     notificationsEnabled: [this.auth.user()?.profile.notificationsEnabled ?? true],
     reducedMotion: [this.auth.user()?.profile.reducedMotion ?? false],
+    showAdditionalNavigation: [this.auth.user()?.profile.showAdditionalNavigation ?? this.i18n.showAdditionalNavigation()],
   });
   async save() {
     this.saving.set(true);
+    this.saved.set(false);
     this.error.set('');
     try {
       const profile = await this.api.patch<Profile>('profile', this.form.getRawValue());
       const user = this.auth.user();
       if (user) this.auth.setUser({ ...user, profile });
+      this.navigationBeforeEdit = profile.showAdditionalNavigation ?? false;
       this.form.markAsPristine();
       this.saved.set(true);
     } catch (error) {
+      this.i18n.setShowAdditionalNavigation(this.navigationBeforeEdit);
+      this.form.controls.showAdditionalNavigation.setValue(this.navigationBeforeEdit);
       applyServerValidation(this.form, error);
       this.error.set(errorMessage(error));
     } finally {

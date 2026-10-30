@@ -27,7 +27,9 @@ export function isAllowedOrigin(origin: string | undefined, allowedOrigins: stri
           return true;
         }
       }
-    } catch {}
+    } catch {
+      // An invalid origin is not allowed.
+    }
   }
   return false;
 }

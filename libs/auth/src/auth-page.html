@@ -150,6 +150,7 @@
           }}
           <a
             [routerLink]="mode() === 'register' ? '/auth/login' : '/auth/register'"
+            [queryParams]="inviteToken() ? { inviteToken: inviteToken() } : {}"
             class="font-semibold text-brand"
             >{{
               mode() === 'register'

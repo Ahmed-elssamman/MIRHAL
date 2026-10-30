@@ -9,6 +9,10 @@ export const credentials = () =>
   };
 export async function login(page: Page, admin = false) {
   const user = credentials();
+  // Customer and admin test servers share localhost cookies across their ports.
+  await page.request.post('http://localhost:4300/api/auth/logout', {
+    headers: { Origin: 'http://localhost:4300' },
+  });
   await page.goto(admin ? 'http://localhost:4301/auth/login' : '/auth/login');
   await page.locator('#email').fill(admin ? user.adminEmail : user.email);
   await page.locator('#password').fill(admin ? user.adminPassword : user.password);

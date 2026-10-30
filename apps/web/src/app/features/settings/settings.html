@@ -3,8 +3,8 @@
   [title]="i18n.t('Make yourself at home.', 'اجعلها مساحتك المريحة.')"
   [description]="
     i18n.t(
-      'A few thoughtful choices to make MIRHAL feel right for you.',
-      'اختيارات بسيطة تجعل مِرحال أنسب لك.'
+      'Personalize your appearance and privacy preferences, and manage account security.',
+      'خصص المظهر وتفضيلات الخصوصية، وأدر أمان حسابك.'
     )
   "
 />
@@ -53,7 +53,7 @@
         ><input
           type="checkbox"
           class="size-4 accent-brand"
-          [checked]="i18n.showAdditionalNavigation()"
+          formControlName="showAdditionalNavigation"
           (change)="i18n.setShowAdditionalNavigation($any($event.target).checked)"
       /></label>
       <h2 class="mb-6 flex items-center gap-3 border-t border-line pt-6 text-lg font-semibold">

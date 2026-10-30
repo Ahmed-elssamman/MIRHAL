@@ -3,8 +3,8 @@
   [title]="i18n.t('Today is enough.', 'اليوم يكفي.')"
   [description]="
     i18n.t(
-      'Focus on what’s in front of you. The next small step is all you need.',
-      'ركز على ما أمامك. الخطوة الصغيرة التالية هي كل ما تحتاجه.'
+      'Review today’s tasks and habits, record a check-in, and choose your next step.',
+      'راجع مهامك وعاداتك اليوم، وسجّل تأملك، واختر خطوتك التالية.'
     )
   "
   ><div class="flex flex-wrap gap-2">
@@ -220,6 +220,9 @@
               </button>
               <div class="min-w-0 flex-1">
                 <p class="text-xs font-medium">{{ task.title }}</p>
+                @if (pendingTaskIds().has(task.id)) {
+                  <p role="status" class="mt-1 text-xs text-muted">{{ i18n.t('Saving…', 'جارٍ الحفظ…') }}</p>
+                }
                 <p class="mt-1 text-[10px] text-muted">{{ task.project?.title }}</p>
               </div>
               @if (task.estimatedMinutes) {

@@ -21,8 +21,8 @@ import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '
       [title]="i18n.t('A few things to know.', 'بعض الأشياء لتعرفها.')"
       [description]="
         i18n.t(
-          'Invitations, milestones, and moments worth noticing.',
-          'دعوات وإنجازات ولحظات تستحق الانتباه.'
+          'Review your notifications, open related updates, and mark them as read.',
+          'راجع إشعاراتك، وافتح التحديثات المرتبطة بها، وحددها كمقروءة.'
         )
       "
       ><button class="btn btn-secondary" (click)="readAll()">

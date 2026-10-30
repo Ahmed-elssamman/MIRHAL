@@ -10,6 +10,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 describe('Configurable Sidebar Navigation', () => {
   beforeEach(() => {
     localStorage.removeItem('lq-show-additional-nav');
+    localStorage.removeItem('lq-navigation-owner');
     if (!window.matchMedia) {
       window.matchMedia = vi.fn().mockImplementation((query) => ({
         matches: false,
@@ -44,6 +45,15 @@ describe('Configurable Sidebar Navigation', () => {
   it('defaults showAdditionalNavigation strictly to false', () => {
     const prefs = TestBed.inject(Preferences);
     expect(prefs.showAdditionalNavigation()).toBe(false);
+  });
+
+  it('does not reuse one account’s browser preference for another account', () => {
+    const prefs = TestBed.inject(Preferences);
+    prefs.applyAccountNavigation('first-user', true);
+    prefs.applyAccountNavigation('second-user', null);
+    expect(prefs.showAdditionalNavigation()).toBe(false);
+    prefs.applyAccountNavigation('first-user', true);
+    expect(prefs.showAdditionalNavigation()).toBe(true);
   });
 
   it('renders primary navigation and hides additional navigation when showAdditionalNavigation is false', () => {

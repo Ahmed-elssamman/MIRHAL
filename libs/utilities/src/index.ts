@@ -13,6 +13,7 @@ import {
 export class Preferences {
   private readonly document = inject(DOCUMENT);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private navigationOwner: string | null = null;
   readonly language = signal<'en' | 'ar'>('ar');
   readonly theme = signal<'light' | 'dark' | 'system'>('system');
   readonly systemPrefersDark = signal(false);
@@ -163,6 +164,21 @@ export class Preferences {
   setShowAdditionalNavigation(value: boolean) {
     this.showAdditionalNavigation.set(value);
     this.persist('lq-show-additional-nav', String(value));
+  }
+  applyAccountNavigation(userId: string, value: boolean | null | undefined) {
+    let fallback = this.showAdditionalNavigation();
+    if (this.navigationOwner && this.navigationOwner !== userId) fallback = false;
+    if (this.browser) {
+      try {
+        const owner = localStorage.getItem('lq-navigation-owner');
+        if (owner && owner !== userId) fallback = false;
+        localStorage.setItem('lq-navigation-owner', userId);
+      } catch {
+        // Storage may be unavailable; keep the in-memory preference for this session.
+      }
+    }
+    this.navigationOwner = userId;
+    this.setShowAdditionalNavigation(value ?? fallback);
   }
   setReducedMotion(value: boolean) {
     this.document.documentElement.classList.toggle('reduce-motion', value);

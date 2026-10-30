@@ -27,7 +27,7 @@ For a fresh local setup, copy `.env.example` to an ignored local `.env`. **This 
 | `REDIS_URL`                                                           | `redis://127.0.0.1:6379`       | Upstash or Redis connection URL         | —                       | Multi-instance rate limiting                                         |
 | `RATE_LIMIT_MODE`                                                     | `memory` (dev/test only)       | `redis`                                 | —                       | Rate limiter adapter selection                                       |
 
-Confirmed public values for the selected Vercel projects:
+Previously documented public values need reconfirmation: on 2026-10-30 both old Vercel aliases below returned 404. Do not use them as deployment inputs until the owner verifies the current projects and aliases.
 
 | Variable                                     | Value                                   | Placement                        |
 | -------------------------------------------- | --------------------------------------- | -------------------------------- |
@@ -35,9 +35,9 @@ Confirmed public values for the selected Vercel projects:
 | `ADMIN_ORIGIN`, `VERCEL_ADMIN_ORIGIN`        | `https://lifequest-admin.vercel.app`    | Render / trusted packaging shell |
 | `VERCEL_API_ORIGIN`                          | Pending the Render service's HTTPS URL  | Trusted packaging shell only     |
 
-Use these exact origins without trailing slashes. The existing Vercel aliases and project links were confirmed on 2026-10-04. `VERCEL_API_ORIGIN` cannot be filled until Render assigns the service URL. Do not place Neon or email credentials in either frontend project.
+Use exact confirmed origins without trailing slashes. `https://mirhal-web.vercel.app` returned 200 on 2026-10-30, but the intended customer/admin project mapping needs dashboard confirmation; `https://mirhal-admin.vercel.app` returned 404. The Render origin check timed out, so its current availability is unverified. Do not place Neon or email credentials in either frontend project.
 
-`TEST_DATABASE_URL` is only for a dedicated local test database. The tests may reset it. `DEMO_*` variables are optional seed credentials. On a new production database, `DEMO_ADMIN_EMAIL` and `DEMO_ADMIN_PASSWORD` may be set temporarily in a trusted migration shell for the one-time `npm run db:seed` command to create the first super administrator. Leave `DEMO_EMAIL` and `DEMO_PASSWORD` unset in production, and remove the bootstrap admin credentials after seeding. `CRON_SECRET` belongs to the legacy Vercel API path. Feedback attachment bytes are stored in PostgreSQL through the existing database connection; the Render API does not require a Vercel Blob token or attached filesystem disk. No JWT secret is needed: MIRHAL uses opaque database sessions.
+`TEST_DATABASE_URL` is only for a dedicated local test database. The E2E harness creates a fresh randomly named database and does not reset an existing one. `DEMO_*` variables are optional seed credentials. On a new production database, `DEMO_ADMIN_EMAIL` and `DEMO_ADMIN_PASSWORD` may be set temporarily in a trusted migration shell for the one-time `npm run db:seed` command to create the first super administrator. Leave `DEMO_EMAIL` and `DEMO_PASSWORD` unset in production, and remove the bootstrap admin credentials after seeding. `CRON_SECRET` belongs to the legacy Vercel API path. Feedback attachment bytes are stored in PostgreSQL through the existing database connection; the Render API does not require a Vercel Blob token or attached filesystem disk. No JWT secret is needed: MIRHAL uses opaque database sessions.
 
 Set Render values in **Dashboard → Web Service → Environment**. Set the Vercel packaging variables in your local deployment shell or ignored local `.env` before `npm run vercel:package:render`. This command rejects missing or malformed HTTPS origins before writing deployment artifacts. If Vercel builds from Git instead of prebuilt artifacts, the packaging process needs to run in its build workflow with those public origins. Never put private API variables in Vercel.
 

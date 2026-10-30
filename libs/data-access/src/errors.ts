@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { TimeoutError } from 'rxjs';
 
 const arabicMessages: Record<string, string> = {
   'A linked item could not be found.': 'تعذر العثور على أحد العناصر المرتبطة.',
@@ -90,6 +91,8 @@ const arabicMessages: Record<string, string> = {
 
 export function errorMessage(error: unknown): string {
   const arabic = typeof document !== 'undefined' && document.documentElement.lang === 'ar';
+  if (error instanceof TimeoutError)
+    return arabic ? 'انتهت مهلة الاتصال. تحقق من النتيجة قبل إعادة المحاولة.' : 'The request timed out. Check the result before trying again.';
   if (error instanceof HttpErrorResponse) {
     if (error.status === 0)
       return arabic

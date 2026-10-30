@@ -97,7 +97,7 @@ export function validateEnvironment(env: Record<string, unknown> = process.env):
     }
 
     // Production rate limiting: Redis is strictly required for production
-    if (config.RATE_LIMIT_MODE === 'redis' && !config.REDIS_URL) {
+    if (!config.REDIS_URL) {
       throw new StartupConfigurationError(
         'Production rate limiting requires REDIS_URL to be configured.',
       );

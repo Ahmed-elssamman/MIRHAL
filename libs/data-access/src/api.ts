@@ -1,8 +1,9 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, DestroyRef, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { errorMessage } from './errors';
 export { errorMessage } from './errors';
-import { firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, timeout } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { Celebrations } from './celebrations';
 
@@ -10,19 +11,45 @@ import { Celebrations } from './celebrations';
 export class LoadingService {
   private readonly inFlight = signal(0);
   private readonly navigating = signal(false);
+  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private timer: ReturnType<typeof setTimeout> | undefined;
+  readonly isLoading = signal(false);
 
-  readonly isLoading = computed(() => this.inFlight() > 0 || this.navigating());
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.clearTimer());
+  }
+
+  private clearTimer() {
+    if (this.timer !== undefined) clearTimeout(this.timer);
+    this.timer = undefined;
+  }
+
+  private updateVisibility() {
+    const active = this.inFlight() > 0 || this.navigating();
+    if (!active) {
+      this.clearTimer();
+      this.isLoading.set(false);
+    } else if (this.browser && !this.isLoading() && this.timer === undefined) {
+      this.timer = setTimeout(() => {
+        this.timer = undefined;
+        if (this.inFlight() > 0 || this.navigating()) this.isLoading.set(true);
+      }, 150);
+    }
+  }
 
   start() {
     this.inFlight.update((c) => c + 1);
+    this.updateVisibility();
   }
 
   stop() {
     this.inFlight.update((c) => Math.max(0, c - 1));
+    this.updateVisibility();
   }
 
   setNavigating(val: boolean) {
     this.navigating.set(val);
+    this.updateVisibility();
   }
 }
 
@@ -33,48 +60,46 @@ export class Api {
   readonly loadingService = inject(LoadingService);
   private readonly publicReads = new Map<string, { expires: number; value: Promise<unknown> }>();
 
-  private track<T>(promise: Promise<T>): Promise<T> {
+  private track<T>(request: Observable<T>): Promise<T> {
     this.loadingService.start();
-    return promise.finally(() => this.loadingService.stop());
+    return firstValueFrom(request.pipe(timeout({ first: 90_000 }))).finally(() => this.loadingService.stop());
   }
 
   get<T>(path: string) {
     if (path !== 'life-areas')
-      return this.track(firstValueFrom(this.http.get<T>(`/api/${path}`, { withCredentials: true })));
+      return this.track(this.http.get<T>(`/api/${path}`, { withCredentials: true }));
     const cached = this.publicReads.get(path);
     if (cached && cached.expires > Date.now()) return cached.value as Promise<T>;
     const value = this.track(
-      firstValueFrom(this.http.get<T>(`/api/${path}`, { withCredentials: true })).catch((error) => {
+      this.http.get<T>(`/api/${path}`, { withCredentials: true }),
+    ).catch((error) => {
         this.publicReads.delete(path);
         throw error;
-      }),
-    );
+      });
     this.publicReads.set(path, { expires: Date.now() + 300000, value });
     return value;
   }
   post<T>(path: string, body: unknown = {}) {
     return this.track(
-      firstValueFrom(this.http.post<T>(`/api/${path}`, body, { withCredentials: true })).then((result) => {
+      this.http.post<T>(`/api/${path}`, body, { withCredentials: true })).then((result) => {
         this.celebrations.receive(result);
         return result;
-      }),
-    );
+      });
   }
   patch<T>(path: string, body: unknown) {
     return this.track(
-      firstValueFrom(this.http.patch<T>(`/api/${path}`, body, { withCredentials: true })).then(
+      this.http.patch<T>(`/api/${path}`, body, { withCredentials: true })).then(
         (result) => {
           this.celebrations.receive(result);
           return result;
         },
-      ),
-    );
+      );
   }
   put<T>(path: string, body: unknown = {}) {
-    return this.track(firstValueFrom(this.http.put<T>(`/api/${path}`, body, { withCredentials: true })));
+    return this.track(this.http.put<T>(`/api/${path}`, body, { withCredentials: true }));
   }
   delete<T>(path: string) {
-    return this.track(firstValueFrom(this.http.delete<T>(`/api/${path}`, { withCredentials: true })));
+    return this.track(this.http.delete<T>(`/api/${path}`, { withCredentials: true }));
   }
   resource<T>(path: string) {
     const resource = new Remote<T>(this, path);
@@ -91,6 +116,9 @@ export class Remote<T> {
     private readonly api: Api,
     private path: string,
   ) {}
+  refreshIfLoading() {
+    if (this.loading()) void this.load();
+  }
   async load(path = this.path) {
     const request = ++this.request;
     this.path = path;

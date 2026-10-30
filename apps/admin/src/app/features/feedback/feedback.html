@@ -31,7 +31,7 @@
   ) {
     <button
       class="btn !min-h-9 text-xs"
-      [class]="filter() === tab.id ? 'bg-brand text-white' : 'btn-secondary'"
+      [class]="filter() === tab.id ? 'bg-brand text-on-brand' : 'btn-secondary'"
       (click)="setFilter(tab.id)"
     >
       {{ i18n.t(tab.en, tab.ar) }}

@@ -108,6 +108,10 @@ import { PwaInstallation } from './install';
                 )
               }}
             </p>
+          } @else {
+            <p class="mt-3 text-sm leading-6 text-muted">
+              {{ i18n.t('Your browser does not provide installation instructions here. You can still use MIRHAL in this browser.', 'لا يوفر متصفحك تعليمات التثبيت هنا. يمكنك متابعة استخدام مِرحال في المتصفح.') }}
+            </p>
           }
           <p class="mt-3 text-xs leading-5 text-muted">
             {{
@@ -172,6 +176,7 @@ export class InstallExperience {
 
   dialogVisibilityChanged(visible: boolean) {
     if (!visible) {
+      if (this.offerDialog()) this.install.dismiss();
       this.offerDialog.set(false);
       this.install.helpOpen.set(false);
     }

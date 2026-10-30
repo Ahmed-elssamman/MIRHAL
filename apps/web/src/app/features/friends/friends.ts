@@ -46,7 +46,7 @@ export class FriendsPage {
     this.saving.set(true);
     this.error.set('');
     try {
-      const result = await this.api.post<{ channel: 'email' | 'friendship' }>(
+      const result = await this.api.post<{ channel: 'email' | 'friendship'; emailStatus?: 'accepted' | 'unavailable' | 'disabled' }>(
         'friends',
         this.form.getRawValue(),
       );
@@ -58,6 +58,10 @@ export class FriendsPage {
             'The email provider accepted your invitation. Your friend can check their inbox and spam folder.',
             'قبل مزود البريد الدعوة. يمكن لصديقك التحقق من الوارد والبريد غير المرغوب فيه.',
           ),
+        );
+      else if (result.emailStatus === 'unavailable')
+        this.toasts.success(
+          this.i18n.t('Friend request sent. The email could not be sent.', 'أُرسل طلب الصداقة، لكن تعذر إرسال البريد الإلكتروني.'),
         );
       else
         this.toasts.success(

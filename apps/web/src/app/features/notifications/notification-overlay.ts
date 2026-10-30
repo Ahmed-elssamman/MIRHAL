@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { Api, Notification, Page, Remote, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
@@ -38,7 +38,7 @@ import { Icon } from '@lifequest/ui';
           </button>
         </div>
       } @else {
-        @if (unreadCount()) {
+        @if (resource.data()?.total) {
           <button
             type="button"
             class="mb-3 min-h-11 text-xs font-semibold text-brand"
@@ -50,10 +50,11 @@ import { Icon } from '@lifequest/ui';
         }
         <div class="max-h-[min(65vh,34rem)] space-y-2 overflow-y-auto">
           @for (item of resource.data()?.items; track item.id) {
-            <a
-              [routerLink]="item.href || '/dashboard'"
+            <button
+              type="button"
               (click)="openItem(item)"
-              class="flex min-h-16 items-start gap-3 rounded-xl border border-line p-3 transition-colors hover:bg-hover"
+              [disabled]="pendingIds().has(item.id)"
+              class="flex min-h-16 w-full items-start gap-3 rounded-xl border border-line p-3 text-start transition-colors hover:bg-hover"
               [class.bg-brand-soft]="!item.readAt"
             >
               <span
@@ -74,7 +75,7 @@ import { Icon } from '@lifequest/ui';
                   [attr.aria-label]="i18n.t('Unread', 'غير مقروء')"
                 ></span>
               }
-            </a>
+            </button>
           } @empty {
             <div class="rounded-xl border border-line px-5 py-8 text-center">
               <lq-icon name="bell" class="text-brand" [size]="24" />
@@ -106,8 +107,11 @@ export class NotificationOverlay {
   readonly i18n = inject(Preferences);
   private readonly api = inject(Api);
   private readonly toasts = inject(Toasts);
+  private readonly router = inject(Router);
   readonly resource = new Remote<Page<Notification>>(this.api, 'notifications?limit=6');
-  readonly working = computed(() => this.resource.loading());
+  readonly readingAll = signal(false);
+  readonly pendingIds = signal<Set<string>>(new Set());
+  readonly working = computed(() => this.resource.loading() || this.readingAll());
   readonly unreadCount = computed(
     () => this.resource.data()?.items.filter((item) => !item.readAt).length ?? 0,
   );
@@ -127,21 +131,36 @@ export class NotificationOverlay {
   }
 
   async openItem(item: Notification) {
-    if (item.readAt) return;
+    if (item.href && item.href.startsWith('/') && !item.href.startsWith('//')) {
+      this.close.emit();
+      void this.router.navigateByUrl(item.href);
+    }
+    if (item.readAt || this.pendingIds().has(item.id)) return;
+    this.pendingIds.update((ids) => new Set(ids).add(item.id));
     try {
       await this.api.patch(`notifications/${item.id}/read`, {});
+      this.resource.data.update((page) => page && ({
+        ...page,
+        items: page.items.map((entry) => entry.id === item.id ? { ...entry, readAt: new Date().toISOString() } : entry),
+      }));
     } catch (error) {
       this.toasts.error(error);
+    } finally {
+      this.pendingIds.update((ids) => { const next = new Set(ids); next.delete(item.id); return next; });
     }
   }
 
   async readAll() {
     if (this.working()) return;
+    this.readingAll.set(true);
     try {
       await this.api.post('notifications/read-all');
-      await this.resource.load();
+      const readAt = new Date().toISOString();
+      this.resource.data.update((page) => page && ({ ...page, items: page.items.map((item) => ({ ...item, readAt: item.readAt ?? readAt })) }));
     } catch (error) {
       this.toasts.error(error);
+    } finally {
+      this.readingAll.set(false);
     }
   }
 }

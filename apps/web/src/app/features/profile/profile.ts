@@ -22,7 +22,7 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
   template: `<lq-page-header
       [eyebrow]="i18n.t('THE PERSON BEHIND THE PROGRESS', 'الشخص وراء التقدم')"
       [title]="i18n.t('A little about you.', 'قليل عنك.')"
-      [description]="i18n.t('Make this space feel like your own.', 'اجعل هذه المساحة تشبهك.')"
+      [description]="i18n.t('Update your name, avatar, bio, and time zone.', 'حدّث اسمك وصورتك ونبذتك ومنطقتك الزمنية.')"
     />
     @if (!auth.user()) {
       <lq-skeleton />
