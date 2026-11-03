@@ -224,7 +224,7 @@
   .skeleton {
     border-radius: 0.75rem;
     background-color: var(--lq-line);
-    animation: lq-skeleton-pulse 4.5s ease-in-out infinite;
+    animation: lq-skeleton-pulse 5.5s ease-in-out infinite;
   }
   .area-faith {
     background: var(--lq-area-faith-bg);
@@ -254,11 +254,12 @@
   }
 }
 @keyframes lq-skeleton-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.76;
+    opacity: 0.35;
   }
 }
 @keyframes lq-loading-bar-ltr {
@@ -295,17 +296,17 @@ html[dir='rtl'] .loading-bar {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.1ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.1ms !important;
     scroll-behavior: auto !important;
   }
 }
 .reduce-motion *,
 .reduce-motion *::before,
 .reduce-motion *::after {
-  animation-duration: 0.01ms !important;
-  transition-duration: 0.01ms !important;
+  animation-duration: 0.1ms !important;
+  transition-duration: 0.1ms !important;
 }
 .p-dialog {
   max-width: calc(100vw - 2rem);

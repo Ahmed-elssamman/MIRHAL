@@ -8,7 +8,15 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
 import { SecuritySettings } from './security';
 @Component({
   selector: 'lq-settings',
-  imports: [UnsavedForm, ReactiveFormsModule, PageHeader, Icon, FormField, SecuritySettings, Skeleton],
+  imports: [
+    UnsavedForm,
+    ReactiveFormsModule,
+    PageHeader,
+    Icon,
+    FormField,
+    SecuritySettings,
+    Skeleton,
+  ],
   templateUrl: './settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

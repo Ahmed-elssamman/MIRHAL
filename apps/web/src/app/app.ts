@@ -14,20 +14,19 @@ import {
 import { Meta, Title } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlays } from '../../../../libs/ui/src/overlays';
+import { GlobalLoader } from '../../../../libs/ui/src/loader';
 @Component({
   selector: 'lq-root',
-  imports: [RouterOutlet, Overlays, LevelCelebration],
+  imports: [RouterOutlet, Overlays, LevelCelebration, GlobalLoader],
   template: `
-    @if (loading.isLoading()) {
-      <div
-        role="progressbar"
-        [attr.aria-label]="preferences.t('Loading page', 'جارٍ تحميل الصفحة')"
-        class="fixed inset-x-0 top-0 z-[9999] h-1 overflow-hidden bg-brand/20 shadow-sm"
-      >
-        <div class="loading-bar h-full bg-brand"></div>
-      </div>
+    <lq-global-loader />
+    <router-outlet />
+    @defer (on idle) {
+      <lq-overlays />
     }
-    <router-outlet />@defer (on idle) { <lq-overlays /> } @defer (when celebrations.level()) { <lq-level-celebration /> }
+    @defer (when celebrations.level()) {
+      <lq-level-celebration />
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -44,20 +43,18 @@ export class App {
       const english = this.preferences.language() === 'en';
       this.updateMetadata(english);
     });
-    this.router.events
-      .pipe(takeUntilDestroyed())
-      .subscribe((event) => {
-        if (event instanceof NavigationStart) {
-          this.loading.setNavigating(true);
-        } else if (
-          event instanceof NavigationEnd ||
-          event instanceof NavigationCancel ||
-          event instanceof NavigationError
-        ) {
-          this.loading.setNavigating(false);
-          this.updateMetadata(this.preferences.language() === 'en');
-        }
-      });
+    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.loading.setNavigating(true);
+      } else if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        this.loading.setNavigating(false);
+        this.updateMetadata(this.preferences.language() === 'en');
+      }
+    });
   }
 
   private updateMetadata(english: boolean) {

@@ -158,4 +158,50 @@ describe('Accessible shared components', () => {
     preferences.setTheme('light');
     expect(preferences.resolvedTheme()).toBe('light');
   });
+
+  it('prevents flicker on fast operations by delaying display threshold', async () => {
+    const { LoadingService } = await import('@lifequest/data-access');
+    const loading = TestBed.inject(LoadingService);
+    loading.reset();
+
+    // Fast request finishes in 30ms (< 150ms delay)
+    loading.start();
+    expect(loading.isLoading()).toBe(true);
+    expect(loading.showTopBar()).toBe(false);
+    expect(loading.showOverlay()).toBe(false);
+
+    await new Promise((r) => setTimeout(r, 40));
+    loading.stop();
+    expect(loading.isLoading()).toBe(false);
+
+    // Give time to ensure it never popped up
+    await new Promise((r) => setTimeout(r, 160));
+    expect(loading.showTopBar()).toBe(false);
+    expect(loading.showOverlay()).toBe(false);
+  });
+
+  it('renders official MIRHAL branded loader on blocking operations', async () => {
+    const { LoadingService } = await import('@lifequest/data-access');
+    const { GlobalLoader } = await import('../../../../libs/ui/src/loader');
+    const loading = TestBed.inject(LoadingService);
+    loading.reset();
+
+    const fixture = TestBed.createComponent(GlobalLoader);
+    loading.startBlocking();
+
+    // Wait past the blocking delay (50ms)
+    await new Promise((r) => setTimeout(r, 70));
+    fixture.detectChanges();
+
+    expect(loading.showOverlay()).toBe(true);
+    const element: HTMLElement = fixture.nativeElement;
+    const overlay = element.querySelector('[role="status"]');
+    expect(overlay).toBeTruthy();
+    expect(element.querySelector('svg')).toBeTruthy();
+    expect(element.textContent).toContain('MIRHAL');
+    expect(element.textContent).toContain('مِرحال');
+
+    loading.stopBlocking();
+    loading.reset();
+  });
 });

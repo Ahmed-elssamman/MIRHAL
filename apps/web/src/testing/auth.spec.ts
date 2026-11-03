@@ -146,13 +146,9 @@ describe('Authentication state and navigation', () => {
     TestBed.inject(HttpTestingController)
       .expectOne('/api/goals')
       .flush({}, { status: 401, statusText: 'Unauthorized' });
-    TestBed.inject(HttpTestingController)
-      .expectOne('/api/auth/refresh')
-      .flush({ user });
+    TestBed.inject(HttpTestingController).expectOne('/api/auth/refresh').flush({ user });
     await new Promise((resolve) => setTimeout(resolve, 10));
-    TestBed.inject(HttpTestingController)
-      .expectOne('/api/goals')
-      .flush({ items: [] });
+    TestBed.inject(HttpTestingController).expectOne('/api/goals').flush({ items: [] });
     expect(await pending).toEqual({ items: [] });
     expect(auth.status()).toBe('authenticated');
   });

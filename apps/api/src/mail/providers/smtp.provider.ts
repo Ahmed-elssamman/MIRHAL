@@ -44,6 +44,16 @@ export class SmtpProvider implements MailProvider, OnModuleInit, OnModuleDestroy
     });
   }
 
+  async verify(): Promise<boolean> {
+    if (!this.transporter) this.initTransporter();
+    try {
+      await this.transporter!.verify();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async send(message: MailMessage): Promise<MailResult> {
     if (!this.transporter) this.initTransporter();
     try {
@@ -56,13 +66,23 @@ export class SmtpProvider implements MailProvider, OnModuleInit, OnModuleDestroy
       });
       return { success: true, provider: this.name, messageId: info.messageId };
     } catch (error) {
-      if (
-        typeof error === 'object' &&
-        error !== null &&
-        'code' in error &&
-        error.code === 'EAUTH'
-      ) {
-        throw new DeliveryError('permanent', 'SMTP authentication failed');
+      if (typeof error === 'object' && error !== null) {
+        if ('code' in error && (error.code === 'EAUTH' || error.code === 'EENVELOPE')) {
+          throw new DeliveryError(
+            'permanent',
+            `SMTP authentication or envelope failed: ${String(error.code)}`,
+          );
+        }
+        if (
+          'responseCode' in error &&
+          typeof error.responseCode === 'number' &&
+          error.responseCode >= 500
+        ) {
+          throw new DeliveryError(
+            'permanent',
+            `SMTP permanent rejection: ${String(error.responseCode)}`,
+          );
+        }
       }
       throw error;
     }

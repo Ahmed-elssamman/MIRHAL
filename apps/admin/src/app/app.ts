@@ -3,10 +3,11 @@ import { DOCUMENT } from '@angular/common';
 import { Preferences } from '@lifequest/utilities';
 import { RouterOutlet } from '@angular/router';
 import { Overlays } from '../../../../libs/ui/src/overlays';
+import { GlobalLoader } from '../../../../libs/ui/src/loader';
 @Component({
   selector: 'lq-root',
-  imports: [RouterOutlet, Overlays],
-  template: '<router-outlet />@defer (on idle) { <lq-overlays /> }',
+  imports: [RouterOutlet, Overlays, GlobalLoader],
+  template: '<lq-global-loader /><router-outlet />@defer (on idle) { <lq-overlays /> }',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {

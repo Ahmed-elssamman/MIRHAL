@@ -12,10 +12,7 @@ export function isAllowedOrigin(origin: string | undefined, allowedOrigins: stri
   if (process.env['NODE_ENV'] !== 'production') {
     try {
       const url = new URL(origin);
-      if (
-        url.protocol === 'http:' &&
-        ['4200', '4201', '4300', '4301'].includes(url.port || '80')
-      ) {
+      if (url.protocol === 'http:' && ['4200', '4201', '4300', '4301'].includes(url.port || '80')) {
         const host = url.hostname;
         if (
           host === 'localhost' ||
@@ -27,7 +24,9 @@ export function isAllowedOrigin(origin: string | undefined, allowedOrigins: stri
           return true;
         }
       }
-    } catch {}
+    } catch {
+      // Ignore invalid URL parsing
+    }
   }
   return false;
 }

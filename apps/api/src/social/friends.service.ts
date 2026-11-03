@@ -160,18 +160,24 @@ export class FriendsService {
     });
   }
   async resolveInvitation(token: string) {
-    if (!token || typeof token !== 'string') return { valid: false as const, reason: 'not-found' as const };
+    if (!token || typeof token !== 'string')
+      return { valid: false as const, reason: 'not-found' as const };
     const tokenHash = hashToken(token);
     const invitation = await this.db.invitation.findUnique({
       where: { tokenHash },
       include: { sender: { select: { profile: { select: { displayName: true } } } } },
     });
     if (!invitation) return { valid: false as const, reason: 'not-found' as const };
-    if (invitation.status === 'ACCEPTED') return { valid: false as const, reason: 'already-used' as const };
-    if (invitation.status === 'REVOKED') return { valid: false as const, reason: 'revoked' as const };
+    if (invitation.status === 'ACCEPTED')
+      return { valid: false as const, reason: 'already-used' as const };
+    if (invitation.status === 'REVOKED')
+      return { valid: false as const, reason: 'revoked' as const };
     if (invitation.expiresAt <= new Date()) {
       if (invitation.status === 'PENDING') {
-        await this.db.invitation.update({ where: { id: invitation.id }, data: { status: 'EXPIRED' } });
+        await this.db.invitation.update({
+          where: { id: invitation.id },
+          data: { status: 'EXPIRED' },
+        });
       }
       return { valid: false as const, reason: 'expired' as const };
     }

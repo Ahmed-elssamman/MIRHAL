@@ -8,7 +8,11 @@ import { TasksPage } from '../app/features/tasks/tasks';
 import { Task } from '@lifequest/data-access';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-const createTask = (id: string, title: string, status: 'PLANNED' | 'ACTIVE' | 'COMPLETED' = 'ACTIVE'): Task => ({
+const createTask = (
+  id: string,
+  title: string,
+  status: 'PLANNED' | 'ACTIVE' | 'COMPLETED' = 'ACTIVE',
+): Task => ({
   id,
   title,
   description: '',
@@ -46,7 +50,9 @@ describe('Task Performance & Optimistic UI Updates', () => {
     const component = fixture.componentInstance;
 
     // Flush initial resources (habits, tasks, check-ins)
-    http.expectOne('/api/habits?today=true&limit=10').flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
+    http
+      .expectOne('/api/habits?today=true&limit=10')
+      .flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
     http.expectOne('/api/tasks?today=true&limit=8').flush({
       items: [createTask('t-1', 'Morning routine'), createTask('t-2', 'Review notes')],
       total: 2,
@@ -89,7 +95,9 @@ describe('Task Performance & Optimistic UI Updates', () => {
     const fixture = TestBed.createComponent(TodayPage);
     const component = fixture.componentInstance;
 
-    http.expectOne('/api/habits?today=true&limit=10').flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
+    http
+      .expectOne('/api/habits?today=true&limit=10')
+      .flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
     http.expectOne('/api/tasks?today=true&limit=8').flush({
       items: [createTask('t-1', 'Save world')],
       total: 1,
@@ -122,9 +130,15 @@ describe('Task Performance & Optimistic UI Updates', () => {
     const fixture = TestBed.createComponent(TodayPage);
     const component = fixture.componentInstance;
 
-    http.expectOne('/api/habits?today=true&limit=10').flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
+    http
+      .expectOne('/api/habits?today=true&limit=10')
+      .flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
     http.expectOne('/api/tasks?today=true&limit=8').flush({
-      items: [createTask('t-1', 'Task 1'), createTask('t-2', 'Task 2'), createTask('t-3', 'Task 3')],
+      items: [
+        createTask('t-1', 'Task 1'),
+        createTask('t-2', 'Task 2'),
+        createTask('t-3', 'Task 3'),
+      ],
       total: 3,
       page: 1,
       limit: 8,

@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, ForbiddenException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { describe, expect, it, vi } from 'vitest';
 import { FriendsService } from '../../apps/api/src/social/friends.service';
 import { Database } from '../../apps/api/src/common/database';
@@ -7,7 +7,7 @@ import { hashToken } from '../../apps/api/src/auth/auth.guard';
 
 describe('friend email invitations workflow', () => {
   it('sends a branded invite for an address without a MIRHAL account', async () => {
-    const invitations: any[] = [];
+    const invitations: Record<string, unknown>[] = [];
     const db = {
       user: {
         findUnique: vi.fn().mockImplementation(({ where }) => {
@@ -252,8 +252,8 @@ describe('friend email invitations workflow', () => {
     it('accepts invitation and connects friends', async () => {
       const token = 'valid-token-to-accept-1234567890';
       const tokenHash = hashToken(token);
-      let updatedInv: any = null;
-      let createdFriendship: any = null;
+      let updatedInv: Record<string, unknown> | null = null;
+      let createdFriendship: Record<string, unknown> | null = null;
       const db = {
         invitation: {
           findUnique: vi.fn().mockResolvedValue({

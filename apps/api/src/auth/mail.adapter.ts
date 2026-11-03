@@ -1,4 +1,10 @@
-import { Injectable, OnModuleInit, ServiceUnavailableException } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  Optional,
+  Inject,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { createHash } from 'node:crypto';
 import type { TokenPurpose } from '@prisma/client';
 import { EmailLanguage, EmailPurpose, renderAuthEmail } from './mail.templates';
@@ -12,7 +18,7 @@ export class MailAdapter implements OnModuleInit {
   readonly outbox: Message[] = [];
   private readonly factory: MailFactory;
 
-  constructor(factory?: MailFactory) {
+  constructor(@Optional() @Inject(MailFactory) factory?: MailFactory) {
     this.factory = factory ?? new MailFactory();
   }
 
@@ -26,7 +32,14 @@ export class MailAdapter implements OnModuleInit {
 
   private get providerName() {
     return (
-      process.env['EMAIL_PROVIDER'] ?? (process.env['NODE_ENV'] === 'production' ? '' : 'file')
+      process.env['EMAIL_PROVIDER'] ??
+      (process.env['SMTP_HOST']
+        ? 'smtp'
+        : process.env['RESEND_API_KEY']
+          ? 'resend'
+          : process.env['NODE_ENV'] === 'production'
+            ? ''
+            : 'file')
     );
   }
 
@@ -173,8 +186,21 @@ export class MailAdapter implements OnModuleInit {
     await this.deliver(delivery, purpose);
   }
 
+  async verifyConnection(): Promise<boolean> {
+    if (!this.enabled) return false;
+    this.assertConfigured();
+    const provider = this.factory.getProvider(this.providerName, process.env['RESEND_API_KEY']);
+    if (
+      'verify' in provider &&
+      typeof (provider as { verify?: () => Promise<boolean> }).verify === 'function'
+    ) {
+      return (provider as { verify: () => Promise<boolean> }).verify();
+    }
+    return true;
+  }
+
   private async deliver(delivery: MailMessage, purpose: EmailPurpose) {
-    const provider = this.factory.createProvider(this.providerName, process.env['RESEND_API_KEY']);
+    const provider = this.factory.getProvider(this.providerName, process.env['RESEND_API_KEY']);
     try {
       const result = await provider.send(delivery);
       console.log(

@@ -95,20 +95,19 @@ export function renderAuthEmail(
         : passwordChanged
           ? 'Open MIRHAL'
           : 'Reset password';
-  const expiry =
-    passwordChanged
-      ? ''
-      : friendInvite
-        ? arabic
-          ? 'تنتهي هذه الدعوة خلال 7 أيام وتُستخدم مرة واحدة.'
-          : 'This invitation expires in 7 days and can be used once.'
-        : arabic
-          ? verification
-            ? 'ينتهي هذا الرابط خلال 24 ساعة ويُستخدم مرة واحدة.'
-            : 'ينتهي هذا الرابط خلال 30 دقيقة ويُستخدم مرة واحدة.'
-          : verification
-            ? 'This one-time link expires in 24 hours.'
-            : 'This one-time link expires in 30 minutes.';
+  const expiry = passwordChanged
+    ? ''
+    : friendInvite
+      ? arabic
+        ? 'تنتهي هذه الدعوة خلال 7 أيام وتُستخدم مرة واحدة.'
+        : 'This invitation expires in 7 days and can be used once.'
+      : arabic
+        ? verification
+          ? 'ينتهي هذا الرابط خلال 24 ساعة ويُستخدم مرة واحدة.'
+          : 'ينتهي هذا الرابط خلال 30 دقيقة ويُستخدم مرة واحدة.'
+        : verification
+          ? 'This one-time link expires in 24 hours.'
+          : 'This one-time link expires in 30 minutes.';
   const ignore = arabic
     ? verification
       ? 'إذا لم تنشئ حساباً في مِرحال، يمكنك تجاهل هذه الرسالة.'

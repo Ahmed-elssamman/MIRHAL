@@ -254,4 +254,99 @@ describe('auth email', () => {
       fetchMock.mock.calls[2]?.[1].headers['Idempotency-Key'],
     );
   });
+
+  it('infers email provider dynamically from configuration when EMAIL_PROVIDER is omitted', () => {
+    delete process.env['EMAIL_PROVIDER'];
+    process.env['SMTP_HOST'] = 'smtp.gmail.com';
+    const smtpMail = new MailAdapter();
+    expect(smtpMail.configurationHealth().provider).toBe('smtp');
+
+    delete process.env['SMTP_HOST'];
+    process.env['RESEND_API_KEY'] = 're_test_123';
+    const resendMail = new MailAdapter();
+    expect(resendMail.configurationHealth().provider).toBe('resend');
+
+    delete process.env['RESEND_API_KEY'];
+    process.env['NODE_ENV'] = 'development';
+    const devMail = new MailAdapter();
+    expect(devMail.configurationHealth().provider).toBe('file');
+  });
+
+  it('sends via mock SMTP transporter and handles success', async () => {
+    process.env['NODE_ENV'] = 'development';
+    process.env['EMAIL_PROVIDER'] = 'smtp';
+    process.env['APP_URL'] = 'http://localhost:4200';
+    process.env['SMTP_HOST'] = 'smtp.test.local';
+    process.env['SMTP_USER'] = 'user@test.local';
+    process.env['SMTP_PASSWORD'] = 'secret';
+    process.env['SMTP_FROM'] = 'MIRHAL <noreply@test.local>';
+
+    const nodemailer = await import('nodemailer');
+    const sendMailMock = vi.fn().mockResolvedValue({ messageId: '<mock-msg-123@smtp.test.local>' });
+    const verifyMock = vi.fn().mockResolvedValue(true);
+    vi.spyOn(nodemailer.default, 'createTransport').mockReturnValue({
+      sendMail: sendMailMock,
+      verify: verifyMock,
+      close: vi.fn(),
+    } as unknown as ReturnType<typeof nodemailer.default.createTransport>);
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const mail = new MailAdapter();
+    await mail.send('recipient@example.test', 'VERIFY_EMAIL', 'test-token', 'en');
+
+    expect(sendMailMock).toHaveBeenCalledOnce();
+    const sentArgs = sendMailMock.mock.calls[0][0];
+    expect(sentArgs.to).toBe('recipient@example.test');
+    expect(sentArgs.from).toBe('MIRHAL <noreply@test.local>');
+    expect(sentArgs.subject).toBe('Confirm your MIRHAL email');
+    expect(sentArgs.html).toContain('http://localhost:4200/auth/verify-email?token=test-token');
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('mock-msg-123'));
+  });
+
+  it('classifies SMTP EAUTH failure as permanent and does not loop', async () => {
+    process.env['NODE_ENV'] = 'development';
+    process.env['EMAIL_PROVIDER'] = 'smtp';
+    process.env['APP_URL'] = 'http://localhost:4200';
+    process.env['SMTP_HOST'] = 'smtp.test.local';
+    process.env['SMTP_USER'] = 'user@test.local';
+    process.env['SMTP_PASSWORD'] = 'wrong';
+    process.env['SMTP_FROM'] = 'MIRHAL <noreply@test.local>';
+
+    const nodemailer = await import('nodemailer');
+    const authError = Object.assign(new Error('Invalid login'), { code: 'EAUTH' });
+    vi.spyOn(nodemailer.default, 'createTransport').mockReturnValue({
+      sendMail: vi.fn().mockRejectedValue(authError),
+      verify: vi.fn().mockRejectedValue(authError),
+      close: vi.fn(),
+    } as unknown as ReturnType<typeof nodemailer.default.createTransport>);
+
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const mail = new MailAdapter();
+    await expect(mail.send('user@example.test', 'VERIFY_EMAIL', 'tok', 'en')).rejects.toThrow();
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('"classification":"permanent"'));
+  });
+
+  it('opens circuit breaker after repeated delivery failures to protect backend', async () => {
+    process.env['NODE_ENV'] = 'development';
+    process.env['EMAIL_PROVIDER'] = 'resend';
+    process.env['APP_URL'] = 'https://example.test';
+    process.env['SMTP_FROM'] = 'MIRHAL <noreply@example.test>';
+    process.env['RESEND_API_KEY'] = 'test-only';
+
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const fetchMock = vi.fn().mockRejectedValue(new Error('Connection refused'));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const mail = new MailAdapter();
+    for (let i = 0; i < 5; i++) {
+      await expect(mail.send('fail@test.com', 'VERIFY_EMAIL', `tok-${i}`, 'en')).rejects.toThrow();
+    }
+
+    // 6th call should trip circuit breaker and fail fast without calling fetch
+    const callsBefore = fetchMock.mock.calls.length;
+    await expect(
+      mail.send('fail@test.com', 'VERIFY_EMAIL', 'tok-fast-fail', 'en'),
+    ).rejects.toThrow();
+    expect(fetchMock.mock.calls.length).toBe(callsBefore);
+  });
 });

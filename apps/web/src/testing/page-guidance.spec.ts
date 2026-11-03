@@ -10,7 +10,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
     <lq-page-header
       [eyebrow]="i18n.t('TEST EYEBROW', 'شعار تجريبي')"
       [title]="i18n.t('Test Page Title', 'عنوان صفحة تجريبي')"
-      [description]="i18n.t('A thoughtful sentence explaining this space.', 'جملة توضح الهدف من هذه المساحة.')"
+      [description]="
+        i18n.t('A thoughtful sentence explaining this space.', 'جملة توضح الهدف من هذه المساحة.')
+      "
     >
       <button type="button" class="action-btn">Action</button>
     </lq-page-header>
@@ -78,4 +80,3 @@ describe('Contextual Page Guidance (PageHeader)', () => {
     expect(el.querySelector('p.text-muted')).toBeNull();
   });
 });
-

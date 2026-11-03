@@ -31,18 +31,17 @@ import { Request } from 'express';
         const redisUrl = config.get<string>('REDIS_URL');
         const mode = config.get<string>('RATE_LIMIT_MODE');
 
-        if (isProd) {
-          if (!redisUrl) {
-            throw new Error('Production rate limiting requires REDIS_URL to be configured.');
-          }
+        if (redisUrl && (mode === 'redis' || mode === 'auto' || isProd)) {
           return new RedisRateLimitStorage(redisUrl);
         }
 
-        if (mode === 'redis' && redisUrl) {
-          return new RedisRateLimitStorage(redisUrl);
+        if (isProd && mode === 'redis') {
+          throw new Error(
+            'Production rate limiting with RATE_LIMIT_MODE=redis requires REDIS_URL to be configured.',
+          );
         }
 
-        // Local development and isolated test suites
+        // Local development, memory mode, or production fallback when REDIS_URL is omitted
         return new InMemoryRateLimitStorage();
       },
     },

@@ -88,9 +88,10 @@ export class CircuitBreaker {
     let attempt = 0;
     while (true) {
       attempt++;
+      let timer: NodeJS.Timeout | undefined;
       try {
         const timeoutPromise = new Promise<never>((_, reject) => {
-          const timer = setTimeout(() => {
+          timer = setTimeout(() => {
             reject(
               new DeliveryError('temporary', `Request timed out after ${this.requestTimeoutMs}ms`),
             );
@@ -116,6 +117,8 @@ export class CircuitBreaker {
         // Record failure against circuit
         this.onFailure(isTransient);
         throw error;
+      } finally {
+        if (timer) clearTimeout(timer);
       }
     }
   }

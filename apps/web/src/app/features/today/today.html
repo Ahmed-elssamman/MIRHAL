@@ -208,7 +208,10 @@
       } @else {
         <div class="divide-y divide-line">
           @for (task of todayTasks(); track task.id) {
-            <div class="flex items-center gap-3 py-4" [class.opacity-50]="pendingTaskIds().has(task.id)">
+            <div
+              class="flex items-center gap-3 py-4"
+              [class.opacity-50]="pendingTaskIds().has(task.id)"
+            >
               <button
                 type="button"
                 class="flex size-11 shrink-0 items-center justify-center rounded-lg border border-line text-muted hover:border-brand hover:text-brand"
