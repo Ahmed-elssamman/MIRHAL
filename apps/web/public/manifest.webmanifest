@@ -1,16 +1,19 @@
 {
   "name": "MIRHAL · مِرحال",
   "short_name": "MIRHAL",
+  "description": "A thoughtful space for goals, habits, and everyday progress.",
+  "id": "/",
   "start_url": "/today",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#f6f7fb",
-  "theme_color": "#6b57cd",
+  "background_color": "#f5f7f4",
+  "theme_color": "#0e7165",
   "icons": [
     {
       "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "/icon-192.png",

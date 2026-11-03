@@ -38,6 +38,70 @@ export class AuthPage {
   readonly busy = signal(false);
   readonly error = signal('');
   readonly success = signal('');
+  readonly inviteToken = computed(() => {
+    const qp = this.route.snapshot.queryParamMap;
+    return qp.get('inviteToken') || (this.mode() === 'register' ? qp.get('token') : null) || '';
+  });
+  readonly invitationInfo = signal<{
+    valid: boolean;
+    inviterName?: string;
+    email?: string;
+    reason?: string;
+  } | null>(null);
+
+  readonly invitationBanner = computed(() => {
+    const info = this.invitationInfo();
+    if (!info) return null;
+    if (info.valid && info.inviterName) {
+      return {
+        title: this.i18n.t(
+          `You've been invited by ${info.inviterName}!`,
+          `تمت دعوتك بواسطة ${info.inviterName}!`,
+        ),
+        message: this.i18n.t(
+          'Create your account to start your shared journey on MIRHAL.',
+          'أنشئ حسابك لتبدآ رحلتكما المشتركة على مِرحال.',
+        ),
+      };
+    }
+    if (info.reason === 'expired') {
+      return {
+        title: this.i18n.t('Invitation expired', 'انتهت صلاحية الدعوة'),
+        message: this.i18n.t(
+          'This invitation link has expired, but you can still create an account to start your journey.',
+          'انتهت صلاحية رابط الدعوة هذا، ولكن لا يزال بإمكانك إنشاء حساب لبدء رحلتك.',
+        ),
+      };
+    }
+    if (info.reason === 'already-used') {
+      return {
+        title: this.i18n.t('Invitation already used', 'تم استخدام الدعوة بالفعل'),
+        message: this.i18n.t(
+          'This invitation has already been accepted. Sign in with your existing account.',
+          'تم قبول هذه الدعوة بالفعل. سجل الدخول باستخدام حسابك الحالي.',
+        ),
+      };
+    }
+    return null;
+  });
+
+  constructor() {
+    const token = this.inviteToken();
+    if (token) {
+      this.api
+        .get<{ valid: boolean; inviterName?: string; email?: string; reason?: string }>(
+          `friends/invitations/resolve?token=${encodeURIComponent(token)}`,
+        )
+        .then((res) => {
+          this.invitationInfo.set(res);
+          if (res.valid && res.email && !this.form.controls.email.value) {
+            this.form.patchValue({ email: res.email });
+          }
+        })
+        .catch(() => null);
+    }
+  }
+
   readonly title = computed(() => {
     switch (this.mode()) {
       case 'register':
@@ -87,8 +151,8 @@ export class AuthPage {
         await this.api.post('auth/forgot-password', { email: input.email });
         this.success.set(
           this.i18n.t(
-            'If an account exists, recovery instructions are on their way.',
-            'إذا كان الحساب موجوداً، فتعليمات الاستعادة في طريقها إليك.',
+            'For privacy, we respond the same way whether or not that email is linked to an account. If eligible, check your inbox and spam folder for the recovery link.',
+            'حفاظاً على الخصوصية، تكون الاستجابة واحدة سواء ارتبط البريد بحساب أم لا. إذا كان مؤهلاً، فتحقق من الوارد والبريد غير المرغوب فيه لرابط الاستعادة.',
           ),
         );
       } else if (mode === 'reset-password' || mode === 'verify-email') {
@@ -104,10 +168,13 @@ export class AuthPage {
           ),
         );
       } else {
+        const inviteToken =
+          mode === 'register' && this.inviteToken() ? this.inviteToken() : undefined;
         const registration =
           mode === 'register'
             ? await this.auth.register({
                 ...input,
+                inviteToken,
                 timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
               })
             : undefined;

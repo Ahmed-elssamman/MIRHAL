@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Api, Page, errorMessage, Feedback, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Pagination, ErrorState, Icon, PageHeader, SectionTitle } from '@lifequest/ui';
+import { Pagination, ErrorState, Icon, PageHeader, SectionTitle, Skeleton } from '@lifequest/ui';
 import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-feedback',
@@ -12,11 +12,11 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
     LocalizedDatePipe,
     ReactiveFormsModule,
     PageHeader,
-    Pagination,
     ErrorState,
     Icon,
     SectionTitle,
     FormField,
+    Skeleton,
   ],
   templateUrl: './feedback.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

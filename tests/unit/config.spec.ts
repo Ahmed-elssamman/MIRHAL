@@ -52,7 +52,6 @@ describe('Configuration Architecture', () => {
       WEB_ORIGIN: 'https://app.mirhal.com',
       ADMIN_ORIGIN: 'https://admin.mirhal.com',
       APP_URL: 'https://app.mirhal.com',
-      BLOB_READ_WRITE_TOKEN: 'mock-token-for-test',
       MAIL_MODE: 'disabled',
     };
     expect(() => validateEnvironment(prodEnv)).not.toThrow();
@@ -72,10 +71,27 @@ describe('Configuration Architecture', () => {
       WEB_ORIGIN: 'https://app.mirhal.com',
       ADMIN_ORIGIN: 'https://admin.mirhal.com',
       APP_URL: 'https://app.mirhal.com',
-      BLOB_READ_WRITE_TOKEN: 'mock-token-for-test',
       MAIL_MODE: 'disabled',
       RATE_LIMIT_MODE: 'redis',
     };
     expect(() => validateEnvironment(prodEnv)).toThrow(/REDIS_URL to be configured/);
+  });
+
+  it('accepts the Render production email mode and rejects the old invalid enabled value', () => {
+    const prodEnv = {
+      ...baseValidEnv,
+      NODE_ENV: 'production',
+      WEB_ORIGIN: 'https://app.mirhal.example',
+      ADMIN_ORIGIN: 'https://admin.mirhal.example',
+      APP_URL: 'https://app.mirhal.example',
+      MAIL_MODE: 'production',
+      EMAIL_PROVIDER: 'resend',
+      RESEND_API_KEY: 'mock-key-for-test',
+      SMTP_FROM: 'MIRHAL <mail@mirhal.example>',
+      SUPPORT_EMAIL: 'support@mirhal.example',
+    };
+    expect(validateEnvironment(prodEnv).MAIL_MODE).toBe('production');
+    expect(validateEnvironment(prodEnv).SUPPORT_EMAIL).toBe('support@mirhal.example');
+    expect(() => validateEnvironment({ ...prodEnv, MAIL_MODE: 'enabled' })).toThrow(/MAIL_MODE/);
   });
 });

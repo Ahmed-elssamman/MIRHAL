@@ -40,7 +40,20 @@ export class ResendProvider implements MailProvider {
       }
 
       if (response.ok) {
-        return { success: true, provider: this.name };
+        let messageId: string | undefined;
+        try {
+          const body: unknown = await response.json();
+          if (
+            typeof body === 'object' &&
+            body !== null &&
+            'id' in body &&
+            typeof body.id === 'string'
+          )
+            messageId = body.id;
+        } catch {
+          // Acceptance does not depend on an optional provider response body.
+        }
+        return { success: true, provider: this.name, messageId };
       }
 
       if (response.status >= 500 && attempt === 0) {

@@ -110,7 +110,8 @@ export class AuthController {
   @Throttle({ default: { limit: 2, ttl: 60000 } })
   async resend(@CurrentUser() identity: Identity) {
     const user = await this.db.user.findUniqueOrThrow({ where: { id: identity.id } });
-    if (!user.emailVerifiedAt) await this.auth.issueEmailToken(user.id, user.email, 'VERIFY_EMAIL');
-    return { success: true };
+    if (user.emailVerifiedAt) return { status: 'already-verified' as const };
+    const accepted = await this.auth.issueEmailToken(user.id, user.email, 'VERIFY_EMAIL');
+    return { status: accepted ? ('accepted' as const) : ('rate-limited' as const) };
   }
 }

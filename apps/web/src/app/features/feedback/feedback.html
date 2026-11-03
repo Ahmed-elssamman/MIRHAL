@@ -67,10 +67,12 @@
   </section>
   <section>
     <lq-section-title [title]="i18n.t('Your conversations', 'محادثاتك')" />
-    @if (resource.error()) {
+    @if (resource.loading() && !resource.data()) {
+      <lq-skeleton />
+    } @else if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
-    }
-    <div class="space-y-4">
+    } @else {
+      <div class="space-y-4">
       @for (item of resource.data()?.items; track item.id) {
         <article class="card p-5">
           <div class="mb-3 flex items-center justify-between gap-3">
@@ -134,6 +136,7 @@
         </div>
       }
     </div>
+  }
   </section>
 </div>
 

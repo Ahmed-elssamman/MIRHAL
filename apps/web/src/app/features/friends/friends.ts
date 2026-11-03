@@ -46,12 +46,23 @@ export class FriendsPage {
     this.saving.set(true);
     this.error.set('');
     try {
-      await this.api.post('friends', this.form.getRawValue());
+      const result = await this.api.post<{ channel: 'email' | 'friendship' }>(
+        'friends',
+        this.form.getRawValue(),
+      );
       this.open.set(false);
       this.form.reset();
-      this.toasts.success(
-        this.i18n.t('A little company is on its way.', 'رفقة صغيرة في طريقها إليك.'),
-      );
+      if (result.channel === 'email')
+        this.toasts.success(
+          this.i18n.t(
+            'The email provider accepted your invitation. Your friend can check their inbox and spam folder.',
+            'قبل مزود البريد الدعوة. يمكن لصديقك التحقق من الوارد والبريد غير المرغوب فيه.',
+          ),
+        );
+      else
+        this.toasts.success(
+          this.i18n.t('A little company is on its way.', 'رفقة صغيرة في طريقها إليك.'),
+        );
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);

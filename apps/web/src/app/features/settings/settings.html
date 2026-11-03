@@ -8,7 +8,10 @@
     )
   "
 />
-<div class="mx-auto max-w-3xl">
+@if (!auth.user()) {
+  <lq-skeleton />
+} @else {
+  <div class="mx-auto max-w-3xl">
   <section class="card p-6">
     <form [formGroup]="form" [lqUnsavedForm]="form" (ngSubmit)="save()">
       <h2 class="mb-6 flex items-center gap-3 text-lg font-semibold">
@@ -28,13 +31,30 @@
           </select></lq-field
         >
       </div>
-      <label class="mb-6 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-canvas p-4"
+      <label class="mb-4 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-canvas p-4"
         ><span class="text-xs"
           ><span class="block font-medium">{{ i18n.t('Reduce motion', 'تقليل الحركة') }}</span
           ><span class="mt-1 block text-muted">{{
             i18n.t('A quieter experience with less animation.', 'تجربة أهدأ بحركة أقل.')
           }}</span></span
         ><input type="checkbox" class="size-4 accent-brand" formControlName="reducedMotion"
+      /></label>
+      <label class="mb-6 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-canvas p-4"
+        ><span class="text-xs"
+          ><span class="block font-medium">{{
+            i18n.t('Show additional navigation pages', 'إظهار صفحات التنقل الإضافية')
+          }}</span
+          ><span class="mt-1 block text-muted">{{
+            i18n.t(
+              'Display additional pages and tools in the sidebar. Turn this off to keep only the main pages visible.',
+              'إظهار الصفحات والأدوات الإضافية في الشريط الجانبي. أوقف هذا الخيار للإبقاء على الصفحات الأساسية فقط.'
+            )
+          }}</span></span
+        ><input
+          type="checkbox"
+          class="size-4 accent-brand"
+          [checked]="i18n.showAdditionalNavigation()"
+          (change)="i18n.setShowAdditionalNavigation($any($event.target).checked)"
       /></label>
       <h2 class="mb-6 flex items-center gap-3 border-t border-line pt-6 text-lg font-semibold">
         <lq-icon name="shield" class="text-brand" />{{
@@ -108,3 +128,4 @@
     <div class="skeleton mt-6 h-48"></div>
   }
 </div>
+}

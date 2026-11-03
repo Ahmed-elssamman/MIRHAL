@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { isAbsolute } from 'node:path';
 
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -13,8 +12,6 @@ export const envSchema = z.object({
   VERCEL: z.string().optional(),
   CRON_SECRET: z.string().optional(),
   TRUSTED_PROXIES: z.string().optional(),
-  UPLOAD_DIR: z.string().optional(),
-  BLOB_READ_WRITE_TOKEN: z.string().optional(),
   MAIL_MODE: z.enum(['development', 'disabled', 'production']).default('development'),
   EMAIL_PROVIDER: z.enum(['file', 'smtp', 'resend', 'memory']).optional(),
   SMTP_HOST: z.string().optional(),
@@ -23,6 +20,7 @@ export const envSchema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASSWORD: z.string().optional(),
   SMTP_FROM: z.string().optional(),
+  SUPPORT_EMAIL: z.union([z.string().email(), z.literal('')]).optional(),
   RESEND_API_KEY: z.string().optional(),
   REDIS_URL: z.string().optional(),
   RATE_LIMIT_MODE: z.enum(['auto', 'redis', 'memory']).default('auto'),
@@ -69,15 +67,6 @@ export function validateEnvironment(env: Record<string, unknown> = process.env):
 
   // Validate production-specific requirements
   if (isProd) {
-    if (!isVercel && !config.BLOB_READ_WRITE_TOKEN) {
-      const uploadDir = config.UPLOAD_DIR;
-      if (!uploadDir || !isAbsolute(uploadDir)) {
-        throw new StartupConfigurationError(
-          'Persistent private upload storage requires BLOB_READ_WRITE_TOKEN or an absolute UPLOAD_DIR on an attached disk.',
-        );
-      }
-    }
-
     for (const name of ['WEB_ORIGIN', 'ADMIN_ORIGIN', 'APP_URL'] as const) {
       try {
         const val = String(env[name] ?? '');

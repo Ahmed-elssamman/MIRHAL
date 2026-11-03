@@ -4,17 +4,35 @@ import { RouterLink } from '@angular/router';
 import { Icon } from './icon';
 @Component({
   selector: 'lq-logo',
-  template:
-    '<span class="flex items-center gap-2.5"><svg aria-hidden="true" class="size-9 shrink-0" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#6b57cd"/><path d="M32 14c-11 0-17 7-17 18h17V14Zm4 18h14c0-11-5-18-14-18v18ZM32 36H15c0 10 7 15 17 15V36Zm4 0v15c9 0 14-6 14-15H36Z" fill="white"/></svg><span class="text-[22px] font-bold tracking-[-0.8px]">{{ i18n.t(\'MIRHAL\', \'مِرحال\') }}<span class="text-brand">.</span></span></span>',
+  template: `
+    <span class="flex items-center gap-2.5">
+      <img
+        src="/mirhal-mark.svg"
+        alt=""
+        aria-hidden="true"
+        [class]="compact() ? 'size-8 shrink-0' : 'size-9 shrink-0'"
+        width="36"
+        height="36"
+      />
+      @if (compact()) {
+        <span class="sr-only">{{ i18n.t('MIRHAL', 'مِرحال') }}</span>
+      } @else {
+        <span class="text-[22px] font-bold tracking-[-0.8px]"
+          >{{ i18n.t('MIRHAL', 'مِرحال') }}<span class="text-brand">.</span></span
+        >
+      }
+    </span>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Logo {
   readonly i18n = inject(Preferences);
+  readonly compact = input(false);
 }
 @Component({
   selector: 'lq-page-header',
   template:
-    '<header class="mb-7 flex flex-wrap items-start justify-between gap-4"><div><p class="eyebrow mb-2">{{ eyebrow() }}</p><h1 class="page-title">{{ title() }}</h1><p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">{{ description() }}</p></div><div class="flex items-center gap-2"><ng-content /></div></header>',
+    '<header class="mb-7 flex flex-wrap items-start justify-between gap-4"><div>@if (eyebrow()) {<p class="eyebrow mb-2">{{ eyebrow() }}</p>}<h1 class="page-title">{{ title() }}</h1>@if (description()) {<p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">{{ description() }}</p>}</div><div class="flex items-center gap-2"><ng-content /></div></header>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageHeader {

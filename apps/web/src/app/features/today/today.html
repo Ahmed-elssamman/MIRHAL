@@ -7,9 +7,13 @@
       'ركز على ما أمامك. الخطوة الصغيرة التالية هي كل ما تحتاجه.'
     )
   "
-  ><a routerLink="/habits" class="btn btn-secondary"
-    ><lq-icon name="plus" [size]="17" />{{ i18n.t('Add a habit', 'أضف عادة') }}</a
-  ></lq-page-header
+  ><div class="flex flex-wrap gap-2">
+    <a routerLink="/habits" [queryParams]="{ quickAdd: 'habit' }" class="btn btn-secondary"
+      ><lq-icon name="plus" [size]="17" />{{ i18n.t('Add a habit', 'أضف عادة') }}</a
+    ><a routerLink="/tasks" [queryParams]="{ quickAdd: 'task' }" class="btn btn-primary"
+      ><lq-icon name="plus" [size]="17" />{{ i18n.t('Add a task', 'أضف مهمة') }}</a
+    >
+  </div></lq-page-header
 >
 @if (nextAction(); as action) {
   <section
@@ -65,7 +69,7 @@
       <button
         type="button"
         class="btn btn-primary min-h-11 w-full sm:w-auto"
-        [disabled]="!!busy()"
+        [disabled]="action.kind === 'task' ? pendingTaskIds().has(action.task.id) : !!busy()"
         (click)="
           action.kind === 'task'
             ? completeTask(action.task.id)
@@ -204,12 +208,12 @@
       } @else {
         <div class="divide-y divide-line">
           @for (task of todayTasks(); track task.id) {
-            <div class="flex items-center gap-3 py-4">
+            <div class="flex items-center gap-3 py-4" [class.opacity-50]="pendingTaskIds().has(task.id)">
               <button
                 type="button"
                 class="flex size-11 shrink-0 items-center justify-center rounded-lg border border-line text-muted hover:border-brand hover:text-brand"
                 [attr.aria-label]="i18n.t('Complete ', 'إتمام ') + task.title"
-                [disabled]="!!busy()"
+                [disabled]="pendingTaskIds().has(task.id)"
                 (click)="completeTask(task.id)"
               >
                 <lq-icon name="check" [size]="14" />

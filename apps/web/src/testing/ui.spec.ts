@@ -144,4 +144,18 @@ describe('Accessible shared components', () => {
     preferences.setReducedMotion(false);
     vi.unstubAllGlobals();
   });
+  it('tracks the operating-system theme only while the preference is system', () => {
+    const preferences = TestBed.inject(Preferences);
+    preferences.setTheme('system');
+    preferences.systemPrefersDark.set(true);
+    expect(preferences.resolvedTheme()).toBe('dark');
+    preferences.systemPrefersDark.set(false);
+    expect(preferences.resolvedTheme()).toBe('light');
+    preferences.setTheme('dark');
+    preferences.systemPrefersDark.set(false);
+    expect(preferences.resolvedTheme()).toBe('dark');
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    preferences.setTheme('light');
+    expect(preferences.resolvedTheme()).toBe('light');
+  });
 });

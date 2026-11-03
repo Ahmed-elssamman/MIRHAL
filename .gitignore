@@ -11,3 +11,4 @@ test-results/
 .local/
 *.log
 .vercel/
+marketing-local/

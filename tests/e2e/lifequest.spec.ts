@@ -4,6 +4,25 @@ import AxeBuilder from '@axe-core/playwright';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
+test('sends a new friend invitation from the customer UI', async ({ page }) => {
+  await login(page);
+  await page.goto('/friends');
+  await page.getByRole('button', { name: 'Add a friend', exact: true }).click();
+  await page.locator('#friend-email').fill(`friend-${randomBytes(6).toString('hex')}@e2e.test`);
+  const inviteResponse = page.waitForResponse(
+    (response) => response.url().endsWith('/api/friends') && response.request().method() === 'POST',
+  );
+  await page.getByRole('button', { name: 'Send friend request', exact: true }).click();
+  const response = await inviteResponse;
+  expect(response.ok()).toBe(true);
+  expect(await response.json()).toEqual({ channel: 'email', status: 'accepted' });
+  await expect(
+    page.getByText(
+      'The email provider accepted your invitation. Your friend can check their inbox and spam folder.',
+    ),
+  ).toBeVisible();
+});
+
 test('register, onboard, create linked work, build a habit, reflect, earn and redeem XP', async ({
   page,
 }) => {

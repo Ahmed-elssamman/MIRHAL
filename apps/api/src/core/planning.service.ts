@@ -187,18 +187,40 @@ export class PlanningService {
     return this.db.atomic(userId, async (tx) => {
       const task = await tx.task.findFirst({ where: { id, userId } });
       if (!task) throw new NotFoundException();
-      const merged = { ...task, ...input };
-      assertDateOrder(merged.startDate, merged.dueDate);
-      await assertReferences(tx, userId, { ...task, ...input });
-      let parentId = input.parentId;
-      let depth = 0;
-      while (parentId) {
-        if (parentId === id || depth++ > 50)
-          throw new BadRequestException('A task cannot be its own ancestor.');
-        parentId = (
-          await tx.task.findFirst({ where: { id: parentId, userId }, select: { parentId: true } })
-        )?.parentId;
+
+      if (input.startDate !== undefined || input.dueDate !== undefined) {
+        assertDateOrder(input.startDate ?? task.startDate, input.dueDate ?? task.dueDate);
       }
+
+      const hasRefChanges =
+        input.goalId !== undefined || input.projectId !== undefined || input.parentId !== undefined;
+      if (hasRefChanges) {
+        await assertReferences(tx, userId, {
+          goalId: input.goalId !== undefined ? input.goalId : task.goalId,
+          projectId: input.projectId !== undefined ? input.projectId : task.projectId,
+          parentId: input.parentId !== undefined ? input.parentId : task.parentId,
+        });
+      }
+
+      if (
+        input.parentId !== undefined &&
+        input.parentId !== null &&
+        input.parentId !== task.parentId
+      ) {
+        let parentId: string | null | undefined = input.parentId;
+        let depth = 0;
+        while (parentId) {
+          if (parentId === id || depth++ > 50)
+            throw new BadRequestException('A task cannot be its own ancestor.');
+          parentId = (
+            await tx.task.findFirst({
+              where: { id: parentId, userId },
+              select: { parentId: true },
+            })
+          )?.parentId;
+        }
+      }
+
       const updated = await tx.task.update({
         where: { id },
         data: {

@@ -4,6 +4,7 @@ import { MailAdapter } from '../../auth/mail.adapter';
 import { notify } from '../../common/notifications';
 import { TokenPurpose } from '@prisma/client';
 import { EmailLanguage } from '../../auth/mail.templates';
+import { classifyDeliveryError } from '../../mail/mail.types';
 
 export interface BatchProcessingResult {
   processed: number;
@@ -81,13 +82,22 @@ export class OutboxWorker {
         );
       } catch (error) {
         const attemptCount = job.attemptCount + 1;
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const classification = classifyDeliveryError(error);
+        const permanentFailure = job.channel === 'EMAIL' && classification !== 'temporary';
+        const errorMessage =
+          job.channel === 'EMAIL'
+            ? 'Email delivery attempt failed.'
+            : error instanceof Error
+              ? error.message
+              : 'Unknown error';
         const errorCode =
-          typeof error === 'object' && error !== null && 'code' in error
-            ? String((error as Record<string, unknown>)['code'])
-            : 'JOB_EXECUTION_FAILED';
+          job.channel === 'EMAIL'
+            ? `EMAIL_${classification.toUpperCase()}`
+            : typeof error === 'object' && error !== null && 'code' in error
+              ? String((error as Record<string, unknown>)['code'])
+              : 'JOB_EXECUTION_FAILED';
 
-        if (attemptCount >= job.maxAttempts) {
+        if (permanentFailure || attemptCount >= job.maxAttempts) {
           // Dead letter
           await this.db.outboxJob.update({
             where: { id: job.id },
@@ -109,7 +119,7 @@ export class OutboxWorker {
               channel: job.channel,
               eventType: job.eventType,
               attempts: attemptCount,
-              error: errorMessage,
+              ...(job.channel === 'EMAIL' ? { classification } : { error: errorMessage }),
             }),
           );
         } else {
@@ -136,7 +146,7 @@ export class OutboxWorker {
               jobId: job.id,
               attempt: attemptCount,
               nextAttemptAt: nextAttemptAt.toISOString(),
-              error: errorMessage,
+              ...(job.channel === 'EMAIL' ? { classification } : { error: errorMessage }),
             }),
           );
         }

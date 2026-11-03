@@ -89,6 +89,13 @@ enum FriendshipStatus {
   BLOCKED
 }
 
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
 enum ChallengeStatus {
   DRAFT
   INVITED
@@ -179,6 +186,7 @@ model User {
   rewardSavings       RewardSavingsTarget[]
   friendshipsSent     Friendship[]           @relation("FriendshipSender")
   friendshipsReceived Friendship[]           @relation("FriendshipReceiver")
+  invitationsSent     Invitation[]           @relation("SentInvitations")
   challenges          Challenge[]
   participations      ChallengeParticipant[]
   notifications       Notification[]
@@ -676,6 +684,22 @@ model Friendship {
 
   @@index([senderId, status])
   @@index([receiverId, status])
+}
+
+model Invitation {
+  id         String           @id @default(cuid())
+  senderId   String
+  sender     User             @relation("SentInvitations", fields: [senderId], references: [id], onDelete: Cascade)
+  email      String
+  tokenHash  String           @unique
+  status     InvitationStatus @default(PENDING)
+  expiresAt  DateTime
+  acceptedAt DateTime?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@index([email, status])
+  @@index([senderId, status])
 }
 
 model Challenge {

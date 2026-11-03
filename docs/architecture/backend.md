@@ -97,6 +97,8 @@ Mail delivery follows the Strategy and Factory patterns with an integrated Circu
   - **HALF_OPEN**: After a cooldown period (e.g., 30s), a single probe request is permitted to test provider recovery. Success closes the circuit; failure immediately returns it to OPEN.
 - **Error Classification**: Distinguishes transient failures (timeouts, 5xx, network drops) from permanent failures (invalid recipient, template error, authentication failure). Transient errors trigger outbox retries; permanent errors terminate immediately without wasteful retries.
 
+The outbox worker currently supports both `EMAIL` and `IN_APP` channels, but no business workflow currently schedules an `EMAIL` outbox job. Registration, verification resend, and password recovery send synchronously through `MailAdapter`; the outbox's email retry policy is therefore not part of those auth flows.
+
 ---
 
 ## 6. Observability, Security & Production Safety

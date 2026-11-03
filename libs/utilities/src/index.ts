@@ -15,6 +15,11 @@ export class Preferences {
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly language = signal<'en' | 'ar'>('ar');
   readonly theme = signal<'light' | 'dark' | 'system'>('system');
+  readonly systemPrefersDark = signal(false);
+  readonly showAdditionalNavigation = signal<boolean>(false);
+  readonly resolvedTheme = computed(() =>
+    this.theme() === 'system' ? (this.systemPrefersDark() ? 'dark' : 'light') : this.theme(),
+  );
   readonly rtl = computed(() => this.language() === 'ar');
   constructor() {
     const destroy = inject(DestroyRef);
@@ -24,14 +29,27 @@ export class Preferences {
         if (language === 'ar' || language === 'en') this.language.set(language);
         const theme = localStorage.getItem('lq-theme');
         if (theme === 'dark' || theme === 'light') this.theme.set(theme);
+        const showAdditional = localStorage.getItem('lq-show-additional-nav');
+        if (showAdditional !== null) this.showAdditionalNavigation.set(showAdditional === 'true');
       } catch {
         /* Private browsing may disable storage. */
       }
-      this.apply();
       const scheme = globalThis.matchMedia?.('(prefers-color-scheme: dark)');
-      const apply = () => this.apply();
-      scheme?.addEventListener('change', apply);
-      destroy.onDestroy(() => scheme?.removeEventListener('change', apply));
+      if (scheme) {
+        this.systemPrefersDark.set(scheme.matches);
+        const apply = (event: MediaQueryListEvent | MediaQueryList) => {
+          this.systemPrefersDark.set(event.matches);
+          this.apply();
+        };
+        if (scheme.addEventListener) {
+          scheme.addEventListener('change', apply);
+          destroy.onDestroy(() => scheme.removeEventListener('change', apply));
+        } else {
+          scheme.addListener(apply);
+          destroy.onDestroy(() => scheme.removeListener(apply));
+        }
+      }
+      this.apply();
     }
   }
   t(en: string, ar: string) {
@@ -142,6 +160,10 @@ export class Preferences {
     this.persist('lq-theme', value);
     this.apply();
   }
+  setShowAdditionalNavigation(value: boolean) {
+    this.showAdditionalNavigation.set(value);
+    this.persist('lq-show-additional-nav', String(value));
+  }
   setReducedMotion(value: boolean) {
     this.document.documentElement.classList.toggle('reduce-motion', value);
   }
@@ -158,13 +180,15 @@ export class Preferences {
     const root = this.document.documentElement;
     root.lang = this.language();
     root.dir = this.rtl() ? 'rtl' : 'ltr';
-    if (this.browser)
-      root.classList.toggle(
-        'dark',
-        this.theme() === 'dark' ||
-          (this.theme() === 'system' &&
-            globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches),
-      );
+    if (this.browser) {
+      const dark = this.resolvedTheme() === 'dark';
+      root.classList.toggle('dark', dark);
+      root.dataset['themePreference'] = this.theme();
+      root.style.colorScheme = dark ? 'dark' : 'light';
+      this.document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute('content', dark ? '#14211e' : '#0e7165');
+    }
   }
 }
 

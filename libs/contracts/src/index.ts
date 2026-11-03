@@ -57,11 +57,13 @@ export const registerSchema = z
         }
       }, 'Choose a valid timezone')
       .default('Africa/Cairo'),
+    inviteToken: z.string().min(16).max(256).optional(),
   })
   .strict();
 export const loginSchema = registerSchema.pick({ email: true, password: true });
 export const emailSchema = registerSchema.pick({ email: true });
 export const tokenSchema = z.object({ token: z.string().min(32).max(256) }).strict();
+export const inviteResolveSchema = z.object({ token: z.string().min(16).max(256) }).strict();
 export const resetSchema = tokenSchema.extend({ password: registerSchema.shape.password });
 export const profileSchema = patchSchema(
   z.object({

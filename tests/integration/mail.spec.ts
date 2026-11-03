@@ -52,17 +52,117 @@ describe('auth email', () => {
     expect(() => new MailAdapter().onModuleInit()).not.toThrow();
   });
   it('renders Arabic RTL and English LTR without unescaped links', () => {
-    const ar = renderAuthEmail('VERIFY_EMAIL', 'ar', 'https://example.test/?a=1&b=2');
-    const en = renderAuthEmail('RESET_PASSWORD', 'en', 'https://example.test/reset');
+    const ar = renderAuthEmail('VERIFY_EMAIL', 'ar', 'https://example.test/?a=1&b=2', {
+      appUrl: 'https://web.example.test',
+      supportEmail: 'help@example.test',
+    });
+    const en = renderAuthEmail('RESET_PASSWORD', 'en', 'https://example.test/reset', {
+      appUrl: 'https://web.example.test',
+    });
     expect(ar.html).toContain('lang="ar" dir="rtl"');
     expect(ar.html).toContain('a=1&amp;b=2');
-    expect(ar.html).toContain('>مِرحال</h1>');
-    expect(ar.html).toContain('dir="ltr" href=');
+    expect(ar.html).toContain('mirhal-email-logo.png');
+    expect(ar.html).toContain('alt="مِرحال"');
+    expect(ar.html).toContain('<p dir="ltr"');
+    expect(ar.html).toContain('mailto:help@example.test');
+    expect(ar.html).toContain('ينتهي هذا الرابط خلال 24 ساعة');
     expect(ar.subject).toContain('تأكيد');
     expect(en.html).toContain('lang="en" dir="ltr"');
-    expect(en.html).toContain('>MIRHAL</h1>');
+    expect(en.html).toContain('alt="MIRHAL"');
+    expect(en.html).toContain('href="https://web.example.test/help"');
+    expect(en.html).toContain('expires in 30 minutes');
     expect(en.subject).toBe('Reset your MIRHAL password');
     expect(en.text).toContain('https://example.test/reset');
+  });
+
+  it('escapes token links and provides a plain-text alternative', () => {
+    const email = renderAuthEmail(
+      'RESET_PASSWORD',
+      'en',
+      'https://example.test/reset?token=abc"><script>alert(1)</script>',
+      { appUrl: 'https://web.example.test' },
+    );
+    expect(email.html).toContain('&quot;&gt;&lt;script&gt;');
+    expect(email.html).not.toContain('<script>');
+    expect(email.text).toContain('https://example.test/reset?token=abc"><script>alert(1)</script>');
+  });
+
+  it('renders a password reset security notice without including a token', () => {
+    const notice = renderAuthEmail(
+      'PASSWORD_CHANGED',
+      'ar',
+      'https://web.example.test/auth/login',
+      {
+        appUrl: 'https://web.example.test',
+      },
+    );
+    expect(notice.subject).toContain('تم تغيير كلمة المرور');
+    expect(notice.html).toContain('lang="ar" dir="rtl"');
+    expect(notice.html).toContain('أُعيد تعيين كلمة مرور حسابك');
+    expect(notice.html).toContain('href="https://web.example.test/auth/login"');
+    expect(notice.html).not.toContain('token=');
+    expect(notice.text).not.toContain('token=');
+  });
+
+  it('renders friend invitations with the production signup URL and inviter name', () => {
+    const invite = renderAuthEmail('FRIEND_INVITE', 'en', 'https://mirhal.example/auth/register', {
+      appUrl: 'https://mirhal.example',
+      inviterName: 'Nour',
+    });
+    expect(invite.subject).toBe('A friend invited you to MIRHAL');
+    expect(invite.html).toContain('Nour invited you to join MIRHAL');
+    expect(invite.html).toContain('href="https://mirhal.example/auth/register"');
+    expect(invite.html).toContain('mirhal-email-logo.png');
+    expect(invite.text).toContain('https://mirhal.example/auth/register');
+  });
+
+  it('sends a friend invitation through the configured HTTPS provider', async () => {
+    process.env['NODE_ENV'] = 'development';
+    process.env['EMAIL_PROVIDER'] = 'resend';
+    process.env['APP_URL'] = 'https://mirhal.example';
+    process.env['SMTP_FROM'] = 'MIRHAL <mail@example.test>';
+    process.env['RESEND_API_KEY'] = 'test-only';
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => ({ id: 'email-123' }) });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await new MailAdapter().sendFriendInvite(
+      'friend@example.test',
+      'Nour',
+      'sender:friend:2026-10-29',
+      'en',
+    );
+
+    const options = fetchMock.mock.calls[0]?.[1];
+    expect(options.headers['Idempotency-Key']).toMatch(/^[a-f0-9]{64}$/);
+    const body = JSON.parse(options.body);
+    expect(body.to).toEqual(['friend@example.test']);
+    expect(body.subject).toBe('A friend invited you to MIRHAL');
+    expect(body.html).toContain('https://mirhal.example/auth/register');
+    expect(body.html).toContain('Nour invited you to join MIRHAL');
+    expect(JSON.stringify(vi.mocked(console.log).mock.calls)).toContain('email-123');
+  });
+
+  it('sends a password reset security notice with an event idempotency key and no token', async () => {
+    process.env['NODE_ENV'] = 'development';
+    process.env['EMAIL_PROVIDER'] = 'resend';
+    process.env['APP_URL'] = 'https://web.example.test';
+    process.env['SMTP_FROM'] = 'MIRHAL <mail@example.test>';
+    process.env['RESEND_API_KEY'] = 'test-only';
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await new MailAdapter().sendPasswordChanged('member@example.test', 'event-123', 'en');
+
+    const options = fetchMock.mock.calls[0]?.[1];
+    expect(options.headers['Idempotency-Key']).toMatch(/^[a-f0-9]{64}$/);
+    expect(JSON.parse(options.body).html).toContain('Your MIRHAL account password was reset');
+    expect(JSON.parse(options.body).html).toContain('https://web.example.test/auth/login');
+    expect(JSON.parse(options.body).html).not.toContain('token=');
+    expect(JSON.parse(options.body).text).not.toContain('token=');
   });
 
   it('requires complete SMTP configuration', () => {

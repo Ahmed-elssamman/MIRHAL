@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { Api, Area, errorMessage, Goal, Habit, Page, Toasts } from '@lifequest/data-access';
@@ -46,6 +47,7 @@ export class HabitsPage {
   private readonly toasts = inject(Toasts);
   readonly discard = inject(DiscardChanges);
   readonly i18n = inject(Preferences);
+  private readonly route = inject(ActivatedRoute, { optional: true });
   readonly resource = this.api.resource<Page<Habit>>('habits');
   readonly areas = this.api.resource<Area[]>('life-areas');
   readonly goals = this.api.resource<Page<Goal>>('goals?limit=100');
@@ -75,6 +77,9 @@ export class HabitsPage {
     notes: [''],
     status: ['ACTIVE'],
   });
+  constructor() {
+    if (this.route?.snapshot.queryParamMap.get('quickAdd') === 'habit') void this.create();
+  }
   async create() {
     if (!this.areas.data()) await this.areas.load();
     if (!this.areas.data()?.length) {

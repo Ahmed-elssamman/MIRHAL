@@ -6,9 +6,10 @@ import { ChallengeLifecycleService } from './challenge-lifecycle.service';
 import { ChallengeScoringService } from './challenge-scoring.service';
 import { DatabaseModule } from '../common/database';
 import { GamificationModule } from '../gamification/gamification.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [DatabaseModule, GamificationModule],
+  imports: [DatabaseModule, GamificationModule, AuthModule],
   controllers: [SocialController],
   providers: [
     FriendsService,

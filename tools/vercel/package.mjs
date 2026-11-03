@@ -2,6 +2,13 @@ import { cp, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { nodeFileTrace } from '@vercel/nft';
 import { config } from 'dotenv';
+import {
+  addPublicSeo,
+  customerRoutes,
+  notFoundRoute,
+  robotsTxt,
+  sitemapXml,
+} from './seo-assets.mjs';
 config({ quiet: true });
 
 const root = process.cwd();
@@ -48,7 +55,8 @@ for (const name of ['web', 'admin']) {
   const out = resolve(root, `.local/vercel/${name}/.vercel/output`);
   await rm(out, { recursive: true, force: true });
   await mkdir(out, { recursive: true });
-  await cp(resolve(root, `dist/${name}/browser`), `${out}/static`, { recursive: true });
+  const staticRoot = `${out}/static`;
+  await cp(resolve(root, `dist/${name}/browser`), staticRoot, { recursive: true });
   const api =
     name === 'web'
       ? apiOrigin
@@ -57,12 +65,30 @@ for (const name of ['web', 'admin']) {
       : { src: '/api(/.*)?', dest: `${origin}/api$1` };
   const routes = [...headerRoutes, api];
   if (name === 'web')
-    routes.push({ src: '/', dest: '/index.html' }, { src: '/help/?', dest: '/help/index.html' });
-  routes.push(
-    { handle: 'filesystem' },
-    { src: '/.*\\.[^/]+', status: 404 },
-    { src: '/.*', dest: name === 'web' ? '/index.csr.html' : '/index.html' },
-  );
+    routes.push(
+      { src: '/', dest: '/index.html' },
+      { src: '/help/?', dest: '/help/index.html' },
+      { src: '/how-it-works/?', dest: '/help/index.html' },
+    );
+  routes.push({ handle: 'filesystem' }, { src: '/.*\\.[^/]+', status: 404 });
+  if (name === 'web') {
+    routes.push(...customerRoutes.map((src) => ({ src, dest: '/index.csr.html' })));
+    routes.push(notFoundRoute);
+
+    for (const [file, path] of [
+      ['index.html', '/'],
+      ['help/index.html', '/help'],
+    ]) {
+      const htmlPath = `${staticRoot}/${file}`;
+      let html = await readFile(htmlPath, 'utf8');
+      html = addPublicSeo(html, path, origin);
+      await writeFile(htmlPath, html);
+    }
+    await writeFile(`${staticRoot}/robots.txt`, robotsTxt(origin));
+    await writeFile(`${staticRoot}/sitemap.xml`, sitemapXml(origin));
+  } else {
+    routes.push({ src: '/.*', dest: '/index.html' });
+  }
   await writeJson(`${out}/config.json`, {
     version: 3,
     routes,

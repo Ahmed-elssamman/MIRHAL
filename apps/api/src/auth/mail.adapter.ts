@@ -1,11 +1,11 @@
 import { Injectable, OnModuleInit, ServiceUnavailableException } from '@nestjs/common';
 import { createHash } from 'node:crypto';
 import type { TokenPurpose } from '@prisma/client';
-import { EmailLanguage, renderAuthEmail } from './mail.templates';
+import { EmailLanguage, EmailPurpose, renderAuthEmail } from './mail.templates';
 import { MailMessage, classifyDeliveryError } from '../mail/mail.types';
 import { MailFactory } from '../mail/mail.factory';
 
-type Message = { to: string; purpose: TokenPurpose; url: string; language: EmailLanguage };
+type Message = { to: string; purpose: EmailPurpose; url: string; language: EmailLanguage };
 
 @Injectable()
 export class MailAdapter implements OnModuleInit {
@@ -79,7 +79,7 @@ export class MailAdapter implements OnModuleInit {
   async send(to: string, purpose: TokenPurpose, token: string, language: EmailLanguage = 'ar') {
     this.assertConfigured();
     const path = purpose === 'VERIFY_EMAIL' ? 'verify-email' : 'reset-password';
-    const origin = (process.env['APP_URL'] ?? 'http://localhost:4200').replace(/\/$/, '');
+    const origin = new URL(process.env['APP_URL'] ?? 'http://localhost:4200').origin;
     const url = `${origin}/auth/${path}?token=${encodeURIComponent(token)}`;
     const mail: Message = { to, purpose, url, language };
 
@@ -88,7 +88,11 @@ export class MailAdapter implements OnModuleInit {
       return;
     }
 
-    const { html, text, subject } = renderAuthEmail(purpose, language, url);
+    const { html, text, subject } = renderAuthEmail(purpose, language, url, {
+      appUrl: origin,
+      logoUrl: new URL('/mirhal-email-logo.png', origin).href,
+      supportEmail: process.env['SUPPORT_EMAIL'] || undefined,
+    });
     const delivery: MailMessage = {
       ...mail,
       from: process.env['SMTP_FROM']!,
@@ -100,16 +104,87 @@ export class MailAdapter implements OnModuleInit {
       language,
     };
 
+    await this.deliver(delivery, purpose);
+  }
+
+  async sendPasswordChanged(to: string, eventId: string, language: EmailLanguage = 'ar') {
+    if (!this.enabled) return;
+    this.assertConfigured();
+    const origin = new URL(process.env['APP_URL'] ?? 'http://localhost:4200').origin;
+    const url = new URL('/auth/login', origin).href;
+    const purpose: EmailPurpose = 'PASSWORD_CHANGED';
+    const mail: Message = { to, purpose, url, language };
+    if (process.env['NODE_ENV'] === 'test') {
+      this.outbox.push(mail);
+      return;
+    }
+    const { html, text, subject } = renderAuthEmail(purpose, language, url, {
+      appUrl: origin,
+      logoUrl: new URL('/mirhal-email-logo.png', origin).href,
+      supportEmail: process.env['SUPPORT_EMAIL'] || undefined,
+    });
+    const delivery: MailMessage = {
+      ...mail,
+      from: process.env['SMTP_FROM']!,
+      subject,
+      html,
+      text,
+      key: createHash('sha256').update(`${purpose}:${eventId}`).digest('hex'),
+      purpose,
+      language,
+    };
+    await this.deliver(delivery, purpose);
+  }
+
+  async sendFriendInvite(
+    to: string,
+    inviterName: string,
+    eventId: string,
+    language: EmailLanguage = 'ar',
+    inviteToken?: string,
+  ) {
+    this.assertConfigured();
+    const origin = new URL(process.env['APP_URL'] ?? 'http://localhost:4200').origin;
+    const url = inviteToken
+      ? new URL(`/auth/register?inviteToken=${encodeURIComponent(inviteToken)}`, origin).href
+      : new URL('/auth/register', origin).href;
+    const purpose: EmailPurpose = 'FRIEND_INVITE';
+    const mail: Message = { to, purpose, url, language };
+    if (process.env['NODE_ENV'] === 'test') {
+      this.outbox.push(mail);
+      return;
+    }
+    const { html, text, subject } = renderAuthEmail(purpose, language, url, {
+      appUrl: origin,
+      logoUrl: new URL('/mirhal-email-logo.png', origin).href,
+      supportEmail: process.env['SUPPORT_EMAIL'] || undefined,
+      inviterName,
+    });
+    const delivery: MailMessage = {
+      ...mail,
+      from: process.env['SMTP_FROM']!,
+      subject,
+      html,
+      text,
+      key: createHash('sha256').update(`${purpose}:${eventId}`).digest('hex'),
+      purpose,
+      language,
+    };
+    await this.deliver(delivery, purpose);
+  }
+
+  private async deliver(delivery: MailMessage, purpose: EmailPurpose) {
     const provider = this.factory.createProvider(this.providerName, process.env['RESEND_API_KEY']);
     try {
-      await provider.send(delivery);
+      const result = await provider.send(delivery);
       console.log(
         JSON.stringify({
           level: 'info',
           event: 'email_delivery',
           provider: this.providerName,
           purpose,
-          status: 'sent',
+          status: 'accepted',
+          ...(result.messageId ? { providerMessageId: result.messageId } : {}),
         }),
       );
     } catch (error) {

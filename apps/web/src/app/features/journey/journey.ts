@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DatePickerModule } from 'primeng/datepicker';
 import { Api, Remote, errorMessage, Journey } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { ErrorState, Icon, PageHeader, ProgressRing, SectionTitle, Skeleton } from '@lifequest/ui';
@@ -7,7 +8,9 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
 @Component({
   selector: 'lq-journey',
   imports: [
+    FormsModule,
     ReactiveFormsModule,
+    DatePickerModule,
     PageHeader,
     ErrorState,
     Skeleton,
@@ -26,8 +29,15 @@ export class JourneyPage {
   readonly i18n = inject(Preferences);
   readonly resource = new Remote<Journey>(this.api, 'journey');
   readonly discard = inject(DiscardChanges);
-  readonly month = signal(new Date().toISOString().slice(0, 7));
-  readonly maxMonth = new Date().toISOString().slice(0, 7);
+  readonly month = signal(this.toMonthKey(new Date()));
+  readonly selectedMonthDate = computed(() => {
+    const [year = new Date().getFullYear(), month = new Date().getMonth() + 1] = this.month()
+      .split('-')
+      .map(Number);
+    return new Date(year, month - 1, 1);
+  });
+  readonly minMonthDate = new Date(2020, 0, 1);
+  readonly maxMonthDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
   readonly saving = signal(false);
   readonly saved = signal(false);
   readonly error = signal('');
@@ -40,6 +50,12 @@ export class JourneyPage {
   });
   constructor() {
     void this.load();
+  }
+  private toMonthKey(date: Date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  }
+  selectMonth(date: Date | null) {
+    if (date) void this.load(this.toMonthKey(date));
   }
   async load(month?: string) {
     if (this.form.dirty && !(await this.discard.confirm())) return;

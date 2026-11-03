@@ -57,13 +57,34 @@ export class SecuritySettings {
     await this.router.navigate(['/auth/login']);
   }
   async verify() {
+    if (this.busy()) return;
+    this.busy.set(true);
     try {
-      await this.api.post('auth/resend-verification');
-      this.toasts.success(
-        this.i18n.t('Check your email for the verification link.', 'تحقق من بريدك لرابط التأكيد.'),
-      );
+      const result = await this.api.post<{
+        status: 'accepted' | 'already-verified' | 'rate-limited';
+      }>('auth/resend-verification');
+      if (result.status === 'accepted')
+        this.toasts.success(
+          this.i18n.t(
+            'The email provider accepted the request. Check your inbox and spam folder.',
+            'قبل مزود البريد الطلب. تحقق من الوارد والبريد غير المرغوب فيه.',
+          ),
+        );
+      else if (result.status === 'already-verified')
+        this.toasts.success(
+          this.i18n.t('Your email is already verified.', 'بريدك الإلكتروني مؤكد بالفعل.'),
+        );
+      else
+        this.toasts.error(
+          this.i18n.t(
+            'The request limit was reached. Please wait before trying again.',
+            'وصلت إلى حد الطلبات. انتظر قليلاً قبل المحاولة مجدداً.',
+          ),
+        );
     } catch (error) {
       this.toasts.error(error);
+    } finally {
+      this.busy.set(false);
     }
   }
   async remove() {
