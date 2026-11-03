@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { MailProvider, MailMessage, MailResult } from './mail.types';
 import { SmtpProvider } from './providers/smtp.provider';
 import { ResendProvider } from './providers/resend.provider';
@@ -8,7 +8,7 @@ import { CircuitBreaker } from './circuit-breaker/circuit-breaker';
 
 export class CircuitBreakerMailProviderWrapper implements MailProvider {
   constructor(
-    private readonly provider: MailProvider,
+    readonly provider: MailProvider,
     readonly circuitBreaker: CircuitBreaker,
   ) {}
 
@@ -19,11 +19,33 @@ export class CircuitBreakerMailProviderWrapper implements MailProvider {
   async send(message: MailMessage): Promise<MailResult> {
     return this.circuitBreaker.execute(() => this.provider.send(message));
   }
+
+  async verify(): Promise<boolean> {
+    if (
+      'verify' in this.provider &&
+      typeof (this.provider as { verify?: () => Promise<boolean> }).verify === 'function'
+    ) {
+      return (this.provider as { verify: () => Promise<boolean> }).verify();
+    }
+    return true;
+  }
 }
 
 @Injectable()
-export class MailFactory {
+export class MailFactory implements OnModuleDestroy {
   private readonly logger = new Logger(MailFactory.name);
+  private readonly instances = new Map<string, CircuitBreakerMailProviderWrapper>();
+
+  getProvider(providerName: string, apiKey?: string): CircuitBreakerMailProviderWrapper {
+    const key = `${providerName}:${apiKey ?? ''}`;
+    const existing = this.instances.get(key);
+    if (existing) {
+      return existing;
+    }
+    const created = this.createProvider(providerName, apiKey) as CircuitBreakerMailProviderWrapper;
+    this.instances.set(key, created);
+    return created;
+  }
 
   createProvider(providerName: string, apiKey?: string): MailProvider {
     let baseProvider: MailProvider;
@@ -54,5 +76,21 @@ export class MailFactory {
     });
 
     return new CircuitBreakerMailProviderWrapper(baseProvider, circuitBreaker);
+  }
+
+  clearCache() {
+    for (const wrapper of this.instances.values()) {
+      if (
+        'onModuleDestroy' in wrapper.provider &&
+        typeof (wrapper.provider as { onModuleDestroy?: () => void }).onModuleDestroy === 'function'
+      ) {
+        (wrapper.provider as { onModuleDestroy: () => void }).onModuleDestroy();
+      }
+    }
+    this.instances.clear();
+  }
+
+  onModuleDestroy() {
+    this.clearCache();
   }
 }

@@ -26,7 +26,9 @@ export function validateStartupEnvironment() {
       }
     }
     if (process.env['MAIL_MODE'] !== 'disabled') {
-      const provider = process.env['EMAIL_PROVIDER'];
+      const provider =
+        process.env['EMAIL_PROVIDER'] ??
+        (process.env['SMTP_HOST'] ? 'smtp' : process.env['RESEND_API_KEY'] ? 'resend' : undefined);
       const fields =
         provider === 'smtp'
           ? ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASSWORD', 'SMTP_FROM']

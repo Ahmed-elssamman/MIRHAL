@@ -9,7 +9,15 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
 import { SecuritySettings } from './security';
 @Component({
   selector: 'lq-settings',
-  imports: [UnsavedForm, ReactiveFormsModule, PageHeader, Icon, FormField, SecuritySettings, Skeleton, TranslatePipe],
+  imports: [
+    UnsavedForm,
+    ReactiveFormsModule,
+    PageHeader,
+    Icon,
+    FormField,
+    SecuritySettings,
+    Skeleton,
+  ],
   templateUrl: './settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -35,7 +43,9 @@ export class SettingsPage {
     shareStreak: [this.auth.user()?.profile.shareStreak ?? false],
     notificationsEnabled: [this.auth.user()?.profile.notificationsEnabled ?? true],
     reducedMotion: [this.auth.user()?.profile.reducedMotion ?? false],
-    showAdditionalNavigation: [this.auth.user()?.profile.showAdditionalNavigation ?? this.i18n.showAdditionalNavigation()],
+    showAdditionalNavigation: [
+      this.auth.user()?.profile.showAdditionalNavigation ?? this.i18n.showAdditionalNavigation(),
+    ],
   });
   async save() {
     this.saving.set(true);

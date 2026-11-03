@@ -1,33 +1,13 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Preferences } from '@lifequest/utilities';
-import { LoadingService } from '@lifequest/data-access';
-import {
-  NavigationCancel,
-  NavigationEnd,
-  NavigationError,
-  NavigationStart,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
-import { Overlays } from '@lifequest/ui/overlays';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterOutlet } from '@angular/router';
+import { Overlays } from '../../../../libs/ui/src/overlays';
+import { GlobalLoader } from '../../../../libs/ui/src/loader';
 @Component({
   selector: 'lq-root',
-  imports: [RouterOutlet, Overlays, TranslatePipe],
-  template: `
-    @if (loading.isLoading()) {
-      <div
-        role="progressbar"
-        [attr.aria-label]="'common.loading' | translate"
-        class="fixed inset-x-0 top-0 z-[9999] h-1 overflow-hidden bg-brand/20 shadow-sm"
-      >
-        <div class="loading-bar h-full bg-brand"></div>
-      </div>
-    }
-    <router-outlet />@defer (on idle) { <lq-overlays /> }
-  `,
+  imports: [RouterOutlet, Overlays, GlobalLoader],
+  template: '<lq-global-loader /><router-outlet />@defer (on idle) { <lq-overlays /> }',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {

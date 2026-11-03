@@ -14,28 +14,20 @@ import {
 import { Meta, Title } from '@angular/platform-browser';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Overlays } from '@lifequest/ui/overlays';
-import { PwaUpdates } from './pwa/updates';
+import { Overlays } from '../../../../libs/ui/src/overlays';
+import { GlobalLoader } from '../../../../libs/ui/src/loader';
 @Component({
   selector: 'lq-root',
-  imports: [RouterOutlet, Overlays, LevelCelebration, TranslatePipe],
+  imports: [RouterOutlet, Overlays, LevelCelebration, GlobalLoader],
   template: `
-    @if (loading.isLoading()) {
-      <div
-        role="progressbar"
-        [attr.aria-label]="'common.loading' | translate"
-        class="fixed inset-x-0 top-0 z-[9999] h-1 overflow-hidden bg-brand/20 shadow-sm"
-      >
-        <div class="loading-bar h-full bg-brand"></div>
-      </div>
+    <lq-global-loader />
+    <router-outlet />
+    @defer (on idle) {
+      <lq-overlays />
     }
-    @if (updates.ready() || updates.unrecoverable()) {
-      <div role="status" class="flex flex-wrap items-center justify-center gap-3 bg-brand-soft px-4 py-3 text-sm text-brand">
-        <span>{{ (updates.unrecoverable() ? 'updates.unrecoverable' : 'updates.ready') | translate }}</span>
-        <button type="button" class="btn btn-secondary" (click)="updates.reload()">{{ 'common.reload' | translate }}</button>
-      </div>
+    @defer (when celebrations.level()) {
+      <lq-level-celebration />
     }
-    <router-outlet />@defer (on idle) { <lq-overlays /> } @defer (when celebrations.level()) { <lq-level-celebration /> }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -55,28 +47,29 @@ export class App {
       const english = this.preferences.language() === 'en';
       this.updateMetadata(english);
     });
-    this.router.events
-      .pipe(takeUntilDestroyed())
-      .subscribe((event) => {
-        if (event instanceof NavigationStart) {
-          this.navigationId = event.id;
-          this.loading.setNavigating(true);
-        } else if (
-          event instanceof NavigationEnd ||
-          event instanceof NavigationCancel ||
-          event instanceof NavigationError
-        ) {
-          if (event.id === this.navigationId) this.loading.setNavigating(false);
-          this.updateMetadata(this.preferences.language() === 'en');
-        }
-      });
+    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.loading.setNavigating(true);
+      } else if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        this.loading.setNavigating(false);
+        this.updateMetadata(this.preferences.language() === 'en');
+      }
+    });
   }
 
   private updateMetadata(english: boolean) {
     const path = (this.router.url.split(/[?#]/, 1)[0] ?? '').replace(/\/$/, '') || '/';
     const publicPage = path === '/' || path === '/help';
-    const title = this.translations.instant(path === '/help' ? 'metadata.helpTitle' : 'metadata.title');
-    const description = this.translations.instant(path === '/help' ? 'metadata.helpDescription' : 'metadata.description');
+    const title = this.translations.instant(
+      path === '/help' ? 'metadata.helpTitle' : 'metadata.title',
+    );
+    const description = this.translations.instant(
+      path === '/help' ? 'metadata.helpDescription' : 'metadata.description',
+    );
 
     this.title.setTitle(title);
     this.meta.updateTag({ name: 'description', content: description });

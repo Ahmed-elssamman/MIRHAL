@@ -76,7 +76,12 @@ export class FriendsService {
 
     const receiver = await this.db.user.findUnique({
       where: { email: normalizedEmail },
-      select: { id: true, status: true, emailVerifiedAt: true, profile: { select: { notificationsEnabled: true, language: true } } },
+      select: {
+        id: true,
+        status: true,
+        emailVerifiedAt: true,
+        profile: { select: { notificationsEnabled: true, language: true } },
+      },
     });
     if (!receiver) {
       if (!sender.emailVerifiedAt)
@@ -183,7 +188,12 @@ export class FriendsService {
         emailStatus = 'unavailable';
       }
     }
-    return { channel: 'friendship' as const, id: friendship.id, status: friendship.status, emailStatus };
+    return {
+      channel: 'friendship' as const,
+      id: friendship.id,
+      status: friendship.status,
+      emailStatus,
+    };
   }
   async resolveInvitation(token: string) {
     if (!token || typeof token !== 'string')
@@ -200,13 +210,8 @@ export class FriendsService {
       return { valid: false as const, reason: 'revoked' as const };
     if (invitation.expiresAt <= new Date()) {
       if (invitation.status === 'PENDING') {
-        await this.db.invitation.updateMany({
-          where: {
-            id: invitation.id,
-            tokenHash,
-            status: 'PENDING',
-            expiresAt: { lte: new Date() },
-          },
+        await this.db.invitation.update({
+          where: { id: invitation.id },
           data: { status: 'EXPIRED' },
         });
       }

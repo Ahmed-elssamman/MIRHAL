@@ -18,7 +18,11 @@ describe('Performance Baseline and Optimization', () => {
 
   beforeAll(async () => {
     app = configureApp(
-      await NestFactory.create(AppModule, { logger: false, bodyParser: false, abortOnError: false }),
+      await NestFactory.create(AppModule, {
+        logger: false,
+        bodyParser: false,
+        abortOnError: false,
+      }),
     );
     await app.init();
     db = app.get(Database);
@@ -107,12 +111,16 @@ describe('Performance Baseline and Optimization', () => {
 
     const avgPatch = (patchTimings.reduce((a, b) => a + b, 0) / patchTimings.length).toFixed(2);
     const avgGet = (getTimings.reduce((a, b) => a + b, 0) / getTimings.length).toFixed(2);
-    const avgService = (serviceTimings.reduce((a, b) => a + b, 0) / serviceTimings.length).toFixed(2);
+    const avgService = (serviceTimings.reduce((a, b) => a + b, 0) / serviceTimings.length).toFixed(
+      2,
+    );
     const sequentialTotal = (parseFloat(avgPatch) + parseFloat(avgGet)).toFixed(2);
 
     console.log(`[PERF BASELINE] PATCH task avg: ${avgPatch} ms`);
     console.log(`[PERF BASELINE] GET today tasks avg: ${avgGet} ms`);
-    console.log(`[PERF BASELINE] Sequential PATCH + GET (pre-optimization total): ${sequentialTotal} ms`);
+    console.log(
+      `[PERF BASELINE] Sequential PATCH + GET (pre-optimization total): ${sequentialTotal} ms`,
+    );
     console.log(`[PERF BASELINE] Service updateTask avg: ${avgService} ms`);
 
     expect(patchTimings.length).toBe(5);

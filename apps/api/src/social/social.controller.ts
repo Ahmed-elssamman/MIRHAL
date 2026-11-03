@@ -22,7 +22,9 @@ export class SocialController {
   ) {}
   @Public()
   @Get('friends/invitations/resolve')
-  resolveInvitation(@Query(new Validate(inviteResolveSchema)) query: InputOf<typeof inviteResolveSchema>) {
+  resolveInvitation(
+    @Query(new Validate(inviteResolveSchema)) query: InputOf<typeof inviteResolveSchema>,
+  ) {
     return this.friends.resolveInvitation(query.token);
   }
   @Post('friends/invitations/accept')

@@ -1,134 +1,116 @@
-<lq-page-header
-  [eyebrow]="('web.features.feedback.copy.help_us_grow_too_3adc69f5' | translate)"
-  [title]="('web.features.feedback.copy.your_voice_belongs_here_4d595274' | translate)"
-  [description]="
+<lq-page-header [eyebrow]="('web.features.feedback.copy.help_us_grow_too_3adc69f5' | translate)"
+  [title]="('web.features.feedback.copy.your_voice_belongs_here_4d595274' | translate)" [description]="
     ('web.features.feedback.copy.share_a_suggestion_or_report_a_problem_and_review_the_feedback_you_have_sent_ed105766' | translate)
-  "
-/>
+  " />
 <div class="grid items-start gap-6 lg:grid-cols-2">
   <section class="card p-6">
     <div class="mb-6 flex items-center gap-3">
-      <span class="flex size-11 items-center justify-center rounded-xl bg-brand-soft text-brand"
-        ><lq-icon name="message"
-      /></span>
+      <span class="flex size-11 items-center justify-center rounded-xl bg-brand-soft text-brand"><lq-icon
+          name="message" /></span>
       <h2 class="text-lg font-semibold">{{ ('web.features.feedback.copy.share_a_thought_093ddc0e' | translate) }}</h2>
     </div>
     @if (success()) {
-      <p role="status" class="mb-5 rounded-xl bg-mint p-4 text-xs leading-6 text-mint-ink">
-        {{
-          ('web.features.feedback.copy.thank_you_your_feedback_is_in_good_hands_you_can_follow_its_progress_here_19d5d7f4' | translate)
-        }}
-      </p>
+    <p role="status" class="mb-5 rounded-xl bg-mint p-4 text-xs leading-6 text-mint-ink">
+      {{
+      ('web.features.feedback.copy.thank_you_your_feedback_is_in_good_hands_you_can_follow_its_progress_here_19d5d7f4' |
+      translate)
+      }}
+    </p>
     }
     <form [formGroup]="form" [lqUnsavedForm]="form" (ngSubmit)="save()">
-      <lq-field id="feedback-category" [label]="('web.features.feedback.copy.what_is_it_about_0a599e88' | translate)"
-        ><select id="feedback-category" class="field" formControlName="category">
+      <lq-field id="feedback-category"
+        [label]="('web.features.feedback.copy.what_is_it_about_0a599e88' | translate)"><select id="feedback-category"
+          class="field" formControlName="category">
           @for (category of categories; track category.id) {
-            <option [value]="category.id">{{ category.key | translate }}</option>
+          <option [value]="category.id">{{ category.key | translate }}</option>
           }
-        </select></lq-field
-      ><lq-field id="feedback-title" [label]="('web.features.feedback.copy.a_short_title_7e1fbe0c' | translate)"
-        ><input id="feedback-title" class="field" formControlName="title" /></lq-field
-      ><lq-field
-        id="feedback-description"
-        [label]="('web.features.feedback.copy.tell_us_a_little_more_b3c7a740' | translate)"
-        [hint]="
+        </select></lq-field><lq-field id="feedback-title"
+        [label]="('web.features.feedback.copy.a_short_title_7e1fbe0c' | translate)"><input id="feedback-title"
+          class="field" formControlName="title" /></lq-field><lq-field id="feedback-description"
+        [label]="('web.features.feedback.copy.tell_us_a_little_more_b3c7a740' | translate)" [hint]="
           ('web.features.feedback.copy.at_least_10_characters_please_avoid_passwords_or_sensitive_personal_details_0d1e6386' | translate)
-        "
-      >
-        <textarea
-          id="feedback-description"
-          class="field"
-          rows="5"
-          formControlName="description"
-        ></textarea></lq-field
-      ><label class="mb-5 flex min-h-11 items-center gap-3 text-xs"
-        ><input type="checkbox" class="size-4 accent-brand" formControlName="anonymous" />{{
-          ('web.features.feedback.copy.hide_my_identity_from_the_support_team_2bfb91e8' | translate)
-        }}</label
-      >
+        ">
+        <textarea id="feedback-description" class="field" rows="5"
+          formControlName="description"></textarea></lq-field><label
+        class="mb-5 flex min-h-11 items-center gap-3 text-xs"><input type="checkbox" class="size-4 accent-brand"
+          formControlName="anonymous" />{{
+        ('web.features.feedback.copy.hide_my_identity_from_the_support_team_2bfb91e8' | translate)
+        }}</label>
       @if (error()) {
-        <p role="alert" class="mb-4 text-xs text-rose-600">{{ error() }}</p>
+      <p role="alert" class="mb-4 text-xs text-rose-600">{{ error() }}</p>
       }
       <button class="btn btn-primary w-full" type="submit" [disabled]="saving() || form.invalid">
-        {{ ('web.features.feedback.copy.send_my_feedback_5eb39ade' | translate) }}<lq-icon name="arrow-right" [size]="16" />
+        {{ ('web.features.feedback.copy.send_my_feedback_5eb39ade' | translate) }}<lq-icon name="arrow-right"
+          [size]="16" />
       </button>
     </form>
   </section>
   <section>
     <lq-section-title [title]="('web.features.feedback.copy.your_conversations_299d3e72' | translate)" />
     @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
+    <lq-skeleton />
     } @else if (resource.error()) {
-      <lq-error [message]="resource.error()" (retry)="resource.load()" />
+    <lq-error [message]="resource.error()" (retry)="resource.load()" />
     } @else {
-      <div class="space-y-4">
+    <div class="space-y-4">
       @for (item of resource.data()?.items; track item.id) {
-        <article class="card p-5">
-          <div class="mb-3 flex items-center justify-between gap-3">
-            <span class="badge bg-brand-soft text-brand">{{ i18n.label(item.status) }}</span
-            ><span class="text-[10px] text-muted">{{ item.createdAt | date: 'MMM d' }}</span>
-          </div>
-          <h3 class="text-sm font-semibold">{{ item.title }}</h3>
-          <p class="mt-2 text-xs leading-6 text-muted">{{ item.description }}</p>
-          <div class="my-4 space-y-2">
-            @for (file of item.attachments; track file.id) {
-              <a
-                class="flex min-h-11 items-center gap-2 break-all text-xs font-medium text-brand underline"
-                [href]="'/api/feedback/' + item.id + '/attachments/' + file.id"
-                download
-                ><lq-icon name="download" [size]="16" />{{ file.name }}</a
-              >
-            }
-            @if (item.attachments.length < 3) {
-              <label class="field-label text-xs" [for]="'attachment-' + item.id">{{
-                ('web.features.feedback.copy.add_a_screenshot_png_or_jpeg_up_to_2_mb_01599825' | translate)
-              }}</label
-              ><input
-                #attachmentInput
-                [id]="'attachment-' + item.id"
-                type="file"
-                class="field text-xs"
-                accept="image/png,image/jpeg"
-                [disabled]="!!uploading()"
-                (change)="attach(item.id, attachmentInput)"
-              />
-            }
-          </div>
-          @for (reply of item.replies; track reply.id) {
-            <div class="mt-4 rounded-xl bg-mint p-4 text-xs leading-6 text-mint-ink">
-              <p class="mb-1 text-[10px] font-semibold">
-                {{ ('web.features.feedback.copy.mirhal_team_767b89ad' | translate) }}
-              </p>
-              {{ reply.body }}
-            </div>
-          }
-        </article>
-      } @empty {
-        <div class="card p-8 text-center">
-          <lq-icon name="message" class="mb-4 text-brand" [size]="30" />
-          <p class="text-sm font-medium">
-            {{
-              ('web.features.feedback.copy.every_good_conversation_starts_somewhere_f2bbbdf8' | translate)
-            }}
-          </p>
-          <p class="mt-3 text-xs leading-6 text-muted">
-            {{
-              ('web.features.feedback.copy.your_feedback_and_our_replies_will_appear_here_d086d43b' | translate)
-            }}
-          </p>
+      <article class="card p-5">
+        <div class="mb-3 flex items-center justify-between gap-3">
+          <span class="badge bg-brand-soft text-brand">{{ i18n.label(item.status) }}</span><span
+            class="text-[10px] text-muted">{{ item.createdAt | date: 'MMM d' }}</span>
         </div>
+        <h3 class="text-sm font-semibold">{{ item.title }}</h3>
+        <p class="mt-2 text-xs leading-6 text-muted">{{ item.description }}</p>
+        <div class="my-4 space-y-2">
+          @for (file of item.attachments; track file.id) {
+          <a class="flex min-h-11 items-center gap-2 break-all text-xs font-medium text-brand underline"
+            [href]="'/api/feedback/' + item.id + '/attachments/' + file.id" download><lq-icon name="download"
+              [size]="16" />{{ file.name }}</a>
+          }
+          @if (item.attachments.length < 3) { <label class="field-label text-xs" [for]="'attachment-' + item.id">{{
+            i18n.t(
+            'Add a screenshot (PNG or JPEG, up to 2 MB)',
+            'إرفاق لقطة شاشة (PNG أو JPEG حتى 2 ميجابايت)'
+            )
+            }}</label><input #attachmentInput [id]="'attachment-' + item.id" type="file" class="field text-xs"
+              accept="image/png,image/jpeg" [disabled]="!!uploading()" (change)="attach(item.id, attachmentInput)" />
+            }
+        </div>
+        @for (reply of item.replies; track reply.id) {
+        <div class="mt-4 rounded-xl bg-mint p-4 text-xs leading-6 text-mint-ink">
+          <p class="mb-1 text-[10px] font-semibold">
+            {{ i18n.t('MIRHAL TEAM', 'فريق مِرحال') }}
+          </p>
+          {{ reply.body }}
+        </div>
+        }
+      </article>
+      } @empty {
+      <div class="card p-8 text-center">
+        <lq-icon name="message" class="mb-4 text-brand" [size]="30" />
+        <p class="text-sm font-medium">
+          {{
+          i18n.t(
+          'Every good conversation starts somewhere.',
+          'كل محادثة جيدة تبدأ من مكان ما.'
+          )
+          }}
+        </p>
+        <p class="mt-3 text-xs leading-6 text-muted">
+          {{
+          i18n.t(
+          'Your feedback and our replies will appear here.',
+          'ستظهر ملاحظاتك وردودنا هنا.'
+          )
+          }}
+        </p>
+      </div>
       }
     </div>
-  }
+    }
   </section>
 </div>
 
 @if (resource.data(); as page) {
-  <lq-pagination
-    [page]="page.page"
-    [total]="page.total"
-    [limit]="page.limit"
-    (change)="this.page($event)"
-  />
+<lq-pagination [page]="page.page" [total]="page.total" [limit]="page.limit" (change)="this.page($event)" />
 }

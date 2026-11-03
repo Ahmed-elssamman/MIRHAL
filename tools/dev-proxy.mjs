@@ -7,9 +7,15 @@ export default function devProxy(localPort, frontendOriginName, localOriginName)
   if (api.origin !== target || !['http:', 'https:'].includes(api.protocol)) {
     throw new Error('API_ORIGIN must be an HTTP(S) origin without a path.');
   }
+  const defaultFrontendOrigin =
+    frontendOriginName === 'VERCEL_WEB_ORIGIN'
+      ? 'https://mirhal-web.vercel.app'
+      : frontendOriginName === 'VERCEL_ADMIN_ORIGIN'
+        ? 'https://mirhal-admin.vercel.app'
+        : undefined;
   const frontendOrigin =
     api.protocol === 'https:'
-      ? process.env[frontendOriginName]
+      ? process.env[frontendOriginName] || defaultFrontendOrigin
       : (process.env[localOriginName] ?? `http://localhost:${localPort}`);
   return {
     '/api': {

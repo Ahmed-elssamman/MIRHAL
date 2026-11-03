@@ -16,16 +16,15 @@ These dashboard and DNS steps follow [Resend's domain guide](https://resend.com/
 1. In the Render Dashboard, use **New → Blueprint**, connect the `Ahmed-elssamman/LifeQuest` GitHub repository, and select the intended deployment branch. For review before merging PR #1, select `feat/mirhal-migration`. The root [render.yaml](../../render.yaml) defines a Node web service named `mirhal-api`, its build/start commands, and `/api/health` check. Review the plan and any charges before applying the Blueprint.
 2. Render prompts for `sync: false` variables. Fill them as follows in **Dashboard → mirhal-api → Environment**. Use the confirmed Neon connection details privately; never put them into the frontend projects.
 
-   | Variable                | Render value                                     |
-   | ----------------------- | ------------------------------------------------ |
-   | `DATABASE_URL`          | Confirmed Neon **pooled** PostgreSQL URL         |
-   | `DIRECT_URL`            | Same database's **direct** PostgreSQL URL        |
-   | `WEB_ORIGIN`            | Confirmed current customer HTTPS origin         |
-   | `ADMIN_ORIGIN`          | Confirmed current admin HTTPS origin            |
-   | `APP_URL`               | Same confirmed customer HTTPS origin            |
-   | `REDIS_URL`             | Private managed Redis connection URL            |
-   | `RESEND_API_KEY`        | Private sending key from Resend                  |
-   | `SMTP_FROM`             | Sender on the verified Resend domain             |
+   | Variable         | Render value                              |
+   | ---------------- | ----------------------------------------- |
+   | `DATABASE_URL`   | Confirmed Neon **pooled** PostgreSQL URL  |
+   | `DIRECT_URL`     | Same database's **direct** PostgreSQL URL |
+   | `WEB_ORIGIN`     | `https://lifequest-web-cyan.vercel.app`   |
+   | `ADMIN_ORIGIN`   | `https://lifequest-admin.vercel.app`      |
+   | `APP_URL`        | `https://lifequest-web-cyan.vercel.app`   |
+   | `RESEND_API_KEY` | Private sending key from Resend           |
+   | `SMTP_FROM`      | Sender on the verified Resend domain      |
 
    The Blueprint sets `NODE_ENV=production`, `EMAIL_PROVIDER=resend`, and `MAIL_MODE=production`. Configure the Resend key and verified sender in Render before expecting auth emails; optionally set `SUPPORT_EMAIL` for the email footer. Render supplies `PORT`. MIRHAL uses opaque database sessions, so no JWT secret is required. Feedback attachment bytes are stored in PostgreSQL using the existing database connection; no Blob token or attached disk is required by the Render API.
 

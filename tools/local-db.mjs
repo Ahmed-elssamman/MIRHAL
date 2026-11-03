@@ -19,7 +19,7 @@ if (!existsSync(envFile)) {
 chmodSync(envFile, 0o600);
 const env = parse(readFileSync(envFile));
 const url = new URL(env.TEST_DATABASE_URL || env.DATABASE_URL);
-if (url.hostname !== '127.0.0.1' || url.port !== '55432') {
+if (!['127.0.0.1', 'localhost'].includes(url.hostname) || url.port !== '55432') {
   console.log('Existing database configuration preserved. Local provisioning skipped.');
   process.exit(0);
 }

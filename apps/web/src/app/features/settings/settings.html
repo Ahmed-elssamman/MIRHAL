@@ -1,82 +1,110 @@
-﻿<lq-page-header
-  [eyebrow]="'settings.eyebrow' | translate"
-  [title]="'settings.title' | translate"
-  [description]="'settings.description' | translate"
-/>
+﻿<lq-page-header [eyebrow]="'settings.eyebrow' | translate" [title]="'settings.title' | translate"
+  [description]="'settings.description' | translate" />
 @if (!auth.user()) {
-  <lq-skeleton />
+<lq-skeleton />
 } @else {
-  <div class="mx-auto max-w-3xl">
-    <section class="card p-6">
-      <form [formGroup]="form" [lqUnsavedForm]="form" (ngSubmit)="save()">
-        <h2 class="mb-6 flex items-center gap-3 text-lg font-semibold">
-          <lq-icon name="sun" class="text-brand" />{{ 'settings.lookAndFeel' | translate }}
-        </h2>
-        <div class="grid gap-4 sm:grid-cols-2">
-          <lq-field id="settings-theme" [label]="'settings.theme' | translate">
-            <select id="settings-theme" class="field" formControlName="theme">
-              <option value="system">{{ 'settings.followDevice' | translate }}</option>
-              <option value="light">{{ 'settings.lightTheme' | translate }}</option>
-              <option value="dark">{{ 'settings.darkTheme' | translate }}</option>
-            </select>
-          </lq-field>
-          <lq-field id="settings-language" [label]="'settings.language' | translate">
-            <select id="settings-language" class="field" formControlName="language">
-              <option value="en">{{ 'settings.english' | translate }}</option>
-              <option value="ar">{{ 'settings.arabic' | translate }}</option>
-            </select>
-          </lq-field>
-        </div>
-        <label class="mb-4 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-canvas p-4">
-          <span class="text-xs">
-            <span class="block font-medium">{{ 'settings.reduceMotion' | translate }}</span>
-            <span class="mt-1 block text-muted">{{ 'settings.reduceMotionDescription' | translate }}</span>
-          </span>
-          <input type="checkbox" class="size-4 accent-brand" formControlName="reducedMotion" />
-        </label>
-        <label class="mb-6 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-canvas p-4">
-          <span class="text-xs">
-            <span class="block font-medium">{{ 'settings.showAdditionalNavigation' | translate }}</span>
-            <span class="mt-1 block text-muted">{{ 'settings.showAdditionalNavigationDescription' | translate }}</span>
-          </span>
-          <input
-            type="checkbox"
-            class="size-4 accent-brand"
-            formControlName="showAdditionalNavigation"
-            (change)="i18n.setShowAdditionalNavigation($any($event.target).checked)"
-          />
-        </label>
-        <h2 class="mb-6 flex items-center gap-3 border-t border-line pt-6 text-lg font-semibold">
-          <lq-icon name="shield" class="text-brand" />{{ 'settings.privacyAndBoundaries' | translate }}
-        </h2>
-        <lq-field id="settings-privacy" [label]="'settings.profileVisibility' | translate">
-          <select id="settings-privacy" class="field" formControlName="profileVisibility">
-            <option value="PRIVATE">{{ 'settings.private' | translate }}</option>
-            <option value="FRIENDS">{{ 'settings.friendsOnly' | translate }}</option>
-          </select>
-        </lq-field>
-        @for (setting of privacySettings; track setting.key) {
-          <label class="mb-3 flex min-h-12 items-center justify-between gap-3 rounded-xl border border-line p-4 text-xs">
-            {{ setting.labelKey | translate }}
-            <input type="checkbox" class="size-4 accent-brand" [formControlName]="setting.key" />
-          </label>
-        }
-        <p class="my-5 text-xs leading-6 text-muted">{{ 'settings.privateDataNotice' | translate }}</p>
-        @if (saved()) {
-          <p role="status" class="mb-4 text-xs text-mint-ink">{{ 'settings.saved' | translate }}</p>
-        }
-        @if (error()) {
-          <p role="alert" class="mb-4 text-xs text-rose-600">{{ error() }}</p>
-        }
-        <button class="btn btn-primary" type="submit" [disabled]="saving()">
-          {{ 'settings.save' | translate }}
-        </button>
-      </form>
-    </section>
-    @defer (on viewport) {
-      <lq-security-settings />
-    } @placeholder {
-      <div class="skeleton mt-6 h-48"></div>
-    }
-  </div>
+<div class="mx-auto max-w-3xl">
+  <section class="card p-6">
+    <form [formGroup]="form" [lqUnsavedForm]="form" (ngSubmit)="save()">
+      <h2 class="mb-6 flex items-center gap-3 text-lg font-semibold">
+        <lq-icon name="sun" class="text-brand" />{{ i18n.t('Look & feel', 'المظهر والإحساس') }}
+      </h2>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <lq-field id="settings-theme" [label]="i18n.t('Theme', 'المظهر')"><select id="settings-theme" class="field"
+            formControlName="theme">
+            <option value="system">{{ i18n.t('Follow my device', 'اتبع جهازي') }}</option>
+            <option value="light">{{ i18n.t('Light & bright', 'فاتح ومشرق') }}</option>
+            <option value="dark">{{ i18n.t('Calm & dark', 'هادئ وداكن') }}</option>
+          </select></lq-field><lq-field id="settings-language" [label]="i18n.t('Language', 'اللغة')"><select
+            id="settings-language" class="field" formControlName="language">
+            <option value="en">English</option>
+            <option value="ar">العربية</option>
+          </select></lq-field>
+      </div>
+      <label class="mb-4 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-canvas p-4"><span
+          class="text-xs"><span class="block font-medium">{{ i18n.t('Reduce motion', 'تقليل الحركة') }}</span><span
+            class="mt-1 block text-muted">{{
+            i18n.t('A quieter experience with less animation.', 'تجربة أهدأ بحركة أقل.')
+            }}</span></span><input type="checkbox" class="size-4 accent-brand"
+          formControlName="reducedMotion" /></label>
+      <label class="mb-6 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-canvas p-4"><span
+          class="text-xs"><span class="block font-medium">{{
+            i18n.t('Show additional navigation pages', 'إظهار صفحات التنقل الإضافية')
+            }}</span><span class="mt-1 block text-muted">{{
+            i18n.t(
+            'Display additional pages and tools in the sidebar. Turn this off to keep only the main pages visible.',
+            'إظهار الصفحات والأدوات الإضافية في الشريط الجانبي. أوقف هذا الخيار للإبقاء على الصفحات الأساسية فقط.'
+            )
+            }}</span></span><input type="checkbox" class="size-4 accent-brand"
+          [checked]="i18n.showAdditionalNavigation()"
+          (change)="i18n.setShowAdditionalNavigation($any($event.target).checked)" /></label>
+      <h2 class="mb-6 flex items-center gap-3 border-t border-line pt-6 text-lg font-semibold">
+        <lq-icon name="shield" class="text-brand" />{{
+        i18n.t(
+        'Privacy & boundaries',
+        'الخصوصية
+        والحدود'
+        )
+        }}
+      </h2>
+      <lq-field id="settings-privacy" [label]="i18n.t('Profile visibility', 'ظهور ملفي')"><select id="settings-privacy"
+          class="field" formControlName="profileVisibility">
+          <option value="PRIVATE">{{ i18n.t('Private', 'خاص') }}</option>
+          <option value="FRIENDS">{{ i18n.t('Only my friends', 'أصدقائي فقط') }}</option>
+        </select></lq-field>
+      @for (
+      setting of [
+      {
+      key: 'shareChallengeScore',
+      en: 'Share challenge scores by default',
+      ar: 'مشاركة
+      نقاط التحدي افتراضياً',
+      },
+      {
+      key: 'shareStreak',
+      en: 'Share streaks by default',
+      ar: 'مشاركة
+      الاستمرارية افتراضياً',
+      },
+      {
+      key: 'notificationsEnabled',
+      en: 'In-app notifications',
+      ar: 'إشعارات داخل
+      التطبيق',
+      },
+      ];
+      track setting.key
+      ) {
+      <label class="mb-3 flex min-h-12 items-center justify-between gap-3 rounded-xl border border-line p-4 text-xs">{{
+        i18n.t(setting.en, setting.ar)
+        }}<input type="checkbox" class="size-4 accent-brand" [formControlName]="setting.key" /></label>
+      }
+      <p class="my-5 text-xs leading-6 text-muted">
+        {{
+        i18n.t(
+        'Your journal, mood, exact habit counts, and private notes are never shared with
+        friends.',
+        'يومياتك ومزاجك وأعداد عاداتك الدقيقة وملاحظاتك الخاصة لا تُشارك مع الأصدقاء.'
+        )
+        }}
+      </p>
+      @if (saved()) {
+      <p role="status" class="mb-4 text-xs text-mint-ink">
+        {{ i18n.t('Your preferences are saved.', 'حُفظت تفضيلاتك.') }}
+      </p>
+      }
+      @if (error()) {
+      <p role="alert" class="mb-4 text-xs text-rose-600">{{ error() }}</p>
+      }
+      <button class="btn btn-primary" type="submit" [disabled]="saving()">
+        {{ i18n.t('Save preferences', 'حفظ التفضيلات') }}
+      </button>
+    </form>
+  </section>
+  @defer (on viewport) {
+  <lq-security-settings />
+  } @placeholder {
+  <div class="skeleton mt-6 h-48"></div>
+  }
+</div>
 }

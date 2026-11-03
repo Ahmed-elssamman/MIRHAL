@@ -82,7 +82,9 @@ export function validateEnvironment(env: Record<string, unknown> = process.env):
     }
 
     if (config.MAIL_MODE !== 'disabled') {
-      const provider = config.EMAIL_PROVIDER;
+      const provider =
+        config.EMAIL_PROVIDER ??
+        (config.SMTP_HOST ? 'smtp' : config.RESEND_API_KEY ? 'resend' : undefined);
       const fields: (keyof EnvConfig)[] =
         provider === 'smtp'
           ? ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASSWORD', 'SMTP_FROM']
