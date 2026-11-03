@@ -1,14 +1,11 @@
 <lq-page-header
-  [eyebrow]="i18n.t('GROW ALONGSIDE EACH OTHER', 'تطوروا بجانب بعضكم')"
-  [title]="i18n.t('A little friendly momentum.', 'قليل من الحماس الودّي.')"
+  [eyebrow]="('web.features.challenges.copy.grow_alongside_each_other_5cec8f57' | translate)"
+  [title]="('web.features.challenges.copy.a_little_friendly_momentum_cc70fb13' | translate)"
   [description]="
-    i18n.t(
-      'Create challenges or respond to invitations, and follow the progress you choose to share.',
-      'أنشئ تحديات أو استجب للدعوات، وتابع التقدم الذي تختار مشاركته.'
-    )
+    ('web.features.challenges.copy.create_challenges_or_respond_to_invitations_and_follow_the_progress_you_choose_to_share_a614a050' | translate)
   "
   ><button class="btn btn-primary" (click)="create()">
-    <lq-icon name="plus" [size]="17" />{{ i18n.t('New challenge', 'تحدٍ جديد') }}
+    <lq-icon name="plus" [size]="17" />{{ ('web.features.challenges.copy.new_challenge_230ecdcc' | translate) }}
   </button></lq-page-header
 >
 @if (resource.loading() && !resource.data()) {
@@ -25,7 +22,7 @@
               ><lq-icon
                 [name]="challenge.mode === 'COOPERATIVE' ? 'users' : 'swords'"
                 [size]="14"
-              />{{ modeLabel(challenge.mode) }}</span
+              />{{ modeLabel(challenge.mode) | translate }}</span
             ><span class="badge bg-surface text-muted">{{ i18n.label(challenge.status) }}</span>
           </div>
           <h2 class="text-xl font-semibold">{{ challenge.title }}</h2>
@@ -34,7 +31,7 @@
         <div class="p-6">
           @if (challenge.cooperativeProgress !== null) {
             <p class="mb-2 text-xs font-medium">
-              {{ i18n.t('Our combined progress', 'تقدمنا المشترك') }} ·
+              {{ ('web.features.challenges.copy.our_combined_progress_c43ded0b' | translate) }} ·
               {{ challenge.cooperativeProgress.toFixed(0) }}%
             </p>
             <lq-progress [value]="challenge.cooperativeProgress" color="bg-mint-ink" />
@@ -51,23 +48,19 @@
                     <p class="truncate text-xs font-medium">
                       {{ person.displayName }}
                       @if (person.own) {
-                        <span class="text-muted">{{ i18n.t('(you)', '(أنت)') }}</span>
+                        <span class="text-muted">{{ ('web.features.challenges.copy.you_394c6255' | translate) }}</span>
                       }
                     </p>
                     <p class="mt-0.5 text-[10px] text-muted">
                       {{
                         person.status === 'INVITED'
-                          ? i18n.t(
-                              'Invitation pending',
-                              'دعوة
-                معلقة'
-                            )
+                          ? ('web.features.challenges.copy.invitation_pending_1c24377d' | translate)
                           : person.score === null
-                            ? i18n.t('Private score', 'نقاط خاصة')
+                            ? ('web.features.challenges.copy.private_score_3d78aece' | translate)
                             : person.score +
                               '
                 ' +
-                              i18n.t('points', 'نقطة')
+                              ('web.features.challenges.copy.points_bc9567c6' | translate)
                       }}
                     </p>
                   </div>
@@ -87,23 +80,14 @@
           </div>
           <details class="rounded-xl bg-canvas p-3">
             <summary class="cursor-pointer text-[11px] font-medium text-muted">
-              {{ i18n.t('The rules we agreed on', 'القواعد التي اتفقنا عليها') }}
+              {{ ('web.features.challenges.copy.the_rules_we_agreed_on_46a7ac38' | translate) }}
             </summary>
             <p class="mt-3 text-[11px] leading-6 text-muted">
-              {{ i18n.t('Target', 'المستهدف') }}: {{ challenge.rules.target }} ·
+              {{ ('common.copy.target_8b67f168' | translate) }}: {{ challenge.rules.target }} ·
               {{
-                i18n.t(
-                  'Daily
-          cap',
-                  'الحد اليومي'
-                )
+                ('web.features.challenges.copy.daily_cap_9b793e4f' | translate)
               }}: {{ challenge.rules.dailyCap }}<br />{{
-                i18n.t(
-                  'Rules and baselines
-          are frozen when the challenge starts. Scores are calculated from recorded
-          actions.',
-                  'القواعد وخطوط البداية تثبت عند بدء التحدي. النقاط تُحسب من الخطوات المسجلة.'
-                )
+                ('web.features.challenges.copy.rules_and_baselines_are_frozen_when_the_challenge_starts_scores_are_calculated_from_recorded_actions_1daac8e2' | translate)
               }}
             </p>
           </details>
@@ -116,9 +100,9 @@
           @if (invitation(challenge)) {
             <div class="mt-5 flex gap-2">
               <button class="btn btn-primary flex-1 text-xs" (click)="showAccept(challenge)">
-                {{ i18n.t('Accept invitation', 'قبول الدعوة') }}</button
+                {{ ('web.features.challenges.copy.accept_invitation_968c52bc' | translate) }}</button
               ><button class="btn btn-secondary text-xs" (click)="action(challenge, 'decline')">
-                {{ i18n.t('Decline', 'رفض') }}
+                {{ ('common.copy.decline_58eaef39' | translate) }}
               </button>
             </div>
           } @else if (
@@ -130,7 +114,7 @@
               class="btn btn-secondary mt-5 w-full text-xs"
               (click)="action(challenge, 'refresh')"
             >
-              <lq-icon name="refresh" [size]="14" />{{ i18n.t('Refresh progress', 'تحديث التقدم') }}
+              <lq-icon name="refresh" [size]="14" />{{ ('web.features.challenges.copy.refresh_progress_65ba3fd7' | translate) }}
             </button>
           }
           @if (
@@ -138,7 +122,7 @@
             !['COMPLETED', 'CANCELLED'].includes(challenge.status)
           ) {
             <button class="btn btn-quiet mt-1 w-full text-[11px]" (click)="cancel(challenge)">
-              {{ i18n.t('Cancel challenge', 'إلغاء التحدي') }}
+              {{ ('web.features.challenges.copy.cancel_challenge_dabeeab2' | translate) }}
             </button>
           }
         </div>
@@ -147,15 +131,12 @@
       <div class="col-span-full">
         <lq-empty
           icon="swords"
-          [title]="i18n.t('The next chapter could be shared.', 'الفصل القادم قد يكون مشتركاً.')"
+          [title]="('web.features.challenges.copy.the_next_chapter_could_be_shared_0078c503' | translate)"
           [description]="
-            i18n.t(
-              'Invite a friend to show up alongside you. Choose encouragement over pressure.',
-              'ادعُ صديقاً ليحاول بجانبك. اختر التشجيع بدلاً من الضغط.'
-            )
+            ('web.features.challenges.copy.invite_a_friend_to_show_up_alongside_you_choose_encouragement_over_pressure_1038e33c' | translate)
           "
           ><button class="btn btn-primary" (click)="create()">
-            {{ i18n.t('Start a challenge', 'ابدأ تحدياً') }}
+            {{ ('web.features.challenges.copy.start_a_challenge_e83b000d' | translate) }}
           </button></lq-empty
         >
       </div>
@@ -171,28 +152,28 @@
   />
 }
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
-  [header]="i18n.t('A shared reason to show up', 'سبب مشترك للمحاولة')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [header]="('web.features.challenges.copy.a_shared_reason_to_show_up_2081499a' | translate)"
   [visible]="open()"
   (visibleChange)="open.set($event)"
   [modal]="true"
   [style]="{ width: '40rem' }"
   ><form [formGroup]="form" (ngSubmit)="save()">
-    <lq-field id="challenge-title" [label]="i18n.t('Challenge title', 'عنوان التحدي')"
+    <lq-field id="challenge-title" [label]="('web.features.challenges.copy.challenge_title_c64ed0ac' | translate)"
       ><input id="challenge-title" class="field" formControlName="title" /></lq-field
     ><lq-field
       id="challenge-mode"
-      [label]="i18n.t('How would you like to grow?', 'كيف تود أن تتطور؟')"
+      [label]="('web.features.challenges.copy.how_would_you_like_to_grow_b290a15b' | translate)"
       ><select id="challenge-mode" class="field" formControlName="mode">
         @for (mode of modes; track mode.id) {
-          <option [value]="mode.id">{{ i18n.t(mode.en, mode.ar) }}</option>
+          <option [value]="mode.id">{{ mode.key | translate }}</option>
         }
       </select></lq-field
     ><lq-field
       id="challenge-habit"
-      [label]="i18n.t('Focus on a habit (required for improvement)', 'ركز على عادة (مطلوب للتحسن)')"
+      [label]="('web.features.challenges.copy.focus_on_a_habit_required_for_improvement_27b3a3e2' | translate)"
       ><select id="challenge-habit" class="field" formControlName="habitId">
-        <option value="">{{ i18n.t('All my habits', 'كل عاداتي') }}</option>
+        <option value="">{{ ('web.features.challenges.copy.all_my_habits_5a008689' | translate) }}</option>
         @for (habit of habits.data()?.items; track habit.id) {
           <option [value]="habit.id">{{ habit.name }}</option>
         }
@@ -200,9 +181,9 @@
     >
     <lq-field
       id="challenge-area"
-      [label]="i18n.t('Focus on a life area (optional)', 'ركز على مجال (اختياري)')"
+      [label]="('web.features.challenges.copy.focus_on_a_life_area_optional_fa9be8e3' | translate)"
       ><select id="challenge-area" class="field" formControlName="areaId">
-        <option value="">{{ i18n.t('All life areas', 'كل المجالات') }}</option>
+        <option value="">{{ ('web.features.challenges.copy.all_life_areas_dce1dabc' | translate) }}</option>
         @for (area of areas.data(); track area.id) {
           <option [value]="area.id">{{ i18n.t(area.name, area.nameAr) }}</option>
         }
@@ -211,40 +192,36 @@
     <lq-field
       id="challenge-start"
       [label]="
-        i18n.t('Start time (leave empty to start now)', 'وقت البدء (اتركه فارغاً للبدء الآن)')
+        ('web.features.challenges.copy.start_time_leave_empty_to_start_now_e3f1f41e' | translate)
       "
       ><input id="challenge-start" class="field" type="datetime-local" formControlName="startDate"
     /></lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="challenge-target" [label]="i18n.t('Target', 'المستهدف')"
+      <lq-field id="challenge-target" [label]="('common.copy.target_8b67f168' | translate)"
         ><input
           id="challenge-target"
           type="number"
           min="1"
           class="field"
           formControlName="target" /></lq-field
-      ><lq-field id="challenge-end" [label]="i18n.t('End date', 'تاريخ الانتهاء')"
+      ><lq-field id="challenge-end" [label]="('web.features.challenges.copy.end_date_4408c3ca' | translate)"
         ><input id="challenge-end" type="date" class="field" formControlName="endDate"
       /></lq-field>
     </div>
     @if (form.controls.mode.value === 'IMPROVEMENT') {
       <label class="mb-4 flex min-h-11 items-center gap-2 text-xs"
         ><input type="checkbox" formControlName="lowerIsBetter" class="accent-brand" />{{
-          i18n.t('Lower numbers mean improvement', 'الأرقام الأقل تعني تحسناً')
+          ('web.features.challenges.copy.lower_numbers_mean_improvement_cc9614e1' | translate)
         }}</label
       >
       <p class="mb-4 rounded-xl bg-brand-soft p-3 text-xs leading-6 text-muted">
         {{
-          i18n.t(
-            'Both participants need at least seven historical logs for a reliable
-      baseline.',
-            'يحتاج المشاركان إلى سبعة سجلات سابقة على الأقل لخط بداية موثوق.'
-          )
+          ('web.features.challenges.copy.both_participants_need_at_least_seven_historical_logs_for_a_reliable_baseline_6dc8ad2a' | translate)
         }}
       </p>
     }
     <fieldset>
-      <legend class="field-label">{{ i18n.t('Invite your people', 'ادعُ أصدقاءك') }}</legend>
+      <legend class="field-label">{{ ('web.features.challenges.copy.invite_your_people_e5f7506a' | translate) }}</legend>
       <div class="space-y-2">
         @for (friend of acceptedFriends(); track friend.id) {
           <button
@@ -265,9 +242,9 @@
           </button>
         } @empty {
           <p class="rounded-xl bg-canvas p-4 text-xs leading-6 text-muted">
-            {{ i18n.t('Connect with a friend first.', 'تواصل مع صديق أولاً.') }}
+            {{ ('web.features.challenges.copy.connect_with_a_friend_first_93deb790' | translate) }}
             <a routerLink="/friends" class="text-brand" (click)="open.set(false)">{{
-              i18n.t('Find my people', 'اعثر على أصدقائي')
+              ('web.features.challenges.copy.find_my_people_7a656aa3' | translate)
             }}</a>
           </p>
         }
@@ -281,13 +258,13 @@
       type="submit"
       [disabled]="saving() || form.invalid || !invited().length"
     >
-      {{ i18n.t('Send the invitation', 'أرسل الدعوة') }}
+      {{ ('web.features.challenges.copy.send_the_invitation_110ac2f3' | translate) }}
     </button>
   </form></p-dialog
 >
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
-  [header]="i18n.t('Your progress, your boundaries', 'تقدمك، حدودك')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [header]="('web.features.challenges.copy.your_progress_your_boundaries_6127c9e0' | translate)"
   [visible]="!!accepting()"
   (visibleChange)="!$event && accepting.set(null)"
   [modal]="true"
@@ -297,53 +274,32 @@
     @if (accepting()?.scope === 'HABIT' || accepting()?.mode === 'IMPROVEMENT') {
       <lq-field
         id="accept-habit"
-        [label]="i18n.t('Your habit for this challenge', 'عادتك لهذا التحدي')"
+        [label]="('web.features.challenges.copy.your_habit_for_this_challenge_4c6b95d8' | translate)"
         ><select id="accept-habit" class="field" formControlName="habitId">
-          <option value="">{{ i18n.t('Choose a habit', 'اختر عادة') }}</option>
+          <option value="">{{ ('web.features.challenges.copy.choose_a_habit_0e157861' | translate) }}</option>
           @for (habit of habits.data()?.items; track habit.id) {
             <option [value]="habit.id">{{ habit.name }}</option>
           }
         </select></lq-field
       >
     }
-    @for (
-      setting of [
-        {
-          key: 'shareScore',
-          en: 'Share my challenge score',
-          ar: 'مشاركة نقاط
-    التحدي',
-        },
-        {
-          key: 'shareProgress',
-          en: 'Share my progress percentage',
-          ar: 'مشاركة نسبة
-    التقدم',
-        },
-        { key: 'shareStreak', en: 'Share my streak', ar: 'مشاركة الاستمرارية' },
-      ];
-      track setting.key
-    ) {
-      <label class="mb-2 flex min-h-12 items-center gap-3 rounded-xl border border-line p-3 text-xs"
-        ><input type="checkbox" [formControlName]="setting.key" class="size-4 accent-brand" />{{
-          i18n.t(setting.en, setting.ar)
-        }}</label
-      >
+    @for (setting of shareSettings; track setting.key) {
+      <label class="mb-2 flex min-h-12 items-center gap-3 rounded-xl border border-line p-3 text-xs">
+        <input type="checkbox" [formControlName]="setting.key" class="size-4 accent-brand" />{{
+          setting.translationKey | translate
+        }}
+      </label>
     }
     <p class="my-5 text-xs leading-6 text-muted">
       {{
-        i18n.t(
-          'Exact counts, mood, journals, and private notes are never shared.',
-          'الأعداد الدقيقة
-      والمزاج واليوميات والملاحظات الخاصة لا تتم مشاركتها أبداً.'
-        )
+        ('web.features.challenges.copy.exact_counts_mood_journals_and_private_notes_are_never_shared_8fc4003b' | translate)
       }}
     </p>
     @if (error()) {
       <p role="alert" class="mb-4 text-sm text-rose-600">{{ error() }}</p>
     }
     <button type="submit" class="btn btn-primary w-full" [disabled]="saving()">
-      {{ i18n.t('Accept and grow together', 'اقبل وتطوروا معاً') }}
+      {{ ('web.features.challenges.copy.accept_and_grow_together_ee1f17ef' | translate) }}
     </button>
   </form></p-dialog
 >

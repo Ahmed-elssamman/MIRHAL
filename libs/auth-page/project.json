@@ -1,0 +1,6 @@
+{
+  "name": "auth-page",
+  "projectType": "library",
+  "sourceRoot": "libs/auth-page/src",
+  "tags": ["scope:shared", "type:feature"]
+}

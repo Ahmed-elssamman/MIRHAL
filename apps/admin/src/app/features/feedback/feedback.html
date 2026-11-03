@@ -1,11 +1,8 @@
 <lq-page-header
-  [eyebrow]="i18n.t('LISTEN. UNDERSTAND. IMPROVE.', 'استمع. افهم. حسّن.')"
-  [title]="i18n.t('Conversations that move us forward.', 'محادثات تدفعنا للأمام.')"
+  [eyebrow]="('admin.features.feedback.copy.listen_understand_improve_fd4f4206' | translate)"
+  [title]="('admin.features.feedback.copy.conversations_that_move_us_forward_bedc2b10' | translate)"
   [description]="
-    i18n.t(
-      'Give every suggestion, concern, and bug report a thoughtful next step.',
-      'امنح كل اقتراح وشكوى وتقرير خطأ خطوة تالية مدروسة.'
-    )
+    ('admin.features.feedback.copy.give_every_suggestion_concern_and_bug_report_a_thoughtful_next_step_1fdd4706' | translate)
   "
 />
 <div class="mb-6 flex flex-wrap gap-2">
@@ -61,15 +58,11 @@
         <div class="mt-3 flex justify-between text-[10px] text-muted">
           <span>{{
             item.anonymous
-              ? i18n.t(
-                  'Anonymous explorer',
-                  'مستكشف
-        مجهول'
-                )
-              : (item.user?.profile?.displayName ?? i18n.t('Explorer', 'مستكشف'))
+              ? ('admin.features.feedback.copy.anonymous_explorer_e8115255' | translate)
+              : (item.user?.profile?.displayName ?? ('admin.features.feedback.copy.explorer_ded347ea' | translate))
           }}</span
           ><span
-            >{{ item.replies.length }} {{ i18n.t('replies & notes', 'ردود وملاحظات') }} ·
+            >{{ item.replies.length }} {{ ('admin.features.feedback.copy.replies_notes_25b4f130' | translate) }} ·
             {{ i18n.label(item.priority) }}</span
           >
         </div>
@@ -77,9 +70,9 @@
     } @empty {
       <lq-empty
         icon="message"
-        [title]="i18n.t('A clear inbox for this view.', 'صندوق خالٍ في هذا العرض.')"
+        [title]="('admin.features.feedback.copy.a_clear_inbox_for_this_view_8d8c516b' | translate)"
         [description]="
-          i18n.t('New conversations will appear here.', 'ستظهر المحادثات الجديدة هنا.')
+          ('admin.features.feedback.copy.new_conversations_will_appear_here_2475b408' | translate)
         "
       />
     }
@@ -89,7 +82,7 @@
   }
 }
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
   [header]="selected()?.title ?? ''"
   [visible]="!!selected()"
   (visibleChange)="!$event && selected.set(null)"
@@ -104,7 +97,7 @@
           class="flex min-h-11 items-center break-all text-xs font-medium text-brand underline"
           [href]="'/api/feedback/' + item.id + '/attachments/' + file.id"
           download
-          >{{ i18n.t('Download screenshot: ', 'تنزيل لقطة الشاشة: ') }}{{ file.name }}</a
+          >{{ ('admin.features.feedback.copy.download_screenshot_bf235565' | translate) }}{{ file.name }}</a
         >
       }
     </div>
@@ -117,12 +110,8 @@
           <p class="mb-1 text-[10px] font-semibold">
             {{
               reply.internal
-                ? i18n.t('INTERNAL NOTE', 'ملاحظة داخلية')
-                : i18n.t(
-                    'PUBLIC REPLY',
-                    'رد
-        للمستخدم'
-                  )
+                ? ('admin.features.feedback.copy.internal_note_c394759c' | translate)
+                : ('admin.features.feedback.copy.public_reply_b8803ac4' | translate)
             }}
           </p>
           {{ reply.body }}
@@ -131,13 +120,13 @@
     </div>
     <form [formGroup]="form" (ngSubmit)="save()">
       <div class="grid gap-4 sm:grid-cols-2">
-        <lq-field id="admin-feedback-status" [label]="i18n.t('Status', 'الحالة')"
+        <lq-field id="admin-feedback-status" [label]="('common.copy.status_005ef20f' | translate)"
           ><select id="admin-feedback-status" class="field" formControlName="status">
             @for (status of statuses; track status) {
               <option [value]="status">{{ i18n.label(status) }}</option>
             }
           </select></lq-field
-        ><lq-field id="admin-feedback-priority" [label]="i18n.t('Priority', 'الأولوية')"
+        ><lq-field id="admin-feedback-priority" [label]="('common.copy.priority_e68d9f29' | translate)"
           ><select id="admin-feedback-priority" class="field" formControlName="priority">
             <option value="LOW">{{ i18n.label('LOW') }}</option>
             <option value="MEDIUM">{{ i18n.label('MEDIUM') }}</option>
@@ -145,7 +134,7 @@
           </select></lq-field
         >
       </div>
-      <lq-field id="admin-feedback-reply" [label]="i18n.t('A thoughtful response', 'رد مدروس')">
+      <lq-field id="admin-feedback-reply" [label]="('admin.features.feedback.copy.a_thoughtful_response_c80358f3' | translate)">
         <textarea
           id="admin-feedback-reply"
           class="field"
@@ -154,14 +143,14 @@
         ></textarea></lq-field
       ><label class="mb-5 flex min-h-11 items-center gap-3 text-xs"
         ><input type="checkbox" class="size-4 accent-brand" formControlName="internal" />{{
-          i18n.t('Internal note — hidden from the explorer', 'ملاحظة داخلية — مخفية عن المستخدم')
+          ('admin.features.feedback.copy.internal_note_hidden_from_the_explorer_462021b2' | translate)
         }}</label
       >
       @if (error()) {
         <p role="alert" class="mb-4 text-xs text-rose-600">{{ error() }}</p>
       }
       <button class="btn btn-primary w-full" type="submit" [disabled]="saving()">
-        {{ i18n.t('Save update', 'حفظ التحديث') }}
+        {{ ('admin.features.feedback.copy.save_update_da4ed679' | translate) }}
       </button>
     </form>
   }

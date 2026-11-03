@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { DrawerModule } from 'primeng/drawer';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Toasts } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { Preferences } from '@lifequest/utilities';
 import { Icon, Logo } from '@lifequest/ui';
+
 @Component({
   selector: 'lq-admin-shell',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, NgTemplateOutlet, DrawerModule, Icon, Logo],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, NgTemplateOutlet, DrawerModule, Icon, Logo, TranslatePipe],
   templateUrl: './shell.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -20,106 +22,39 @@ export class AdminShell {
   readonly open = signal(false);
   readonly groups = [
     {
-      title: 'WORKSPACE',
-      ar: 'مساحة العمل',
+      titleKey: 'admin.navigation.workspace',
       items: [
-        { path: 'overview', title: 'Overview', ar: 'نظرة عامة', icon: 'home', roles: [] },
-        {
-          path: 'users',
-          title: 'People',
-          ar: 'المستخدمون',
-          icon: 'users',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'],
-        },
-        {
-          path: 'analytics',
-          title: 'Activity insights',
-          ar: 'رؤى النشاط',
-          icon: 'chart',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'ANALYST'],
-        },
-        {
-          path: 'challenges',
-          title: 'Challenges',
-          ar: 'التحديات',
-          icon: 'swords',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'MODERATOR', 'ANALYST'],
-        },
-        {
-          path: 'feedback',
-          title: 'Feedback inbox',
-          ar: 'صندوق الملاحظات',
-          icon: 'message',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'MODERATOR', 'SUPPORT'],
-        },
+        { path: 'overview', labelKey: 'admin.navigation.overview', icon: 'home', roles: [] },
+        { path: 'users', labelKey: 'admin.navigation.people', icon: 'users', roles: ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'] },
+        { path: 'analytics', labelKey: 'admin.navigation.activityInsights', icon: 'chart', roles: ['SUPER_ADMIN', 'ADMIN', 'ANALYST'] },
+        { path: 'challenges', labelKey: 'admin.navigation.challenges', icon: 'swords', roles: ['SUPER_ADMIN', 'ADMIN', 'MODERATOR', 'ANALYST'] },
+        { path: 'feedback', labelKey: 'admin.navigation.feedbackInbox', icon: 'message', roles: ['SUPER_ADMIN', 'ADMIN', 'MODERATOR', 'SUPPORT'] },
       ],
     },
     {
-      title: 'PRODUCT & CONTENT',
-      ar: 'المنتج والمحتوى',
+      titleKey: 'admin.navigation.productContent',
       items: [
-        {
-          path: 'quests',
-          title: 'Weekly quests',
-          ar: 'المهام الأسبوعية',
-          icon: 'flag',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'],
-        },
-        {
-          path: 'content/rewards',
-          title: 'Rewards',
-          ar: 'المكافآت',
-          icon: 'gift',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'],
-        },
-        {
-          path: 'content/achievements',
-          title: 'Achievements',
-          ar: 'الإنجازات',
-          icon: 'award',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'],
-        },
-        {
-          path: 'content/help',
-          title: 'Help content',
-          ar: 'محتوى المساعدة',
-          icon: 'help',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'],
-        },
-        {
-          path: 'content/announcements',
-          title: 'Announcements',
-          ar: 'الإعلانات',
-          icon: 'bell',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'],
-        },
+        { path: 'quests', labelKey: 'admin.navigation.weeklyQuests', icon: 'flag', roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'] },
+        { path: 'content/rewards', labelKey: 'admin.navigation.rewards', icon: 'gift', roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'] },
+        { path: 'content/achievements', labelKey: 'admin.navigation.achievements', icon: 'award', roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'] },
+        { path: 'content/help', labelKey: 'admin.navigation.helpContent', icon: 'help', roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'] },
+        { path: 'content/announcements', labelKey: 'admin.navigation.announcements', icon: 'bell', roles: ['SUPER_ADMIN', 'ADMIN', 'CONTENT_MANAGER'] },
       ],
     },
     {
-      title: 'OPERATIONS',
-      ar: 'العمليات',
+      titleKey: 'admin.navigation.operations',
       items: [
-        {
-          path: 'audit-logs',
-          title: 'Audit trail',
-          ar: 'سجل التدقيق',
-          icon: 'shield',
-          roles: ['SUPER_ADMIN', 'ADMIN', 'ANALYST'],
-        },
-        { path: 'health', title: 'System health', ar: 'صحة النظام', icon: 'activity', roles: [] },
-        {
-          path: 'settings',
-          title: 'Configuration',
-          ar: 'الإعدادات',
-          icon: 'settings',
-          roles: ['SUPER_ADMIN', 'ADMIN'],
-        },
+        { path: 'audit-logs', labelKey: 'admin.navigation.auditTrail', icon: 'shield', roles: ['SUPER_ADMIN', 'ADMIN', 'ANALYST'] },
+        { path: 'health', labelKey: 'admin.navigation.systemHealth', icon: 'activity', roles: [] },
+        { path: 'settings', labelKey: 'admin.navigation.configuration', icon: 'settings', roles: ['SUPER_ADMIN', 'ADMIN'] },
       ],
     },
   ];
+
   allowed(roles: string[]) {
     return !roles.length || roles.includes(this.auth.user()?.role ?? '');
   }
+
   async logout() {
     try {
       await this.auth.logout();

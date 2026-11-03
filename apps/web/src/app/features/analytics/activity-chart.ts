@@ -1,17 +1,16 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Preferences } from '@lifequest/utilities';
 @Component({
   selector: 'lq-activity-chart',
+  imports: [TranslatePipe],
   template: `<figure>
     <svg
       viewBox="0 0 700 180"
       role="img"
       [attr.aria-label]="
         label() ??
-        i18n.t(
-          'Habit actions over the last 28 days. Green dots indicate daily check-ins.',
-          'خطوات العادات خلال آخر ٢٨ يوماً. تشير النقاط الخضراء إلى تسجيل التأمل اليومي.'
-        )
+        ('web.features.analytics.copy.habit_actions_over_the_last_28_days_green_dots_indicate_daily_check_ins_1f0a6b44' | translate)
       "
       class="w-full"
     >

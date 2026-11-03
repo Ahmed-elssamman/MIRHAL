@@ -1,142 +1,72 @@
-<lq-page-header
-  [eyebrow]="i18n.t('MIRHAL CONTROL ROOM', 'مركز إدارة مِرحال')"
-  [title]="i18n.t('A clear view of the journey.', 'رؤية واضحة للرحلة.')"
-  [description]="
-    i18n.t(
-      'Real activity, thoughtful support, and a product that keeps getting better.',
-      'نشاط حقيقي، دعم مدروس، ومنتج يتحسن باستمرار.'
-    )
-  "
-  ><button class="btn btn-secondary" (click)="resource.load()">
-    <lq-icon name="refresh" [size]="16" />{{ i18n.t('Refresh', 'تحديث') }}
-  </button></lq-page-header
+﻿<lq-page-header
+  [eyebrow]="'admin.overview.eyebrow' | translate"
+  [title]="'admin.overview.title' | translate"
+  [description]="'admin.overview.description' | translate"
 >
+  <button class="btn btn-secondary" (click)="resource.load()">
+    <lq-icon name="refresh" [size]="16" />{{ 'admin.overview.refresh' | translate }}
+  </button>
+</lq-page-header>
 @if (resource.loading() && !resource.data()) {
   <lq-skeleton />
 } @else if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
 } @else if (resource.data(); as data) {
   <div class="mb-6 rounded-2xl bg-[#302943] p-6 text-white sm:p-8">
-    <span class="text-[10px] uppercase tracking-widest text-white/50">{{
-      i18n.t('THE PEOPLE BEHIND THE NUMBERS', 'الأشخاص وراء الأرقام')
-    }}</span>
+    <span class="text-[10px] uppercase tracking-widest text-white/50">{{ 'admin.overview.peopleBehindNumbers' | translate }}</span>
     <div class="mt-4 flex flex-wrap items-end justify-between gap-5">
       <div>
         <p class="text-3xl font-semibold">
-          {{ data.users | number }} {{ i18n.t('personal journeys.', 'رحلات شخصية.') }}
+          {{ data.users | number }} {{ 'admin.overview.personalJourneys' | translate }}
         </p>
-        <p class="mt-3 text-xs leading-6 text-white/60">
-          {{
-            i18n.t(
-              'Every number represents someone making room for a better everyday.',
-              'كل رقم يمثل
-        شخصاً يصنع مساحة ليوم أفضل.'
-            )
-          }}
-        </p>
+        <p class="mt-3 text-xs leading-6 text-white/60">{{ 'admin.overview.peopleEveryday' | translate }}</p>
       </div>
-      <span class="badge border border-white/15 bg-white/5 text-white/70">{{
-        i18n.t('Last 30 days', 'آخر 30 يوماً')
-      }}</span>
+      <span class="badge border border-white/15 bg-white/5 text-white/70">{{ 'admin.overview.last30Days' | translate }}</span>
     </div>
   </div>
   <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-    <lq-stat
-      [label]="i18n.t('Habit completion · 30 days', 'إتمام العادات · ٣٠ يوماً')"
-      [value]="data.habitCompletionRate"
-      suffix="%"
-      icon="sprout"
-    />
-    <lq-stat
-      [label]="i18n.t('Active people', 'المستخدمون النشطون')"
-      [value]="data.activeUsers"
-      icon="users"
-    /><lq-stat
-      [label]="i18n.t('New beginnings', 'بدايات جديدة')"
-      [value]="data.newUsers"
-      icon="sprout"
-      tone="bg-mint text-mint-ink"
-    /><lq-stat
-      [label]="i18n.t('Active habits', 'عادات نشطة')"
-      [value]="data.activeHabits"
-      icon="heart"
-      tone="bg-coral text-orange-700"
-    /><lq-stat
-      [label]="i18n.t('Habit actions', 'خطوات العادات')"
-      [value]="data.habitCompletions"
-      icon="check"
-      tone="bg-sky text-sky-700"
-    /><lq-stat
-      [label]="i18n.t('Active challenges', 'تحديات نشطة')"
-      [value]="data.activeChallenges"
-      icon="swords"
-    /><lq-stat
-      [label]="i18n.t('Completed challenges', 'تحديات مكتملة')"
-      [value]="data.completedChallenges"
-      icon="flag"
-      tone="bg-mint text-mint-ink"
-    /><lq-stat
-      [label]="i18n.t('Lifetime XP issued', 'الخبرة الممنوحة')"
-      [value]="data.xpIssued"
-      icon="zap"
-      tone="bg-amber-50 text-amber-700"
-    /><lq-stat
-      [label]="i18n.t('Rewards enjoyed', 'مكافآت مستلمة')"
-      [value]="data.rewardsRedeemed"
-      icon="gift"
-    />
+    <lq-stat [label]="'admin.overview.habitCompletion' | translate" [value]="data.habitCompletionRate" suffix="%" icon="sprout" />
+    <lq-stat [label]="'admin.overview.activePeople' | translate" [value]="data.activeUsers" icon="users" />
+    <lq-stat [label]="'admin.overview.newBeginnings' | translate" [value]="data.newUsers" icon="sprout" tone="bg-mint text-mint-ink" />
+    <lq-stat [label]="'admin.overview.activeHabits' | translate" [value]="data.activeHabits" icon="heart" tone="bg-coral text-orange-700" />
+    <lq-stat [label]="'admin.overview.habitActions' | translate" [value]="data.habitCompletions" icon="check" tone="bg-sky text-sky-700" />
+    <lq-stat [label]="'admin.overview.activeChallenges' | translate" [value]="data.activeChallenges" icon="swords" />
+    <lq-stat [label]="'admin.overview.completedChallenges' | translate" [value]="data.completedChallenges" icon="flag" tone="bg-mint text-mint-ink" />
+    <lq-stat [label]="'admin.overview.lifetimeXp' | translate" [value]="data.xpIssued" icon="zap" tone="bg-amber-50 text-amber-700" />
+    <lq-stat [label]="'admin.overview.rewardsEnjoyed' | translate" [value]="data.rewardsRedeemed" icon="gift" />
   </div>
   <div class="mt-7 grid items-start gap-6 lg:grid-cols-2">
     <section class="card p-6">
-      <lq-section-title
-        [title]="i18n.t('What needs a little attention', 'ما الذي يحتاج بعض الاهتمام')"
-      /><a routerLink="/feedback" class="flex items-center gap-4 rounded-xl bg-brand-soft p-5"
-        ><lq-icon name="message" class="text-brand" [size]="25" />
+      <lq-section-title [title]="'admin.overview.attention' | translate" />
+      <a routerLink="/feedback" class="flex items-center gap-4 rounded-xl bg-brand-soft p-5">
+        <lq-icon name="message" class="text-brand" [size]="25" />
         <div class="flex-1">
           <p class="text-sm font-semibold">
-            {{ data.feedbackVolume }}
-            {{ i18n.t('conversations to learn from', 'محادثات للتعلم منها') }}
+            {{ data.feedbackVolume }} {{ 'admin.overview.conversationsToLearn' | translate }}
           </p>
-          <p class="mt-2 text-xs text-muted">
-            {{
-              i18n.t(
-                'Suggestions, concerns, and ideas from the community.',
-                'اقتراحات ومخاوف وأفكار
-          من المجتمع.'
-              )
-            }}
-          </p>
+          <p class="mt-2 text-xs text-muted">{{ 'admin.overview.feedbackDescription' | translate }}</p>
         </div>
-        <lq-icon name="arrow-right" class="text-brand" [size]="18"
-      /></a>
+        <lq-icon name="arrow-right" class="text-brand" [size]="18" />
+      </a>
       <div class="mt-5 space-y-3">
         @for (item of data.feedback; track $index) {
           <div class="flex justify-between text-xs">
-            <span class="text-muted"
-              >{{ i18n.label(item.category) }} · {{ i18n.label(item.status) }}</span
-            ><span class="font-semibold">{{ item._count }}</span>
+            <span class="text-muted">{{ i18n.label(item.category) }} · {{ i18n.label(item.status) }}</span>
+            <span class="font-semibold">{{ item._count }}</span>
           </div>
         }
       </div>
     </section>
     <section class="card p-6">
-      <lq-section-title [title]="i18n.t('Meaningful activity', 'نشاط ذو معنى')" />
+      <lq-section-title [title]="'admin.overview.meaningfulActivity' | translate" />
       <div class="space-y-4">
         @for (event of data.events; track event.name) {
           <div class="flex items-center justify-between border-b border-line pb-3 text-xs">
-            <span class="text-muted">{{ i18n.label(event.name) }}</span
-            ><span class="font-semibold">{{ event._count }}</span>
+            <span class="text-muted">{{ i18n.label(event.name) }}</span>
+            <span class="font-semibold">{{ event._count }}</span>
           </div>
         } @empty {
-          <p class="text-xs text-muted">
-            {{
-              i18n.t(
-                'Activity will appear as people begin their journeys.',
-                'سيظهر النشاط مع بداية
-        رحلات المستخدمين.'
-              )
-            }}
-          </p>
+          <p class="text-xs text-muted">{{ 'admin.overview.activityEmpty' | translate }}</p>
         }
       </div>
     </section>

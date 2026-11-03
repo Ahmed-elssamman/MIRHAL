@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, catchError, exhaustMap, filter, from, timer } from 'rxjs';
 import { Injectable, inject, signal, PLATFORM_ID, DestroyRef, Injector } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
-import { Api, User, Celebrations, Toasts, errorMessage } from '@lifequest/data-access';
+import { Api, User, Celebrations, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 
 export type AuthStatus = 'initializing' | 'authenticated' | 'unauthenticated';
@@ -103,7 +103,7 @@ export class AuthStore {
       );
       this.preferences.setLanguage(language);
     } catch (error) {
-      this.languageError.set(errorMessage(error));
+      this.languageError.set(this.api.errorMessage(error));
     } finally {
       this.languageSaving.set(false);
     }
@@ -206,3 +206,5 @@ export const unauthGuard: CanActivateFn = async (route: ActivatedRouteSnapshot) 
   }
   return true;
 };
+
+export { sessionInterceptor } from './session-interceptor';

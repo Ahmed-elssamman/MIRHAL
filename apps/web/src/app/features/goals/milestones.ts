@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { Api, Milestone, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { Icon } from '@lifequest/ui';
 @Component({
   selector: 'lq-milestones',
-  imports: [FormsModule, Icon],
+  imports: [
+    TranslatePipe,FormsModule, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: ` <div class="space-y-2 py-3">
     @for (item of items(); track item.id) {
@@ -21,10 +23,7 @@ import { Icon } from '@lifequest/ui';
     } @empty {
       <p class="text-xs leading-6 text-muted">
         {{
-          i18n.t(
-            'Break this outcome into a few meaningful checkpoints.',
-            'قسّم هذه النتيجة إلى مراحل واضحة.'
-          )
+          ('web.features.goals.copy.break_this_outcome_into_a_few_meaningful_checkpoints_5f0b719e' | translate)
         }}
       </p>
     }
@@ -34,13 +33,13 @@ import { Icon } from '@lifequest/ui';
         [ngModel]="title()"
         (ngModelChange)="title.set($event)"
         name="milestoneTitle"
-        [attr.aria-label]="i18n.t('New milestone', 'مرحلة جديدة')"
-        [placeholder]="i18n.t('The next milestone…', 'المرحلة القادمة…')"
+        [attr.aria-label]="('web.features.goals.copy.new_milestone_3ea7d7b3' | translate)"
+        [placeholder]="('web.features.goals.copy.the_next_milestone_401b8723' | translate)"
         maxlength="160"
       /><button
         type="submit"
         class="icon-button bg-brand text-white"
-        [attr.aria-label]="i18n.t('Add milestone', 'إضافة مرحلة')"
+        [attr.aria-label]="('web.features.goals.copy.add_milestone_36a90766' | translate)"
         [disabled]="busy() || title().trim().length < 2"
       >
         <lq-icon name="plus" />

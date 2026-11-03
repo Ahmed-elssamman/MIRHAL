@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthPage } from '../../../../libs/auth/src/auth-page';
+import { AuthPage } from '@lifequest/auth-page';
 import { AuthStore } from '@lifequest/auth';
 import { Api, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';

@@ -39,7 +39,7 @@ test('Habit Lab preserves unsaved learning and applies a gentler custom schedule
       await Promise.all(
         dialog
           .getAnimations({ subtree: true })
-          .map((animation) => animation.finished.catch(() => {})),
+          .map((animation) => animation.finished.catch(() => undefined)),
       );
     });
   const a11y = await new AxeBuilder({ page })

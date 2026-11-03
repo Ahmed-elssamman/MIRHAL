@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Api, errorMessage, Profile } from '@lifequest/data-access';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Api, Profile } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { Preferences } from '@lifequest/utilities';
 import { Icon, PageHeader, Skeleton } from '@lifequest/ui';
@@ -8,7 +9,7 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
 import { SecuritySettings } from './security';
 @Component({
   selector: 'lq-settings',
-  imports: [UnsavedForm, ReactiveFormsModule, PageHeader, Icon, FormField, SecuritySettings, Skeleton],
+  imports: [UnsavedForm, ReactiveFormsModule, PageHeader, Icon, FormField, SecuritySettings, Skeleton, TranslatePipe],
   templateUrl: './settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -21,6 +22,11 @@ export class SettingsPage {
   readonly saving = signal(false);
   readonly saved = signal(false);
   readonly error = signal('');
+  readonly privacySettings = [
+    { key: 'shareChallengeScore', labelKey: 'settings.shareChallengeScores' },
+    { key: 'shareStreak', labelKey: 'settings.shareStreaks' },
+    { key: 'notificationsEnabled', labelKey: 'settings.inAppNotifications' },
+  ];
   readonly form = this.fb.nonNullable.group({
     theme: [this.auth.user()?.profile.theme ?? 'system'],
     language: [this.auth.user()?.profile.language ?? 'en'],
@@ -46,7 +52,7 @@ export class SettingsPage {
       this.i18n.setShowAdditionalNavigation(this.navigationBeforeEdit);
       this.form.controls.showAdditionalNavigation.setValue(this.navigationBeforeEdit);
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

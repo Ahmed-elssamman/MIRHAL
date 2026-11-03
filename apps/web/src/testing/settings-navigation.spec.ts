@@ -16,7 +16,7 @@ describe('navigation preference settings', () => {
     vi.clearAllMocks();
     TestBed.configureTestingModule({ providers: [
       FormBuilder,
-      { provide: Api, useValue: { patch } },
+      { provide: Api, useValue: { patch, errorMessage: () => 'The request could not be completed.' } },
       { provide: AuthStore, useValue: { user: () => user, setUser } },
       { provide: Preferences, useValue: { showAdditionalNavigation: () => false, setShowAdditionalNavigation } },
     ] });

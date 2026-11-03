@@ -6,6 +6,9 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { TodayPage } from '../app/features/today/today';
 import { TasksPage } from '../app/features/tasks/tasks';
 import { Task } from '@lifequest/data-access';
+import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { firstValueFrom } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 const createTask = (
@@ -32,7 +35,7 @@ const createTask = (
 describe('Task Performance & Optimistic UI Updates', () => {
   let http: HttpTestingController;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -40,8 +43,10 @@ describe('Task Performance & Optimistic UI Updates', () => {
         provideRouter([]),
         MessageService,
         ConfirmationService,
+        provideTranslateService({ loader: provideTranslateLoader(MirhalTranslationLoader) }),
       ],
     });
+    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
     http = TestBed.inject(HttpTestingController);
   });
 

@@ -1,14 +1,27 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ErrorState, Progress, Skeleton } from '@lifequest/ui';
 import { FormField } from '@lifequest/forms';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
 import { Celebrations } from '@lifequest/data-access';
-import { LevelCelebration } from '../../../../libs/ui/src/level-celebration';
+import { LevelCelebration } from '@lifequest/ui/level-celebration';
 import { ActivityChart } from '../app/features/analytics/activity-chart';
 import { provideRouter } from '@angular/router';
+import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { firstValueFrom } from 'rxjs';
 
 describe('Accessible shared components', () => {
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        LocalizedDatePipe,
+        provideRouter([]),
+        provideTranslateService({ loader: provideTranslateLoader(MirhalTranslationLoader) }),
+      ],
+    });
+    await firstValueFrom(TestBed.inject(TranslateService).use('ar'));
+  });
   it('localizes standard habit units while preserving custom units', () => {
     const preferences = TestBed.inject(Preferences);
     preferences.language.set('ar');
@@ -22,7 +35,6 @@ describe('Accessible shared components', () => {
     expect(preferences.habitUnit('صفحات')).toBe('pages');
   });
   it('formats dates in the selected language without shifting date-only values', () => {
-    TestBed.configureTestingModule({ providers: [LocalizedDatePipe] });
     const pipe = TestBed.inject(LocalizedDatePipe);
     const preferences = TestBed.inject(Preferences);
     preferences.language.set('ar');
@@ -31,7 +43,7 @@ describe('Accessible shared components', () => {
     preferences.language.set('en');
     expect(pipe.transform('2026-10-04', 'MMM d, y')).toContain('Oct 4, 2026');
   });
-  it('localizes chart accessibility text in both directions', () => {
+  it('localizes chart accessibility text in both directions', async () => {
     const fixture = TestBed.createComponent(ActivityChart);
     fixture.componentRef.setInput('items', [{ date: '2026-10-04', habits: 1, checkIn: true }]);
     const preferences = TestBed.inject(Preferences);
@@ -40,6 +52,7 @@ describe('Accessible shared components', () => {
     expect(fixture.nativeElement.querySelector('svg').getAttribute('aria-label')).toContain(
       'خطوات العادات',
     );
+    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
     preferences.language.set('en');
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('svg').getAttribute('aria-label')).toContain(
@@ -47,7 +60,6 @@ describe('Accessible shared components', () => {
     );
   });
   it('announces an earned level without a modal and allows dismissal', () => {
-    TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(LevelCelebration);
     const state = TestBed.inject(Celebrations);
     state.receive({ levelUp: { number: 2, title: 'Finding rhythm', titleAr: 'مستمر' } });
@@ -75,7 +87,7 @@ describe('Accessible shared components', () => {
     fixture.detectChanges();
     expect(progress.getAttribute('aria-valuenow')).toBe('0');
   });
-  it('uses localized accessible defaults for progress and loading', () => {
+  it('uses localized accessible defaults for progress and loading', async () => {
     const preferences = TestBed.inject(Preferences);
     preferences.language.set('ar');
     const progress = TestBed.createComponent(Progress);
@@ -88,7 +100,8 @@ describe('Accessible shared components', () => {
     expect(
       skeleton.nativeElement.querySelector('[aria-busy=true]').getAttribute('aria-label'),
     ).toBe('جارٍ التحميل');
-    preferences.language.set('en');
+    preferences.setLanguage('en');
+    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
     progress.detectChanges();
     skeleton.detectChanges();
     expect(

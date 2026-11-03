@@ -1,15 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Api, errorMessage, Toasts } from '@lifequest/data-access';
+import { Api, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { Icon, Logo } from '@lifequest/ui';
 import { FormField } from '@lifequest/forms';
-import { AuthStore } from './index';
+import { AuthStore } from '@lifequest/auth';
 @Component({
   selector: 'lq-auth-page',
-  imports: [RouterLink, ReactiveFormsModule, Icon, Logo, FormField],
+  imports: [
+    TranslatePipe,RouterLink, ReactiveFormsModule, Icon, Logo, FormField],
   templateUrl: './auth-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -221,7 +223,7 @@ export class AuthPage {
         ]);
       }
     } catch (error) {
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.busy.set(false);
     }

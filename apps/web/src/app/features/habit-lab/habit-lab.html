@@ -1,52 +1,19 @@
 <lq-page-header
-  [eyebrow]="i18n.t('CURIOSITY, NOT CRITICISM', 'فضول، لا نقد')"
-  [title]="i18n.t('Your habits are an experiment.', 'عاداتك تجربة.')"
+  [eyebrow]="('web.features.habit-lab.copy.curiosity_not_criticism_3c5902f0' | translate)"
+  [title]="('web.features.habit-lab.copy.your_habits_are_an_experiment_d8063a11' | translate)"
   [description]="
-    i18n.t(
-      'Explore your habits and record experiments to learn what helps you stay consistent.',
-      'استكشف عاداتك وسجّل تجارب لمعرفة ما يساعدك على الاستمرار.'
-    )
+    ('web.features.habit-lab.copy.explore_your_habits_and_record_experiments_to_learn_what_helps_you_stay_consistent_bedb92b7' | translate)
   "
   ><a routerLink="/habits" class="btn btn-secondary"
-    ><lq-icon name="arrow-left" [size]="16" />{{ i18n.t('My habits', 'عاداتي') }}</a
+    ><lq-icon name="arrow-left" [size]="16" />{{ ('web.features.habit-lab.copy.my_habits_e0189716' | translate) }}</a
   ></lq-page-header
 >
 <div class="mb-7 grid gap-4 sm:grid-cols-3">
-  @for (
-    step of [
-      {
-        icon: 'search',
-        en: 'Notice the pattern',
-        ar: 'لاحظ النمط',
-        text: 'What is actually
-  getting in the way?',
-        textAr: 'ما الذي يعيقك حقاً؟',
-      },
-      {
-        icon: 'flask',
-        en: 'Try a smaller
-  experiment',
-        ar: 'جرّب تجربة أصغر',
-        text: 'A lighter target. A better time. A pause.',
-        textAr:
-          'هدف أخف.
-  وقت أنسب. توقف قليل.',
-      },
-      {
-        icon: 'sprout',
-        en: 'Keep what helps',
-        ar: 'احتفظ بما يساعدك',
-        text: 'Progress is
-  learning what works for you.',
-        textAr: 'التقدم هو تعلّم ما يناسبك.',
-      },
-    ];
-    track step.en
-  ) {
+  @for (step of guidance; track step.titleKey) {
     <div class="rounded-2xl bg-brand-soft p-5">
       <lq-icon [name]="step.icon" class="mb-3 text-brand" />
-      <h2 class="text-sm font-semibold">{{ i18n.t(step.en, step.ar) }}</h2>
-      <p class="mt-2 text-xs leading-6 text-muted">{{ i18n.t(step.text, step.textAr) }}</p>
+      <h2 class="text-sm font-semibold">{{ step.titleKey | translate }}</h2>
+      <p class="mt-2 text-xs leading-6 text-muted">{{ step.textKey | translate }}</p>
     </div>
   }
 </div>
@@ -73,44 +40,37 @@
         <p class="mt-4 text-xs leading-6 text-muted">
           {{
             habit.failureReason ||
-              i18n.t(
-                'Every pattern has a reason. Let’s find yours.',
-                'لكل نمط سبب.
-      لنعثر على سببك.'
-              )
+              ('web.features.habit-lab.copy.every_pattern_has_a_reason_let_s_find_yours_24663029' | translate)
           }}
         </p>
         @if (habit.nextExperiment) {
           <div class="mt-4 rounded-xl bg-mint p-4 text-xs leading-6 text-mint-ink">
-            <span class="font-semibold">{{ i18n.t('Trying now: ', 'نجرب الآن: ') }}</span
+            <span class="font-semibold">{{ ('web.features.habit-lab.copy.trying_now_abcc1f3c' | translate) }}</span
             >{{ habit.nextExperiment }}
           </div>
         }
         @if (habit.recoveryPattern) {
           <div class="mt-4 rounded-xl bg-mint p-4 text-xs leading-6 text-mint-ink">
             {{
-              i18n.t(
-                'Several planned days did not happen. Could a smaller step fit better?',
-                'لم تسر عدة أيام كما خططت. هل تناسبك خطوة أصغر؟'
-              )
+              ('web.features.habit-lab.copy.several_planned_days_did_not_happen_could_a_smaller_step_fit_better_87a80d52' | translate)
             }}
           </div>
           <button class="btn btn-secondary mt-3 w-full text-xs" (click)="diagnose(habit, true)">
             <lq-icon name="flask" [size]="16" />{{
-              i18n.t('Try a smaller experiment', 'جرّب تجربة أصغر')
+              ('web.features.habit-lab.copy.try_a_smaller_experiment_cde4db5c' | translate)
             }}
           </button>
         } @else {
           <button class="btn btn-secondary mt-5 w-full text-xs" (click)="diagnose(habit)">
             <lq-icon name="flask" [size]="16" />{{
-              i18n.t('Explore an adjustment', 'استكشف تعديلاً')
+              ('web.features.habit-lab.copy.explore_an_adjustment_817d720a' | translate)
             }}
           </button>
         }
         @if (habit.experiments.length) {
           <details class="mt-4">
             <summary class="min-h-10 cursor-pointer text-xs text-muted">
-              {{ i18n.t('Previous experiments', 'التجارب السابقة') }} ({{
+              {{ ('web.features.habit-lab.copy.previous_experiments_f501c7e0' | translate) }} ({{
                 habit.experiments.length
               }})
             </summary>
@@ -127,15 +87,12 @@
       <div class="col-span-full">
         <lq-empty
           icon="flask"
-          [title]="i18n.t('Room to learn, whenever you need it.', 'مساحة للتعلم، متى احتجتها.')"
+          [title]="('web.features.habit-lab.copy.room_to_learn_whenever_you_need_it_0b6e720b' | translate)"
           [description]="
-            i18n.t(
-              'Create a habit first. Habit Lab will be here when you want to make it fit a little better.',
-              'أنشئ عادة أولاً. المختبر هنا عندما تريد جعلها أنسب لك.'
-            )
+            ('web.features.habit-lab.copy.create_a_habit_first_habit_lab_will_be_here_when_you_want_to_make_it_fit_a_little_better_09d49d3b' | translate)
           "
           ><a routerLink="/habits" class="btn btn-primary">{{
-            i18n.t('Explore habits', 'استكشف العادات')
+            ('web.features.habit-lab.copy.explore_habits_f7d2173b' | translate)
           }}</a></lq-empty
         >
       </div>
@@ -151,44 +108,44 @@
   />
 }
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
-  [header]="i18n.t('A kinder way forward', 'طريق ألطف للأمام')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [header]="('web.features.habit-lab.copy.a_kinder_way_forward_a697ce23' | translate)"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '36rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
     <p class="mb-5 text-sm text-muted">{{ selected()?.name }}</p>
-    <lq-field id="lab-reason" [label]="i18n.t('What got in the way?', 'ما الذي أعاقك؟')"
+    <lq-field id="lab-reason" [label]="('common.copy.what_got_in_the_way_5ac58329' | translate)"
       ><input
         id="lab-reason"
         class="field"
         formControlName="reason"
         [placeholder]="
-          i18n.t('Too big, too late, too tired…', 'كبير جداً، متأخر، مرهق…')
+          ('web.features.habit-lab.copy.too_big_too_late_too_tired_6910f8d7' | translate)
         " /></lq-field
-    ><lq-field id="lab-hypothesis" [label]="i18n.t('What might help?', 'ما الذي قد يساعد؟')"
+    ><lq-field id="lab-hypothesis" [label]="('web.features.habit-lab.copy.what_might_help_d032fca4' | translate)"
       ><input id="lab-hypothesis" class="field" formControlName="hypothesis" /></lq-field
-    ><lq-field id="lab-adjustment" [label]="i18n.t('My next experiment', 'تجربتي التالية')"
+    ><lq-field id="lab-adjustment" [label]="('web.features.habit-lab.copy.my_next_experiment_5a53dd57' | translate)"
       ><input
         id="lab-adjustment"
         class="field"
         formControlName="adjustment"
-        [placeholder]="i18n.t('20 minutes instead of 60', '20 دقيقة بدلاً من 60')"
+        [placeholder]="('web.features.habit-lab.copy.20_minutes_instead_of_60_1a438ccd' | translate)"
     /></lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="lab-target" [label]="i18n.t('New target', 'المستهدف الجديد')"
+      <lq-field id="lab-target" [label]="('web.features.habit-lab.copy.new_target_fc03e246' | translate)"
         ><input
           id="lab-target"
           type="number"
           class="field"
           min="0.01"
           formControlName="target" /></lq-field
-      ><lq-field id="lab-time" [label]="i18n.t('A better time', 'وقت أنسب')"
+      ><lq-field id="lab-time" [label]="('web.features.habit-lab.copy.a_better_time_09992423' | translate)"
         ><select id="lab-time" class="field" formControlName="preferredTime">
-          <option value="morning">{{ i18n.t('Morning', 'صباحاً') }}</option>
-          <option value="afternoon">{{ i18n.t('Afternoon', 'بعد الظهر') }}</option>
-          <option value="evening">{{ i18n.t('Evening', 'مساءً') }}</option>
+          <option value="morning">{{ ('common.copy.morning_02e055cf' | translate) }}</option>
+          <option value="afternoon">{{ ('common.copy.afternoon_0cc20db7' | translate) }}</option>
+          <option value="evening">{{ ('common.copy.evening_4a5908cf' | translate) }}</option>
         </select></lq-field
       >
     </div>
@@ -198,27 +155,27 @@
       [scheduleDays]="form.controls.scheduleDays"
       [weeklyTarget]="form.controls.weeklyTarget"
     />
-    <lq-field id="lab-commitment" [label]="i18n.t('My commitment', 'التزامي')">
+    <lq-field id="lab-commitment" [label]="('common.copy.my_commitment_4d73bc24' | translate)">
       <select id="lab-commitment" class="field" formControlName="commitment">
         <option value="flexible">
-          {{ i18n.t('Flexible, with room to adapt', 'مرن، مع مساحة للتكيف') }}
+          {{ ('common.copy.flexible_with_room_to_adapt_85d93ce6' | translate) }}
         </option>
         <option value="committed">
-          {{ i18n.t('A firm promise to myself', 'وعد ثابت لنفسي') }}
+          {{ ('common.copy.a_firm_promise_to_myself_e5549bee' | translate) }}
         </option>
       </select>
     </lq-field>
-    <lq-field id="lab-minimum" [label]="i18n.t('Smallest possible step', 'أصغر خطوة ممكنة')"
+    <lq-field id="lab-minimum" [label]="('web.features.habit-lab.copy.smallest_possible_step_79310523' | translate)"
       ><input id="lab-minimum" class="field" formControlName="minimumAction" /></lq-field
-    ><lq-field id="lab-action" [label]="i18n.t('What feels right?', 'ما الذي يبدو مناسباً؟')"
+    ><lq-field id="lab-action" [label]="('web.features.habit-lab.copy.what_feels_right_6b2f6869' | translate)"
       ><select id="lab-action" class="field" formControlName="action">
-        <option value="ADJUST">{{ i18n.t('Adjust and experiment', 'عدّل وجرّب') }}</option>
+        <option value="ADJUST">{{ ('web.features.habit-lab.copy.adjust_and_experiment_1beaf58e' | translate) }}</option>
         <option value="KEEP">
-          {{ i18n.t('Keep going with what I learned', 'استمر بما تعلمته') }}
+          {{ ('web.features.habit-lab.copy.keep_going_with_what_i_learned_d94d66b4' | translate) }}
         </option>
-        <option value="PAUSE">{{ i18n.t('Take a thoughtful pause', 'توقف بوعي') }}</option>
+        <option value="PAUSE">{{ ('web.features.habit-lab.copy.take_a_thoughtful_pause_c806f18d' | translate) }}</option>
         <option value="ARCHIVE">
-          {{ i18n.t('Make room for something else', 'اصنع مساحة لشيء آخر') }}
+          {{ ('web.features.habit-lab.copy.make_room_for_something_else_d0951b92' | translate) }}
         </option>
       </select></lq-field
     >
@@ -234,7 +191,7 @@
         (form.controls.frequency.value === 'CUSTOM' && !form.controls.scheduleDays.value.length)
       "
     >
-      {{ i18n.t('Start this experiment', 'ابدأ التجربة') }}
+      {{ ('web.features.habit-lab.copy.start_this_experiment_1a6d8e08' | translate) }}
     </button>
   </form></p-dialog
 >

@@ -1,11 +1,8 @@
 <lq-page-header
-  [eyebrow]="i18n.t('UNDERSTAND YOUR OWN PATTERNS', 'افهم أنماطك الخاصة')"
-  [title]="i18n.t('A little perspective goes a long way.', 'قليل من التأمل يفتح آفاقاً.')"
+  [eyebrow]="('web.features.analytics.copy.understand_your_own_patterns_e1fe872d' | translate)"
+  [title]="('web.features.analytics.copy.a_little_perspective_goes_a_long_way_a0f5737e' | translate)"
   [description]="
-    i18n.t(
-      'Review your activity and progress to see patterns in your habits and goals.',
-      'راجع نشاطك وتقدمك لتتعرف على الأنماط في عاداتك وأهدافك.'
-    )
+    ('web.features.analytics.copy.review_your_activity_and_progress_to_see_patterns_in_your_habits_and_goals_178fa074' | translate)
   "
 />
 @if (resource.loading() && !resource.data()) {
@@ -15,32 +12,28 @@
 } @else if (resource.data(); as data) {
   <div class="mb-6 grid gap-4 sm:grid-cols-3">
     <lq-stat
-      [label]="i18n.t('Lifetime progress', 'تقدمك عبر الوقت')"
+      [label]="('web.features.analytics.copy.lifetime_progress_ced4ccf5' | translate)"
       [value]="data.xp.earned"
       suffix="XP"
       icon="zap"
     /><lq-stat
-      [label]="i18n.t('Moments of reflection', 'لحظات التأمل')"
+      [label]="('web.features.analytics.copy.moments_of_reflection_e863916c' | translate)"
       [value]="data.checkInCount"
-      [suffix]="i18n.t('in 28 days', 'في 28 يوماً')"
+      [suffix]="('web.features.analytics.copy.in_28_days_9a12d59b' | translate)"
       icon="sun"
       tone="bg-amber-50 text-amber-700"
     /><lq-stat
-      [label]="i18n.t('Intentions to begin again', 'نوايا البداية مجدداً')"
+      [label]="('web.features.analytics.copy.intentions_to_begin_again_9c55b40c' | translate)"
       [value]="data.recoveryCount"
       icon="leaf"
       tone="bg-mint text-mint-ink"
     />
   </div>
   <section class="card mb-6 p-6">
-    <lq-section-title [title]="i18n.t('The rhythm you’re building', 'الإيقاع الذي تبنيه')" />
+    <lq-section-title [title]="('web.features.analytics.copy.the_rhythm_you_re_building_d40176ad' | translate)" />
     <p class="mb-3 text-xs text-muted">
       {{
-        i18n.t(
-          'Habit actions over 28 days. Green dots mark your check-ins.',
-          'خطوات العادات خلال 28
-    يوماً. النقاط الخضراء تمثل تأملاتك.'
-        )
+        ('web.features.analytics.copy.habit_actions_over_28_days_green_dots_mark_your_check_ins_34318dcb' | translate)
       }}
     </p>
     @defer (on viewport) {
@@ -58,15 +51,11 @@
         >
         <div>
           <h2 class="text-lg font-semibold">
-            {{ i18n.t('Why this score?', 'لماذا هذه الدرجة؟') }}
+            {{ ('web.features.analytics.copy.why_this_score_771b1caa' | translate) }}
           </h2>
           <p class="mt-2 text-xs leading-6 text-muted">
             {{
-              i18n.t(
-                'A transparent view of your journey. A guide, never a grade.',
-                'نظرة واضحة
-          لرحلتك. دليل، وليس حكماً عليك.'
-              )
+              ('web.features.analytics.copy.a_transparent_view_of_your_journey_a_guide_never_a_grade_8425674c' | translate)
             }}
           </p>
         </div>
@@ -89,7 +78,7 @@
     </section>
     <div class="space-y-6">
       <section class="card p-6">
-        <lq-section-title [title]="i18n.t('A balanced view', 'نظرة متوازنة')" />
+        <lq-section-title [title]="('web.features.analytics.copy.a_balanced_view_735ebee5' | translate)" />
         <div class="space-y-5">
           @for (area of data.areas; track area.id) {
             <div class="flex items-center gap-3">
@@ -112,7 +101,7 @@
       <section class="rounded-2xl bg-mint p-6 text-mint-ink">
         <lq-icon name="flask" [size]="25" />
         <h2 class="mt-3 text-base font-semibold">
-          {{ i18n.t('Something to explore', 'شيء يستحق الاستكشاف') }}
+          {{ ('web.features.analytics.copy.something_to_explore_90d25b9f' | translate) }}
         </h2>
         <p class="mt-3 text-xs leading-6">
           {{
@@ -127,15 +116,11 @@
                     '» لنسخة ألطف؟ جرّب تغيير شيء
         صغير.'
                 )
-              : i18n.t(
-                  'Start with a tiny habit. Your patterns will become clearer over time.',
-                  'ابدأ
-        بعادة صغيرة. ستتضح أنماطك مع الوقت.'
-                )
+              : ('web.features.analytics.copy.start_with_a_tiny_habit_your_patterns_will_become_clearer_over_time_e5108ac0' | translate)
           }}
         </p>
         <a routerLink="/habit-lab" class="btn mt-4 bg-surface/70 text-xs text-mint-ink"
-          >{{ i18n.t('Explore Habit Lab', 'استكشف مختبر العادات')
+          >{{ ('web.features.analytics.copy.explore_habit_lab_1b3da575' | translate)
           }}<lq-icon name="arrow-right" [size]="15"
         /></a>
       </section>

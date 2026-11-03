@@ -134,7 +134,7 @@ describe('auth email', () => {
     process.env['APP_URL'] = 'https://mirhal.example';
     process.env['SMTP_FROM'] = 'MIRHAL <mail@example.test>';
     process.env['RESEND_API_KEY'] = 'test-only';
-    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const fetchMock = vi
       .fn()
       .mockResolvedValue({ ok: true, json: async () => ({ id: 'email-123' }) });
@@ -163,7 +163,7 @@ describe('auth email', () => {
     process.env['APP_URL'] = 'https://web.example.test';
     process.env['SMTP_FROM'] = 'MIRHAL <mail@example.test>';
     process.env['RESEND_API_KEY'] = 'test-only';
-    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const fetchMock = vi.fn().mockResolvedValue({ ok: true });
     vi.stubGlobal('fetch', fetchMock);
 
@@ -209,8 +209,8 @@ describe('auth email', () => {
     process.env['APP_URL'] = 'https://example.test';
     process.env['SMTP_FROM'] = 'Mirhal <mail@example.test>';
     process.env['RESEND_API_KEY'] = 'test-only';
-    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const log = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const fetchMock = vi
       .fn()
       .mockResolvedValueOnce({ ok: true })
@@ -243,7 +243,7 @@ describe('auth email', () => {
     process.env['APP_URL'] = 'https://example.test';
     process.env['SMTP_FROM'] = 'Mirhal <mail@example.test>';
     process.env['RESEND_API_KEY'] = 'test-only';
-    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const fetchMock = vi
       .fn()
       .mockResolvedValueOnce({ ok: false, status: 503 })

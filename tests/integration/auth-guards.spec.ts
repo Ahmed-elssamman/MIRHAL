@@ -41,7 +41,7 @@ describe('Separation of Concerns: AuthN (SessionAuthGuard) & AuthZ (RolesGuard)'
       identity,
       requestId: 'test-req-id',
     } as unknown as ApiRequest;
-    const handler = () => {};
+    const handler = () => undefined;
     const targetClass = class {};
 
     const context = {

@@ -5,10 +5,13 @@ import { provideRouter, Router } from '@angular/router';
 import { Shell } from '../app/layout/shell';
 import { Preferences } from '@lifequest/utilities';
 import { MessageService } from 'primeng/api';
+import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { firstValueFrom } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('Configurable Sidebar Navigation', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     localStorage.removeItem('lq-show-additional-nav');
     localStorage.removeItem('lq-navigation-owner');
     if (!window.matchMedia) {
@@ -38,9 +41,16 @@ describe('Configurable Sidebar Navigation', () => {
           { path: 'dashboard', component: Shell },
         ]),
         MessageService,
+        provideTranslateService({ loader: provideTranslateLoader(MirhalTranslationLoader) }),
       ],
     });
+    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
   });
+
+  const switchLanguage = async (language: 'en' | 'ar') => {
+    TestBed.inject(Preferences).setLanguage(language);
+    await firstValueFrom(TestBed.inject(TranslateService).use(language));
+  };
 
   it('defaults showAdditionalNavigation strictly to false', () => {
     const prefs = TestBed.inject(Preferences);
@@ -56,10 +66,10 @@ describe('Configurable Sidebar Navigation', () => {
     expect(prefs.showAdditionalNavigation()).toBe(true);
   });
 
-  it('renders primary navigation and hides additional navigation when showAdditionalNavigation is false', () => {
+  it('renders primary navigation and hides additional navigation when showAdditionalNavigation is false', async () => {
     const fixture = TestBed.createComponent(Shell);
     const prefs = TestBed.inject(Preferences);
-    prefs.setLanguage('en');
+    await switchLanguage('en');
     prefs.setShowAdditionalNavigation(false);
     fixture.detectChanges();
 
@@ -76,12 +86,12 @@ describe('Configurable Sidebar Navigation', () => {
     expect(text).not.toContain('Habit Lab');
   });
 
-  it('shows additional navigation items when showAdditionalNavigation is toggled to true', () => {
+  it('shows additional navigation items when showAdditionalNavigation is toggled to true', async () => {
     const fixture = TestBed.createComponent(Shell);
     const component = fixture.componentInstance;
     const prefs = TestBed.inject(Preferences);
 
-    prefs.setLanguage('en');
+    await switchLanguage('en');
     prefs.setShowAdditionalNavigation(true);
     component.moreOpen.set(true);
     fixture.detectChanges();
@@ -99,12 +109,12 @@ describe('Configurable Sidebar Navigation', () => {
     expect(text).toContain('Habit Lab');
   });
 
-  it('renders correctly in Arabic with appropriate localized terms', () => {
+  it('renders correctly in Arabic with appropriate localized terms', async () => {
     const fixture = TestBed.createComponent(Shell);
     const component = fixture.componentInstance;
     const prefs = TestBed.inject(Preferences);
 
-    prefs.setLanguage('ar');
+    await switchLanguage('ar');
     prefs.setShowAdditionalNavigation(false);
     fixture.detectChanges();
 

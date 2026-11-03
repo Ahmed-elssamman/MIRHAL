@@ -2,7 +2,7 @@ import datatable from '@primeuix/themes/aura/datatable';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { mergeApplicationConfig } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import { sharedConfig } from '../../../libs/config/src/app-providers';
+import { sharedConfig } from '@lifequest/config';
 import { App } from './app/app';
 import { routes } from './app/app.routes';
 bootstrapApplication(

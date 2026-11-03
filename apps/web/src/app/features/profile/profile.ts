@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Api, errorMessage, Profile } from '@lifequest/data-access';
+import { Api, Profile } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
 import { Avatar, Icon, PageHeader, Skeleton } from '@lifequest/ui';
@@ -9,6 +10,7 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
 @Component({
   selector: 'lq-profile',
   imports: [
+    TranslatePipe,
     UnsavedForm,
     Avatar,
     RouterLink,
@@ -20,9 +22,9 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
     Skeleton,
   ],
   template: `<lq-page-header
-      [eyebrow]="i18n.t('THE PERSON BEHIND THE PROGRESS', 'الشخص وراء التقدم')"
-      [title]="i18n.t('A little about you.', 'قليل عنك.')"
-      [description]="i18n.t('Update your name, avatar, bio, and time zone.', 'حدّث اسمك وصورتك ونبذتك ومنطقتك الزمنية.')"
+      [eyebrow]="('web.features.profile.copy.the_person_behind_the_progress_ef4454d7' | translate)"
+      [title]="('web.features.profile.copy.a_little_about_you_cfcc7d20' | translate)"
+      [description]="('web.features.profile.copy.update_your_name_avatar_bio_and_time_zone_eab9b0f9' | translate)"
     />
     @if (!auth.user()) {
       <lq-skeleton />
@@ -39,25 +41,25 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
         <p class="mt-5 text-xs leading-7 text-muted">
           {{
             auth.user()?.profile?.bio ||
-              i18n.t('A work in progress. Just like all of us.', 'في طور النمو. مثلنا جميعاً.')
+              ('web.features.profile.copy.a_work_in_progress_just_like_all_of_us_f0d9ed04' | translate)
           }}
         </p>
         <span class="badge mt-5 bg-mint text-mint-ink"
-          ><lq-icon name="sprout" [size]="13" />{{ i18n.t('Growing since', 'تنمو منذ') }}
+          ><lq-icon name="sprout" [size]="13" />{{ ('web.features.profile.copy.growing_since_706a6834' | translate) }}
           {{ auth.user()?.createdAt | date: 'MMM y' }}</span
         ><a routerLink="/settings" class="btn btn-secondary mt-6 w-full text-xs"
           ><lq-icon name="settings" [size]="15" />{{
-            i18n.t('Preferences & privacy', 'التفضيلات والخصوصية')
+            ('web.features.profile.copy.preferences_privacy_21fae2fb' | translate)
           }}</a
         >
       </section>
       <section class="card p-6 sm:p-8">
         <h2 class="mb-6 text-lg font-semibold">
-          {{ i18n.t('Your personal details', 'تفاصيلك الشخصية') }}
+          {{ ('web.features.profile.copy.your_personal_details_7a564cc8' | translate) }}
         </h2>
         <form [formGroup]="form" [lqUnsavedForm]="form" (ngSubmit)="save()">
           <fieldset class="mb-6">
-            <legend class="field-label">{{ i18n.t('Choose your landscape', 'اختر مشهدك') }}</legend>
+            <legend class="field-label">{{ ('web.features.profile.copy.choose_your_landscape_5b0f0826' | translate) }}</legend>
             <div class="flex flex-wrap gap-3">
               @for (avatar of avatars; track avatar.name) {
                 <label class="relative cursor-pointer"
@@ -66,7 +68,7 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
                     class="peer sr-only"
                     formControlName="avatarUrl"
                     [value]="avatar.src"
-                    [attr.aria-label]="i18n.t(avatar.name, avatar.ar)" /><span
+                    [attr.aria-label]="avatar.labelKey | translate" /><span
                     class="flex rounded-full p-1 ring-brand peer-checked:ring-2 peer-focus-visible:outline-2 peer-focus-visible:outline-brand"
                     ><lq-avatar
                       [src]="avatar.src"
@@ -76,7 +78,7 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
               }
             </div>
           </fieldset>
-          <lq-field id="profile-name" [label]="i18n.t('Display name', 'الاسم الظاهر')"
+          <lq-field id="profile-name" [label]="('web.features.profile.copy.display_name_4e167b8c' | translate)"
             ><input
               id="profile-name"
               class="field"
@@ -84,7 +86,7 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
               autocomplete="name" /></lq-field
           ><lq-field
             id="profile-bio"
-            [label]="i18n.t('A little about your journey', 'قليل عن رحلتك')"
+            [label]="('web.features.profile.copy.a_little_about_your_journey_9dde2250' | translate)"
           >
             <textarea
               id="profile-bio"
@@ -94,12 +96,9 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
             ></textarea></lq-field
           ><lq-field
             id="profile-timezone"
-            [label]="i18n.t('Timezone', 'المنطقة الزمنية')"
+            [label]="('web.features.profile.copy.timezone_ceae4742' | translate)"
             [hint]="
-              i18n.t(
-                'Your daily habits follow the time where you are.',
-                'عاداتك اليومية تتبع التوقيت حيث أنت.'
-              )
+              ('web.features.profile.copy.your_daily_habits_follow_the_time_where_you_are_e3d496d3' | translate)
             "
             ><select id="profile-timezone" class="field" formControlName="timezone">
               @for (zone of timezones; track zone) {
@@ -109,14 +108,14 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
           >
           @if (saved()) {
             <p role="status" class="mb-4 text-xs text-mint-ink">
-              {{ i18n.t('Your profile is up to date.', 'تم تحديث ملفك.') }}
+              {{ ('web.features.profile.copy.your_profile_is_up_to_date_4d916b2d' | translate) }}
             </p>
           }
           @if (error()) {
             <p role="alert" class="mb-4 text-xs text-rose-600">{{ error() }}</p>
           }
           <button class="btn btn-primary" type="submit" [disabled]="saving() || form.invalid">
-            {{ i18n.t('Save profile', 'حفظ الملف') }}
+            {{ ('web.features.profile.copy.save_profile_9bf48ffd' | translate) }}
           </button>
         </form>
       </section>
@@ -140,11 +139,11 @@ export class ProfilePage {
     ]),
   ];
   readonly avatars = [
-    { name: 'Initial', ar: 'الحرف الأول', src: null },
-    ...['dawn', 'grove', 'tide', 'bloom', 'summit', 'moon'].map((name, index) => ({
+    { name: 'Initial', labelKey: 'web.profile.avatars.initial', src: null },
+    ...['dawn', 'grove', 'tide', 'bloom', 'summit', 'moon'].map((name) => ({
       name,
-      ar: ['الفجر', 'البستان', 'المد', 'الإزهار', 'القمة', 'القمر'][index]!,
-      src: `/avatars/${name}.svg`,
+      labelKey: 'web.profile.avatars.' + name,
+      src: '/avatars/' + name + '.svg',
     })),
   ];
   readonly form = this.fb.nonNullable.group({
@@ -167,7 +166,7 @@ export class ProfilePage {
       this.saved.set(true);
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

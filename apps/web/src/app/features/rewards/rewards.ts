@@ -1,12 +1,12 @@
 import { Pagination } from '@lifequest/ui';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmationService } from 'primeng/api';
 import {
   Api,
   Page,
-  errorMessage,
   Redemption,
   Reward,
   RewardSaving,
@@ -20,6 +20,7 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
 @Component({
   selector: 'lq-rewards',
   imports: [
+    TranslatePipe,
     Pagination,
     LocalizedDatePipe,
     ReactiveFormsModule,
@@ -67,21 +68,30 @@ export class RewardsPage {
     if (this.i18n.language() === 'en') return reward.title;
     return (
       reward.titleAr ||
-      (reward.userId === null ? 'اسم المكافأة غير متاح بالعربية بعد.' : reward.title)
+      (reward.userId === null
+        ? this.i18n.t('Reward name not available in Arabic yet.', 'اسم المكافأة غير متاح بالعربية بعد.')
+        : reward.title)
     );
   }
   rewardDescription(reward: Reward) {
     if (this.i18n.language() === 'en') return reward.description;
     return (
       reward.descriptionAr ||
-      (reward.userId === null ? 'وصف هذه المكافأة غير متاح بالعربية بعد.' : reward.description)
+      (reward.userId === null
+        ? this.i18n.t(
+            'Reward description not available in Arabic yet.',
+            'وصف هذه المكافأة غير متاح بالعربية بعد.',
+          )
+        : reward.description)
     );
   }
   rewardCategory(reward: { category: string; categoryAr?: string; userId?: string | null }) {
     if (this.i18n.language() === 'en') return reward.category;
     return (
       reward.categoryAr ||
-      (reward.userId === null ? 'فئة المكافأة' : this.i18n.label(reward.category))
+      (reward.userId === null
+        ? this.i18n.t('Reward category', 'فئة المكافأة')
+        : this.i18n.label(reward.category))
     );
   }
   create() {
@@ -205,7 +215,7 @@ export class RewardsPage {
       await this.refreshRewards();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

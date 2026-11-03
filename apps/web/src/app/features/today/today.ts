@@ -6,6 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TimeoutError } from 'rxjs';
@@ -26,6 +27,7 @@ import { selectNextAction } from './next-action';
 @Component({
   selector: 'lq-today',
   imports: [
+    TranslatePipe,
     RouterLink,
     PageHeader,
     Pagination,

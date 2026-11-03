@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/cor
 import { DOCUMENT } from '@angular/common';
 import { Preferences } from '@lifequest/utilities';
 import { Celebrations, LoadingService } from '@lifequest/data-access';
-import { LevelCelebration } from '../../../../libs/ui/src/level-celebration';
+import { LevelCelebration } from '@lifequest/ui/level-celebration';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -12,17 +12,18 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Overlays } from '../../../../libs/ui/src/overlays';
+import { Overlays } from '@lifequest/ui/overlays';
 import { PwaUpdates } from './pwa/updates';
 @Component({
   selector: 'lq-root',
-  imports: [RouterOutlet, Overlays, LevelCelebration],
+  imports: [RouterOutlet, Overlays, LevelCelebration, TranslatePipe],
   template: `
     @if (loading.isLoading()) {
       <div
         role="progressbar"
-        [attr.aria-label]="preferences.t('Loading page', 'جارٍ تحميل الصفحة')"
+        [attr.aria-label]="'common.loading' | translate"
         class="fixed inset-x-0 top-0 z-[9999] h-1 overflow-hidden bg-brand/20 shadow-sm"
       >
         <div class="loading-bar h-full bg-brand"></div>
@@ -30,8 +31,8 @@ import { PwaUpdates } from './pwa/updates';
     }
     @if (updates.ready() || updates.unrecoverable()) {
       <div role="status" class="flex flex-wrap items-center justify-center gap-3 bg-brand-soft px-4 py-3 text-sm text-brand">
-        <span>{{ updates.unrecoverable() ? preferences.t('MIRHAL needs to reload to continue.', 'يحتاج مِرحال إلى إعادة التحميل للمتابعة.') : preferences.t('An update is ready. Save your work before reloading.', 'يتوفر تحديث. احفظ عملك قبل إعادة التحميل.') }}</span>
-        <button type="button" class="btn btn-secondary" (click)="updates.reload()">{{ preferences.t('Reload', 'إعادة التحميل') }}</button>
+        <span>{{ (updates.unrecoverable() ? 'updates.unrecoverable' : 'updates.ready') | translate }}</span>
+        <button type="button" class="btn btn-secondary" (click)="updates.reload()">{{ 'common.reload' | translate }}</button>
       </div>
     }
     <router-outlet />@defer (on idle) { <lq-overlays /> } @defer (when celebrations.level()) { <lq-level-celebration /> }
@@ -47,6 +48,7 @@ export class App {
   private readonly router = inject(Router);
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
+  private readonly translations = inject(TranslateService);
   private navigationId = 0;
   constructor() {
     effect(() => {
@@ -73,22 +75,8 @@ export class App {
   private updateMetadata(english: boolean) {
     const path = (this.router.url.split(/[?#]/, 1)[0] ?? '').replace(/\/$/, '') || '/';
     const publicPage = path === '/' || path === '/help';
-    const title =
-      path === '/help'
-        ? english
-          ? 'How MIRHAL Works | Personal Growth, One Step at a Time'
-          : 'كيف يعمل مِرحال | نمو شخصي خطوة بخطوة'
-        : english
-          ? 'MIRHAL | Your Life. Your Journey.'
-          : 'مِرحال | حياتك، رحلتك';
-    const description =
-      path === '/help'
-        ? english
-          ? 'Learn how MIRHAL brings goals, projects, habits, and daily reflection together to support steady personal growth.'
-          : 'تعرّف على كيفية جمع مِرحال بين الأهداف والمشروعات والعادات والتأمل اليومي لدعم نموك خطوة بخطوة.'
-        : english
-          ? 'MIRHAL helps you bring goals, habits, and everyday progress together, and grow at your own pace.'
-          : 'مِرحال يساعدك على جمع أهدافك وعاداتك وتقدمك اليومي، والنمو وفق وتيرتك.';
+    const title = this.translations.instant(path === '/help' ? 'metadata.helpTitle' : 'metadata.title');
+    const description = this.translations.instant(path === '/help' ? 'metadata.helpDescription' : 'metadata.description');
 
     this.title.setTitle(title);
     this.meta.updateTag({ name: 'description', content: description });

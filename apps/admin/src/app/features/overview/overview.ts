@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Api } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { ErrorState, Icon, PageHeader, SectionTitle, Skeleton, StatCard } from '@lifequest/ui';
@@ -10,6 +11,7 @@ import { Overview } from '../../models';
   imports: [
     RouterLink,
     DecimalPipe,
+    TranslatePipe,
     PageHeader,
     ErrorState,
     Skeleton,

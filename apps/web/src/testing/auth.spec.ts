@@ -11,7 +11,7 @@ import {
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { AuthStore, authGuard, adminGuard, unauthGuard } from '@lifequest/auth';
 import { Api, User } from '@lifequest/data-access';
-import { sessionInterceptor } from '../../../../libs/auth/src/session-interceptor';
+import { sessionInterceptor } from '@lifequest/auth';
 import { MessageService } from 'primeng/api';
 const user: User = {
   id: 'u1',

@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Page, errorMessage, Toasts } from '@lifequest/data-access';
+import { Api, Page, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
@@ -23,6 +24,7 @@ type CatalogItem = {
 @Component({
   selector: 'lq-admin-content',
   imports: [
+    TranslatePipe,
     Pagination,
     ReactiveFormsModule,
     DialogModule,
@@ -41,21 +43,32 @@ export class AdminContentPage {
   private readonly route = inject(ActivatedRoute);
   private readonly toasts = inject(Toasts);
   readonly i18n = inject(Preferences);
-  readonly kind = this.route.snapshot.data['kind'] as string;
-  readonly definition = catalogs[this.kind]!;
+  readonly kind = String(this.route.snapshot.data['kind'] ?? '');
+  readonly definition = this.definitionFor(this.kind);
   readonly resource = this.api.resource<Page<CatalogItem>>(`admin/${this.kind}`);
   readonly open = signal(false);
   readonly editing = signal<string | null>(null);
   readonly saving = signal(false);
   readonly error = signal('');
   readonly form = new FormRecord<FormControl<string | number | boolean>>({});
+  private definitionFor(kind: string) {
+    const definition = catalogs[kind as keyof typeof catalogs];
+    if (!definition) throw new Error(`Unknown admin content catalog: ${kind}`);
+    return definition;
+  }
   displayTitle(item: CatalogItem) {
-    return this.i18n.t(item.title, item.titleAr || 'ترجمة العنوان غير متاحة بعد.');
+    return this.i18n.t(
+      item.title,
+      item.titleAr ||
+        this.i18n.t('Arabic title is not available yet.', 'ترجمة العنوان غير متاحة بعد.'),
+    );
   }
   displaySummary(item: CatalogItem) {
     return this.i18n.t(
       item.description || item.body || '',
-      item.descriptionAr || item.bodyAr || 'الترجمة العربية غير متاحة بعد.',
+      item.descriptionAr ||
+        item.bodyAr ||
+        this.i18n.t('Arabic translation is not available yet.', 'الترجمة العربية غير متاحة بعد.'),
     );
   }
   constructor() {
@@ -70,8 +83,11 @@ export class AdminContentPage {
   }
   edit(item?: CatalogItem) {
     this.editing.set(item?.id ?? null);
-    for (const field of this.definition.fields)
-      this.form.controls[field.key]!.setValue(item?.[field.key] ?? field.value);
+    for (const field of this.definition.fields) {
+      const control = this.form.controls[field.key];
+      if (!control) throw new Error(`Missing admin content form control: ${field.key}`);
+      control.setValue(item?.[field.key] ?? field.value);
+    }
     this.error.set('');
     this.open.set(true);
   }
@@ -90,7 +106,7 @@ export class AdminContentPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

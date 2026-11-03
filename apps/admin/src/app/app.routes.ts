@@ -16,7 +16,7 @@ export const routes: Routes = [
     path: 'auth/:mode',
     data: { admin: true },
     canActivate: [unauthGuard],
-    loadComponent: () => import('../../../../libs/auth/src/auth-page').then((m) => m.AuthPage),
+    loadComponent: () => import('@lifequest/auth-page').then((m) => m.AuthPage),
   },
   {
     path: '',

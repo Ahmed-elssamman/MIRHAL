@@ -9,13 +9,10 @@
         role="alert"
         class="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-950"
       >
-        <p class="font-semibold">{{ i18n.t('Your account is ready', 'حسابك جاهز') }}</p>
+        <p class="font-semibold">{{ ('web.features.onboarding.copy.your_account_is_ready_40893334' | translate) }}</p>
         <p>
           {{
-            i18n.t(
-              'The email provider did not accept the verification request. You can retry from Settings.',
-              'لم يقبل مزود البريد طلب التأكيد. يمكنك المحاولة مجدداً من الإعدادات.'
-            )
+            ('common.copy.the_email_provider_did_not_accept_the_verification_request_you_can_retry_from_settings_1bd93a0c' | translate)
           }}
         </p>
       </aside>
@@ -26,10 +23,10 @@
         ><lq-icon [name]="steps[step()]!.icon" [size]="30"
       /></span>
       <h1 class="text-3xl font-semibold tracking-tight">
-        {{ i18n.t(steps[step()]!.title, steps[step()]!.ar) }}
+        {{ steps[step()]!.titleKey | translate }}
       </h1>
       <p class="mb-8 mt-4 text-sm leading-7 text-muted">
-        {{ i18n.t(steps[step()]!.text, steps[step()]!.textAr) }}
+        {{ steps[step()]!.textKey | translate }}
       </p>
       <form [formGroup]="form" (ngSubmit)="next()">
         @switch (step()) {
@@ -59,14 +56,11 @@
                 } @empty {
                   <p class="text-sm text-muted">
                     {{
-                      i18n.t(
-                        'Areas are unavailable right now. Try again.',
-                        'المجالات غير متاحة الآن. حاول مجدداً.'
-                      )
+                      ('web.features.onboarding.copy.areas_are_unavailable_right_now_try_again_f05c7280' | translate)
                     }}
                   </p>
                   <button type="button" class="btn btn-secondary" (click)="areas.load()">
-                    {{ i18n.t('Try again', 'حاول مجدداً') }}
+                    {{ ('common.copy.try_again_213e90fa' | translate) }}
                   </button>
                 }
               </div>
@@ -75,12 +69,9 @@
           @case (1) {
             <lq-field
               id="onboard-goal"
-              [label]="i18n.t('What would you like to work toward?', 'ما الذي تود السعي نحوه؟')"
+              [label]="('web.features.onboarding.copy.what_would_you_like_to_work_toward_ac2ad97e' | translate)"
               [hint]="
-                i18n.t(
-                  'Optional. One meaningful direction is enough.',
-                  'اختياري. يكفي اتجاه واحد ذو معنى.'
-                )
+                ('web.features.onboarding.copy.optional_one_meaningful_direction_is_enough_49f205ca' | translate)
               "
             >
               <input
@@ -88,19 +79,16 @@
                 class="field"
                 formControlName="goal"
                 maxlength="160"
-                [placeholder]="i18n.t('e.g. Feel healthier', 'مثال: أشعر بصحة أفضل')"
+                [placeholder]="('web.features.onboarding.copy.e_g_feel_healthier_8de349bb' | translate)"
               />
             </lq-field>
             <lq-field
               id="onboard-habit"
               [label]="
-                i18n.t('What would you like to keep doing?', 'ما الذي تود الاستمرار في فعله؟')
+                ('web.features.onboarding.copy.what_would_you_like_to_keep_doing_86956f6e' | translate)
               "
               [hint]="
-                i18n.t(
-                  'Optional. A two-minute action is a good start.',
-                  'اختياري. خطوة من دقيقتين بداية جيدة.'
-                )
+                ('web.features.onboarding.copy.optional_a_two_minute_action_is_a_good_start_11f38dff' | translate)
               "
             >
               <input
@@ -108,27 +96,24 @@
                 class="field"
                 formControlName="habit"
                 maxlength="160"
-                [placeholder]="i18n.t('e.g. Take a short walk', 'مثال: أمشي قليلاً')"
+                [placeholder]="('web.features.onboarding.copy.e_g_take_a_short_walk_bb98e5a0' | translate)"
               />
             </lq-field>
           }
           @case (2) {
             <lq-field
               id="onboard-routine"
-              [label]="i18n.t('A time that usually works for me', 'وقت يناسبني عادةً')"
+              [label]="('web.features.onboarding.copy.a_time_that_usually_works_for_me_284bec38' | translate)"
             >
               <select id="onboard-routine" class="field" formControlName="preferredRoutine">
-                <option value="morning">{{ i18n.t('Morning', 'الصباح') }}</option>
-                <option value="afternoon">{{ i18n.t('Afternoon', 'بعد الظهر') }}</option>
-                <option value="evening">{{ i18n.t('Evening', 'المساء') }}</option>
+                <option value="morning">{{ ('common.copy.morning_02e055cf' | translate) }}</option>
+                <option value="afternoon">{{ ('common.copy.afternoon_0cc20db7' | translate) }}</option>
+                <option value="evening">{{ ('common.copy.evening_4a5908cf' | translate) }}</option>
               </select>
             </lq-field>
             <p class="mt-5 rounded-xl bg-brand-soft p-4 text-sm leading-6 text-muted">
               <lq-icon name="shield" [size]="17" class="me-2 inline-block text-brand" />{{
-                i18n.t(
-                  'Your profile starts private. You control sharing later in Settings.',
-                  'يبدأ ملفك الشخصي خاصاً. يمكنك التحكم بالمشاركة لاحقاً من الإعدادات.'
-                )
+                ('web.features.onboarding.copy.your_profile_starts_private_you_control_sharing_later_in_settings_45394c3f' | translate)
               }}
             </p>
           }
@@ -143,14 +128,14 @@
               class="btn btn-secondary min-h-11"
               (click)="step.update(previousStep)"
             >
-              {{ i18n.t('Back', 'رجوع') }}
+              {{ ('web.features.onboarding.copy.back_c2954bc2' | translate) }}
             </button>
           } @else {
             <span></span>
           }
           @if (step() === 1) {
             <button type="button" class="btn btn-quiet min-h-11" (click)="skipDetails()">
-              {{ i18n.t('Skip for now', 'تخطَّ الآن') }}
+              {{ ('web.features.onboarding.copy.skip_for_now_85953101' | translate) }}
             </button>
           }
           <button
@@ -160,8 +145,8 @@
           >
             {{
               step() === steps.length - 1
-                ? i18n.t('Begin my journey', 'ابدأ رحلتي')
-                : i18n.t('Continue', 'متابعة')
+                ? ('web.features.onboarding.copy.begin_my_journey_eb213100' | translate)
+                : ('web.features.onboarding.copy.continue_ab43d664' | translate)
             }}<lq-icon name="arrow-right" [size]="17" />
           </button>
         </div>

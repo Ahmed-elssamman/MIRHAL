@@ -1,16 +1,13 @@
 <lq-page-header
-  [eyebrow]="i18n.t('SMALL ACTIONS. LASTING CHANGE.', 'خطوات صغيرة. تغيير دائم.')"
-  [title]="i18n.t('Find your everyday rhythm.', 'اعثر على إيقاعك اليومي.')"
+  [eyebrow]="('web.features.habits.copy.small_actions_lasting_change_3fef2fe5' | translate)"
+  [title]="('web.features.habits.copy.find_your_everyday_rhythm_fa31af9e' | translate)"
   [description]="
-    i18n.t(
-      'Create routines, record your practice, and review the habits you want to maintain.',
-      'أنشئ عاداتك، وسجّل ممارستها، وراجع ما تريد الاستمرار فيه.'
-    )
+    ('web.features.habits.copy.create_routines_record_your_practice_and_review_the_habits_you_want_to_maintain_60e0be5f' | translate)
   "
   ><a routerLink="/habit-lab" class="btn btn-secondary"
-    ><lq-icon name="flask" [size]="17" />{{ i18n.t('Habit Lab', 'مختبر العادات') }}</a
+    ><lq-icon name="flask" [size]="17" />{{ ('web.features.habits.copy.habit_lab_c536c506' | translate) }}</a
   ><button class="btn btn-primary" (click)="create()">
-    <lq-icon name="plus" [size]="17" />{{ i18n.t('New habit', 'عادة جديدة') }}
+    <lq-icon name="plus" [size]="17" />{{ ('web.features.habits.copy.new_habit_da0a921b' | translate) }}
   </button></lq-page-header
 >
 <div class="mb-6 flex flex-wrap gap-2">
@@ -19,7 +16,7 @@
     [class]="filter() === 'all' ? 'bg-brand text-white' : 'btn-secondary'"
     (click)="setFilter('all')"
   >
-    {{ i18n.t('All areas', 'كل المجالات') }}
+    {{ ('web.features.habits.copy.all_areas_29dc672a' | translate) }}
   </button>
   @for (area of areas.data(); track area.id) {
     <button
@@ -50,7 +47,7 @@
           ><span class="flex items-center gap-1 text-xs text-amber-700"
             ><lq-icon name="flame" [size]="16" />{{ habit.streak }}
             <span class="text-[10px] text-muted">{{
-              habit.frequency === 'WEEKLY' ? i18n.t('weeks', 'أسابيع') : i18n.t('days', 'أيام')
+              habit.frequency === 'WEEKLY' ? ('web.features.habits.copy.weeks_b59e6a6a' | translate) : ('web.features.habits.copy.days_f691d28a' | translate)
             }}</span></span
           >
         </div>
@@ -59,31 +56,23 @@
           {{ habit.target }} {{ i18n.habitUnit(habit.unit) }} <span class="mx-1">·</span
           >{{
             habit.preferredTime === 'morning'
-              ? i18n.t('Morning', 'صباحاً')
+              ? ('common.copy.morning_02e055cf' | translate)
               : habit.preferredTime === 'evening'
-                ? i18n.t('Evening', 'مساءً')
-                : i18n.t(
-                    'Afternoon',
-                    'بعد
-      الظهر'
-                  )
+                ? ('common.copy.evening_4a5908cf' | translate)
+                : ('common.copy.afternoon_0cc20db7' | translate)
           }}
         </p>
         <p class="mb-5 mt-3 min-h-10 text-xs leading-6 text-muted">
           {{
             habit.whyItMatters ||
               habit.minimumAction ||
-              i18n.t(
-                'Small actions add up to meaningful
-      change.',
-                'الخطوات الصغيرة تصنع تغييراً ذا معنى.'
-              )
+              ('web.features.habits.copy.small_actions_add_up_to_meaningful_change_d5b9bd8b' | translate)
           }}
         </p>
         <div class="mt-auto">
           <div class="mb-2 flex justify-between text-[10px]">
             <span class="text-muted">{{
-              i18n.t('Consistency · last 14 days', 'الالتزام · آخر 14 يوماً')
+              ('web.features.habits.copy.consistency_last_14_days_e30220ca' | translate)
             }}</span
             ><span class="font-semibold">{{ habit.adherence }}%</span>
           </div>
@@ -105,18 +94,10 @@
             >
               <lq-icon [name]="habit.completedToday ? 'check' : 'plus'" [size]="15" />{{
                 habit.completedToday
-                  ? i18n.t(
-                      'A little win, recorded',
-                      'إنجاز صغير، تم
-        تسجيله'
-                    )
+                  ? ('web.features.habits.copy.a_little_win_recorded_c74b674e' | translate)
                   : !habit.scheduledToday
-                    ? i18n.t('Rest day', 'يوم راحة')
-                    : i18n.t(
-                        'Complete habit',
-                        'إتمام
-        العادة'
-                      )
+                    ? ('web.features.habits.copy.rest_day_5d794a2d' | translate)
+                    : ('web.features.habits.copy.complete_habit_205dd55c' | translate)
               }}
               @if (!habit.completedToday && habit.scheduledToday) {
                 <span class="ms-auto text-[10px]">+{{ habit.xpReward }} XP</span>
@@ -128,22 +109,18 @@
                 [disabled]="busy() === habit.id"
                 (click)="complete(habit, true)"
               >
-                {{ i18n.t('Just the minimum today', 'الحد الأدنى يكفي اليوم') }}
+                {{ ('web.features.habits.copy.just_the_minimum_today_1deaec99' | translate) }}
               </button>
             }
           }
           <div class="mt-4 flex items-center justify-between border-t border-line pt-3">
             <button class="btn btn-quiet !min-h-9 !px-0 text-[11px]" (click)="edit(habit)">
-              {{ i18n.t('Adjust', 'تعديل') }}</button
+              {{ ('web.features.habits.copy.adjust_d74f0a9e' | translate) }}</button
             ><button class="btn btn-quiet !min-h-9 !px-0 text-[11px]" (click)="pause(habit)">
               {{
                 habit.status === 'ACTIVE'
-                  ? i18n.t('Take a pause', 'توقف قليلاً')
-                  : i18n.t(
-                      'Begin again',
-                      'ابدأ
-          مجدداً'
-                    )
+                  ? ('web.features.habits.copy.take_a_pause_73daf0f3' | translate)
+                  : ('web.features.habits.copy.begin_again_3ade016a' | translate)
               }}
             </button>
           </div>
@@ -153,15 +130,12 @@
       <div class="col-span-full">
         <lq-empty
           icon="sprout"
-          [title]="i18n.t('Build your first tiny habit.', 'ابنِ أول عادة صغيرة.')"
+          [title]="('web.features.habits.copy.build_your_first_tiny_habit_34452a0a' | translate)"
           [description]="
-            i18n.t(
-              'Start with something small enough to do on a busy day.',
-              'ابدأ بشيء صغير بما يكفي لفعله في يوم مزدحم.'
-            )
+            ('web.features.habits.copy.start_with_something_small_enough_to_do_on_a_busy_day_3d758611' | translate)
           "
           ><button class="btn btn-primary" (click)="create()">
-            {{ i18n.t('Create a habit', 'إنشاء عادة') }}
+            {{ ('web.features.habits.copy.create_a_habit_b7cabccc' | translate) }}
           </button></lq-empty
         >
       </div>
@@ -172,8 +146,8 @@
   }
 }
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
-  [header]="i18n.t('Plant a small seed', 'ازرع بذرة صغيرة')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [header]="('web.features.habits.copy.plant_a_small_seed_190b04db' | translate)"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
@@ -181,15 +155,15 @@
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
     <lq-field
       id="habit-name"
-      [label]="i18n.t('What would you like to do regularly?', 'ماذا تود أن تفعل بانتظام؟')"
+      [label]="('web.features.habits.copy.what_would_you_like_to_do_regularly_5729ca0e' | translate)"
       ><input
         id="habit-name"
         class="field"
         formControlName="name"
-        [placeholder]="i18n.t('e.g. Read something meaningful', 'مثال: اقرأ شيئاً ذا معنى')"
+        [placeholder]="('web.features.habits.copy.e_g_read_something_meaningful_12a81e99' | translate)"
     /></lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="habit-area" [label]="i18n.t('Life area', 'مجال الحياة')"
+      <lq-field id="habit-area" [label]="('common.copy.life_area_9e7a62cc' | translate)"
         ><select id="habit-area" class="field" formControlName="areaId">
           @for (area of areas.data(); track area.id) {
             <option [value]="area.id">{{ i18n.t(area.name, area.nameAr) }}</option>
@@ -197,9 +171,9 @@
         </select></lq-field
       >
     </div>
-    <lq-field id="habit-goal" [label]="i18n.t('Linked goal (optional)', 'الهدف المرتبط (اختياري)')"
+    <lq-field id="habit-goal" [label]="('common.copy.linked_goal_optional_9072a9be' | translate)"
       ><select id="habit-goal" class="field" formControlName="goalId">
-        <option value="">{{ i18n.t('An independent habit', 'عادة مستقلة') }}</option>
+        <option value="">{{ ('web.features.habits.copy.an_independent_habit_b56bc5be' | translate) }}</option>
         @for (goal of goals.data()?.items; track goal.id) {
           <option [value]="goal.id">{{ goal.title }}</option>
         }
@@ -212,80 +186,77 @@
       [weeklyTarget]="form.controls.weeklyTarget"
     />
     <div class="grid grid-cols-2 gap-4">
-      <lq-field id="habit-target" [label]="i18n.t('Target', 'المستهدف')"
+      <lq-field id="habit-target" [label]="('common.copy.target_8b67f168' | translate)"
         ><input
           id="habit-target"
           class="field"
           type="number"
           min="0.01"
           formControlName="target" /></lq-field
-      ><lq-field id="habit-unit" [label]="i18n.t('Unit', 'الوحدة')"
+      ><lq-field id="habit-unit" [label]="('web.features.habits.copy.unit_68e16627' | translate)"
         ><input
           id="habit-unit"
           class="field"
           formControlName="unit"
-          [placeholder]="i18n.t('minutes, pages, times…', 'دقائق، صفحات، مرات…')"
+          [placeholder]="('web.features.habits.copy.minutes_pages_times_c8c1dbc2' | translate)"
       /></lq-field>
     </div>
     <lq-field
       id="habit-minimum"
-      [label]="i18n.t('Your tiny version', 'نسختك الصغيرة')"
+      [label]="('web.features.habits.copy.your_tiny_version_1698db24' | translate)"
       [hint]="
-        i18n.t(
-          'For the busy days. Small minimum actions count.',
-          'للأيام المزدحمة. الخطوات الصغيرة تُحسب.'
-        )
+        ('web.features.habits.copy.for_the_busy_days_small_minimum_actions_count_11b93686' | translate)
       "
       ><input
         id="habit-minimum"
         class="field"
         formControlName="minimumAction"
-        [placeholder]="i18n.t('e.g. Read just one page', 'مثال: اقرأ صفحة واحدة فقط')" /></lq-field
-    ><lq-field id="habit-why" [label]="i18n.t('Why it matters to you', 'لماذا يهمك')"
+        [placeholder]="('web.features.habits.copy.e_g_read_just_one_page_df1e1824' | translate)" /></lq-field
+    ><lq-field id="habit-why" [label]="('web.features.habits.copy.why_it_matters_to_you_c05993a2' | translate)"
       ><input id="habit-why" class="field" formControlName="whyItMatters"
     /></lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="habit-time" [label]="i18n.t('Best time', 'أفضل وقت')"
+      <lq-field id="habit-time" [label]="('web.features.habits.copy.best_time_d6192ae4' | translate)"
         ><select id="habit-time" class="field" formControlName="preferredTime">
-          <option value="morning">{{ i18n.t('Morning', 'الصباح') }}</option>
-          <option value="afternoon">{{ i18n.t('Afternoon', 'بعد الظهر') }}</option>
-          <option value="evening">{{ i18n.t('Evening', 'المساء') }}</option>
+          <option value="morning">{{ ('common.copy.morning_02e055cf' | translate) }}</option>
+          <option value="afternoon">{{ ('common.copy.afternoon_0cc20db7' | translate) }}</option>
+          <option value="evening">{{ ('common.copy.evening_4a5908cf' | translate) }}</option>
         </select></lq-field
-      ><lq-field id="habit-difficulty" [label]="i18n.t('Effort', 'الجهد')"
+      ><lq-field id="habit-difficulty" [label]="('common.copy.effort_d56430cf' | translate)"
         ><select id="habit-difficulty" class="field" formControlName="difficulty">
-          <option value="EASY">{{ i18n.t('Gentle · 20 XP', 'بسيط · 20 نقطة') }}</option>
-          <option value="MEDIUM">{{ i18n.t('Steady · 30 XP', 'متوسط · 30 نقطة') }}</option>
-          <option value="HARD">{{ i18n.t('Stretch · 40 XP', 'تحدٍ · 40 نقطة') }}</option>
+          <option value="EASY">{{ ('web.features.habits.copy.gentle_20_xp_54dcf5a7' | translate) }}</option>
+          <option value="MEDIUM">{{ ('web.features.habits.copy.steady_30_xp_2868393f' | translate) }}</option>
+          <option value="HARD">{{ ('web.features.habits.copy.stretch_40_xp_d9d5d847' | translate) }}</option>
         </select></lq-field
       >
     </div>
     <details class="mb-5 rounded-xl border border-line p-4">
       <summary class="min-h-11 cursor-pointer text-sm font-medium">
-        {{ i18n.t('Make this rhythm yours', 'اجعل هذا الإيقاع يناسبك') }}
+        {{ ('web.features.habits.copy.make_this_rhythm_yours_c69fb377' | translate) }}
       </summary>
-      <lq-field id="habit-start" [label]="i18n.t('Start date (optional)', 'تاريخ البدء (اختياري)')">
+      <lq-field id="habit-start" [label]="('common.copy.start_date_optional_69d4dbbc' | translate)">
         <input id="habit-start" class="field" type="date" formControlName="startDate" />
       </lq-field>
-      <lq-field id="habit-commitment" [label]="i18n.t('My commitment', 'التزامي')">
+      <lq-field id="habit-commitment" [label]="('common.copy.my_commitment_4d73bc24' | translate)">
         <select id="habit-commitment" class="field" formControlName="commitment">
           <option value="flexible">
-            {{ i18n.t('Flexible, with room to adapt', 'مرن، مع مساحة للتكيف') }}
+            {{ ('common.copy.flexible_with_room_to_adapt_85d93ce6' | translate) }}
           </option>
           <option value="committed">
-            {{ i18n.t('A firm promise to myself', 'وعد ثابت لنفسي') }}
+            {{ ('common.copy.a_firm_promise_to_myself_e5549bee' | translate) }}
           </option>
         </select>
       </lq-field>
-      <lq-field id="habit-notes" [label]="i18n.t('Private notes', 'ملاحظات خاصة')">
+      <lq-field id="habit-notes" [label]="('common.copy.private_notes_8e70eb59' | translate)">
         <textarea id="habit-notes" class="field" rows="3" formControlName="notes"></textarea>
       </lq-field>
       @if (editing()) {
-        <lq-field id="habit-status" [label]="i18n.t('Status', 'الحالة')">
+        <lq-field id="habit-status" [label]="('common.copy.status_005ef20f' | translate)">
           <select id="habit-status" class="field" formControlName="status">
-            <option value="ACTIVE">{{ i18n.t('Active', 'نشط') }}</option>
-            <option value="PAUSED">{{ i18n.t('Paused', 'متوقف مؤقتاً') }}</option>
-            <option value="COMPLETED">{{ i18n.t('Completed', 'مكتمل') }}</option>
-            <option value="ARCHIVED">{{ i18n.t('Archived', 'مؤرشف') }}</option>
+            <option value="ACTIVE">{{ ('common.copy.active_1f89134f' | translate) }}</option>
+            <option value="PAUSED">{{ ('common.copy.paused_de281feb' | translate) }}</option>
+            <option value="COMPLETED">{{ ('common.copy.completed_ec88aab2' | translate) }}</option>
+            <option value="ARCHIVED">{{ ('common.copy.archived_af5c5293' | translate) }}</option>
           </select>
         </lq-field>
       }
@@ -302,7 +273,7 @@
         (form.controls.frequency.value === 'CUSTOM' && !form.controls.scheduleDays.value.length)
       "
     >
-      {{ saving() ? i18n.t('Saving…', 'جارٍ الحفظ…') : i18n.t('Save my habit', 'حفظ عادتي') }}
+      {{ saving() ? ('common.copy.saving_74119e7f' | translate) : ('web.features.habits.copy.save_my_habit_592d875c' | translate) }}
     </button>
   </form></p-dialog
 >

@@ -1,6 +1,11 @@
-import { sessionInterceptor } from '../../auth/src/session-interceptor';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { sessionInterceptor } from '@lifequest/auth';
+import { apiErrorInterceptor, apiLoadingInterceptor } from '@lifequest/data-access';
+import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
+import { Preferences } from '@lifequest/utilities';
+import { MirhalTranslationLoader } from '@lifequest/i18n';
 import { providePrimeNG } from 'primeng/config';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import type { ComponentsDesignTokens } from '@primeuix/themes/types';
@@ -27,8 +32,8 @@ const LifeQuest = definePreset(Aura, {
       50: '#e4f3ed',
       100: '#c9e8dc',
       200: '#a8d9c8',
-      300: '#7ec7b0',
-      400: '#4eab91',
+      300: '#a5e5d4',
+      400: '#86d7c2',
       500: '#0e7165',
       600: '#0b5e55',
       700: '#084c45',
@@ -183,7 +188,18 @@ const LifeQuest = definePreset(Aura, {
 export const sharedConfig = (components: ComponentsDesignTokens = {}): ApplicationConfig => ({
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideHttpClient(withFetch(), withInterceptors([sessionInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([apiErrorInterceptor, apiLoadingInterceptor, sessionInterceptor]),
+    ),
+    provideTranslateService({
+      loader: provideTranslateLoader(MirhalTranslationLoader),
+      fallbackLang: 'en',
+    }),
+    provideAppInitializer(() => {
+      const preferences = inject(Preferences);
+      return firstValueFrom(inject(TranslateService).use(preferences.language()));
+    }),
     providePrimeNG({
       theme: {
         preset: definePreset(LifeQuest, { components }),

@@ -1,9 +1,10 @@
 import { Milestones } from '../goals/milestones';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, errorMessage, Goal, Page, Project, Toasts } from '@lifequest/data-access';
+import { Api, Goal, Page, Project, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
 import {
   EmptyState,
@@ -18,6 +19,7 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
 @Component({
   selector: 'lq-projects',
   imports: [
+    TranslatePipe,
     Milestones,
     RouterLink,
     LocalizedDatePipe,
@@ -94,7 +96,7 @@ export class ProjectsPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

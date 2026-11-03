@@ -1,16 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TimeoutError } from 'rxjs';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, errorMessage, Goal, Page, Project, Task, Toasts } from '@lifequest/data-access';
+import { Api, Goal, Page, Project, Task, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
 import { EmptyState, ErrorState, Icon, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
 import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
 @Component({
   selector: 'lq-tasks',
   imports: [
+    TranslatePipe,
     LocalizedDatePipe,
     FormsModule,
     ReactiveFormsModule,
@@ -47,6 +49,11 @@ export class TasksPage {
   readonly pendingTaskIds = signal<Set<string>>(new Set());
   readonly error = signal('');
   readonly filter = signal('ALL');
+  readonly filterTabs = [
+    { id: 'ALL', key: 'web.tasks.filters.all' },
+    { id: 'OPEN', key: 'web.tasks.filters.open' },
+    { id: 'DONE', key: 'web.tasks.filters.done' },
+  ];
   readonly search = signal('');
   readonly visible = computed(() => this.resource.data()?.items ?? []);
   readonly form = this.fb.nonNullable.group({
@@ -122,7 +129,7 @@ export class TasksPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

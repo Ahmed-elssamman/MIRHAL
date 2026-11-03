@@ -1,37 +1,22 @@
 <lq-page-header
-  [eyebrow]="i18n.t('ONE THING AT A TIME', 'شيء واحد في كل مرة')"
-  [title]="i18n.t('Make space for focused work.', 'اصنع مساحة للعمل بتركيز.')"
+  [eyebrow]="('web.features.tasks.copy.one_thing_at_a_time_98ba91d8' | translate)"
+  [title]="('web.features.tasks.copy.make_space_for_focused_work_6e5e43d6' | translate)"
   [description]="
-    i18n.t(
-      'Organize tasks, set priorities and dates, and mark each step complete as you go.',
-      'نظّم مهامك وحدد أولوياتها ومواعيدها، وعلّم كل خطوة مكتملة عند إنجازها.'
-    )
+    ('web.features.tasks.copy.organize_tasks_set_priorities_and_dates_and_mark_each_step_complete_as_you_go_05f0e4d7' | translate)
   "
   ><button class="btn btn-primary" (click)="create()">
-    <lq-icon name="plus" [size]="17" />{{ i18n.t('New task', 'مهمة جديدة') }}
+    <lq-icon name="plus" [size]="17" />{{ ('web.features.tasks.copy.new_task_662057e2' | translate) }}
   </button></lq-page-header
 >
 <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
   <div class="flex gap-1 rounded-xl border border-line bg-surface p-1">
-    @for (
-      tab of [
-        { id: 'ALL', en: 'All tasks', ar: 'كل المهام' },
-        {
-          id: 'OPEN',
-          en: 'To
-    do',
-          ar: 'للإنجاز',
-        },
-        { id: 'DONE', en: 'Done', ar: 'تمت' },
-      ];
-      track tab.id
-    ) {
+    @for (tab of filterTabs; track tab.id) {
       <button
         class="btn !min-h-9 !px-3 !py-2 text-xs"
         [class]="filter() === tab.id ? 'bg-brand-soft text-brand' : 'text-muted'"
         (click)="setFilter(tab.id)"
       >
-        {{ i18n.t(tab.en, tab.ar) }}
+        {{ tab.key | translate }}
       </button>
     }
   </div>
@@ -41,12 +26,12 @@
       [ngModel]="search()"
       (ngModelChange)="search.set($event)"
       name="search"
-      [placeholder]="i18n.t('Find a task…', 'ابحث عن مهمة…')"
-      [attr.aria-label]="i18n.t('Search tasks', 'البحث في المهام')"
+      [placeholder]="('web.features.tasks.copy.find_a_task_0ed61438' | translate)"
+      [attr.aria-label]="('web.features.tasks.copy.search_tasks_86e2bf6b' | translate)"
     /><button
       class="icon-button border border-line"
       type="submit"
-      [attr.aria-label]="i18n.t('Search', 'بحث')"
+      [attr.aria-label]="('common.copy.search_c646a2c9' | translate)"
     >
       <lq-icon name="search" />
     </button>
@@ -70,8 +55,8 @@
           [disabled]="pendingTaskIds().has(task.id)"
           [attr.aria-label]="
             (task.status === 'COMPLETED'
-              ? i18n.t('Reopen ', 'إعادة فتح ')
-              : i18n.t('Complete ', 'إتمام ')) + task.title
+              ? ('web.features.tasks.copy.reopen_e5ea7988' | translate)
+              : ('common.copy.complete_a8883fa6' | translate)) + task.title
           "
           (click)="toggle(task)"
         >
@@ -88,7 +73,7 @@
             {{ task.title }}
           </h2>
           @if (pendingTaskIds().has(task.id)) {
-            <p role="status" class="mt-1 text-xs text-muted">{{ i18n.t('Saving…', 'جارٍ الحفظ…') }}</p>
+            <p role="status" class="mt-1 text-xs text-muted">{{ ('common.copy.saving_74119e7f' | translate) }}</p>
           }
           @if (task.description) {
             <p class="mt-1 text-xs leading-6 text-muted">{{ task.description }}</p>
@@ -103,16 +88,16 @@
               <span>{{ task.dueDate | date: 'MMM d' }}</span>
             }
             @if (task.parent) {
-              <span>{{ i18n.t('Part of: ', 'جزء من: ') }}{{ task.parent.title }}</span>
+              <span>{{ ('web.features.tasks.copy.part_of_789d6a9f' | translate) }}{{ task.parent.title }}</span>
             }
             @if (task.estimatedMinutes) {
-              <span>{{ task.estimatedMinutes }} {{ i18n.t('min', 'دقيقة') }}</span>
+              <span>{{ task.estimatedMinutes }} {{ ('common.copy.min_c98f4557' | translate) }}</span>
             }
           </div>
         </div>
         <button
           class="icon-button shrink-0"
-          [attr.aria-label]="i18n.t('Edit ', 'تعديل ') + task.title"
+          [attr.aria-label]="('web.features.tasks.copy.edit_30efe843' | translate) + task.title"
           (click)="edit(task)"
         >
           <lq-icon name="more" />
@@ -122,25 +107,22 @@
           [class]="task.priority === 'HIGH' ? 'bg-coral text-orange-800' : 'bg-canvas text-muted'"
           >{{
             task.priority === 'HIGH'
-              ? i18n.t('Priority', 'أولوية')
+              ? ('common.copy.priority_e68d9f29' | translate)
               : task.priority === 'LOW'
-                ? i18n.t('Someday', 'لاحقاً')
-                : i18n.t('Steady', 'بهدوء')
+                ? ('web.features.tasks.copy.someday_e03bbd49' | translate)
+                : ('common.copy.steady_cd945433' | translate)
           }}</span
         >
       </article>
     } @empty {
       <lq-empty
         icon="tasks"
-        [title]="i18n.t('A little breathing room.', 'مساحة للتنفس.')"
+        [title]="('web.features.tasks.copy.a_little_breathing_room_49541d6d' | translate)"
         [description]="
-          i18n.t(
-            'No tasks in this view. Add your next meaningful action, or enjoy the space.',
-            'لا توجد مهام هنا. أضف خطوتك التالية أو استمتع بالمساحة.'
-          )
+          ('web.features.tasks.copy.no_tasks_in_this_view_add_your_next_meaningful_action_or_enjoy_the_space_9f21e12a' | translate)
         "
         ><button class="btn btn-primary" (click)="create()">
-          {{ i18n.t('Add a task', 'إضافة مهمة') }}
+          {{ ('common.copy.add_a_task_7f97e88c' | translate) }}
         </button></lq-empty
       >
     }
@@ -150,18 +132,18 @@
   }
 }
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
-  [header]="i18n.t('One clear next step', 'خطوة تالية واضحة')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [header]="('web.features.tasks.copy.one_clear_next_step_62f15063' | translate)"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '34rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
-    <lq-field id="task-title" [label]="i18n.t('What needs doing?', 'ما الذي يحتاج للإنجاز؟')"
+    <lq-field id="task-title" [label]="('web.features.tasks.copy.what_needs_doing_6b10ac46' | translate)"
       ><input id="task-title" class="field" formControlName="title" /></lq-field
     ><lq-field
       id="task-description"
-      [label]="i18n.t('A little context (optional)', 'قليل من السياق (اختياري)')"
+      [label]="('web.features.tasks.copy.a_little_context_optional_4026a906' | translate)"
     >
       <textarea
         id="task-description"
@@ -169,37 +151,37 @@
         rows="2"
         formControlName="description"
       ></textarea></lq-field
-    ><lq-field id="task-project" [label]="i18n.t('Project', 'المشروع')"
+    ><lq-field id="task-project" [label]="('web.features.tasks.copy.project_7b5fea5e' | translate)"
       ><select id="task-project" class="field" formControlName="projectId">
-        <option value="">{{ i18n.t('Independent task', 'مهمة مستقلة') }}</option>
+        <option value="">{{ ('web.features.tasks.copy.independent_task_30027d66' | translate) }}</option>
         @for (project of projects.data()?.items; track project.id) {
           <option [value]="project.id">{{ project.title }}</option>
         }
       </select></lq-field
     >
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="task-date" [label]="i18n.t('Due date', 'تاريخ الاستحقاق')"
+      <lq-field id="task-date" [label]="('web.features.tasks.copy.due_date_d98bb1eb' | translate)"
         ><input id="task-date" type="date" class="field" formControlName="dueDate" /></lq-field
-      ><lq-field id="task-priority" [label]="i18n.t('Priority', 'الأولوية')"
+      ><lq-field id="task-priority" [label]="('common.copy.priority_e68d9f29' | translate)"
         ><select id="task-priority" class="field" formControlName="priority">
-          <option value="LOW">{{ i18n.t('Low', 'منخفضة') }}</option>
-          <option value="MEDIUM">{{ i18n.t('Medium', 'متوسطة') }}</option>
-          <option value="HIGH">{{ i18n.t('High', 'عالية') }}</option>
+          <option value="LOW">{{ ('common.copy.low_b1dd9521' | translate) }}</option>
+          <option value="MEDIUM">{{ ('common.copy.medium_09be5f96' | translate) }}</option>
+          <option value="HIGH">{{ ('common.copy.high_be0a061d' | translate) }}</option>
         </select></lq-field
       >
     </div>
-    <lq-field id="task-goal" [label]="i18n.t('Linked goal', 'الهدف المرتبط')"
+    <lq-field id="task-goal" [label]="('web.features.tasks.copy.linked_goal_a8ebfaf3' | translate)"
       ><select id="task-goal" class="field" formControlName="goalId">
-        <option value="">{{ i18n.t('No direct goal', 'بدون هدف مباشر') }}</option>
+        <option value="">{{ ('web.features.tasks.copy.no_direct_goal_cf7cfac6' | translate) }}</option>
         @for (goal of goals.data()?.items; track goal.id) {
           <option [value]="goal.id">{{ goal.title }}</option>
         }
       </select></lq-field
     >
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="task-start" [label]="i18n.t('Start date', 'تاريخ البدء')"
+      <lq-field id="task-start" [label]="('web.features.tasks.copy.start_date_9a3729e1' | translate)"
         ><input id="task-start" class="field" type="date" formControlName="startDate" /></lq-field
-      ><lq-field id="task-effort" [label]="i18n.t('Estimated minutes', 'الدقائق المتوقعة')"
+      ><lq-field id="task-effort" [label]="('web.features.tasks.copy.estimated_minutes_c00810e0' | translate)"
         ><input
           id="task-effort"
           class="field"
@@ -213,13 +195,13 @@
       <div
         class="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-brand-soft p-3 text-xs"
       >
-        <span>{{ i18n.t('A small step within a bigger task.', 'خطوة صغيرة ضمن مهمة أكبر.') }}</span>
+        <span>{{ ('web.features.tasks.copy.a_small_step_within_a_bigger_task_b0513a72' | translate) }}</span>
         <button
           type="button"
           class="btn btn-quiet text-xs"
           (click)="form.controls.parentId.setValue(''); form.markAsDirty()"
         >
-          {{ i18n.t('Make independent', 'اجعلها مستقلة') }}
+          {{ ('web.features.tasks.copy.make_independent_98e389fd' | translate) }}
         </button>
       </div>
     }
@@ -230,17 +212,17 @@
         (click)="subtask()"
         [disabled]="saving()"
       >
-        {{ i18n.t('Break into a subtask', 'قسّمها إلى مهمة فرعية') }}
+        {{ ('web.features.tasks.copy.break_into_a_subtask_435c8a02' | translate) }}
       </button>
     }
-    <lq-field id="task-labels" [label]="i18n.t('Labels (comma separated)', 'الوسوم (افصل بفاصلة)')"
+    <lq-field id="task-labels" [label]="('web.features.tasks.copy.labels_comma_separated_e329b7b5' | translate)"
       ><input id="task-labels" class="field" formControlName="labels"
     /></lq-field>
     @if (error()) {
       <p role="alert" class="mb-4 text-sm text-rose-600">{{ error() }}</p>
     }
     <button class="btn btn-primary w-full" type="submit" [disabled]="saving() || form.invalid">
-      {{ editing() ? i18n.t('Save task', 'حفظ المهمة') : i18n.t('Add task', 'إضافة المهمة') }}
+      {{ editing() ? ('web.features.tasks.copy.save_task_9bfaf3dd' | translate) : ('web.features.tasks.copy.add_task_1812b769' | translate) }}
     </button>
   </form></p-dialog
 >

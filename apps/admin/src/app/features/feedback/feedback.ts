@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, errorMessage, Feedback, Page, Toasts } from '@lifequest/data-access';
+import { Api, Feedback, Page, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
 import { EmptyState, ErrorState, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-admin-feedback',
   imports: [
+    TranslatePipe,
     LocalizedDatePipe,
     FormsModule,
     ReactiveFormsModule,
@@ -64,7 +66,7 @@ export class AdminFeedbackPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

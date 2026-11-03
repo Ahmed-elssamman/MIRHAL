@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { Api, Dashboard } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
@@ -16,6 +17,7 @@ import { ActivityChart } from './activity-chart';
 @Component({
   selector: 'lq-analytics',
   imports: [
+    TranslatePipe,
     RouterLink,
     PageHeader,
     ErrorState,

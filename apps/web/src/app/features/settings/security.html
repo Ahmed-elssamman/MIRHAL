@@ -1,20 +1,16 @@
 <section class="card mt-6 p-6">
   <div class="mb-5 flex items-center gap-3">
     <lq-icon name="shield" class="text-brand" />
-    <h2 class="text-lg font-semibold">{{ i18n.t('Your account, kept safe', 'حسابك، بأمان') }}</h2>
+    <h2 class="text-lg font-semibold">{{ ('web.features.settings.copy.your_account_kept_safe_2a62e9b6' | translate) }}</h2>
   </div>
   <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-5">
     <div>
-      <p class="text-sm font-medium">{{ i18n.t('Email verification', 'تأكيد البريد') }}</p>
+      <p class="text-sm font-medium">{{ ('web.features.settings.copy.email_verification_2382dfde' | translate) }}</p>
       <p class="mt-1 text-xs text-muted">
         {{
           auth.user()?.emailVerifiedAt
-            ? i18n.t(
-                'Your email is verified.',
-                'بريدك
-        مؤكد.'
-              )
-            : i18n.t('Confirm your email to keep your account secure.', 'أكد بريدك لحماية حسابك.')
+            ? ('web.features.settings.copy.your_email_is_verified_263c4c18' | translate)
+            : ('web.features.settings.copy.confirm_your_email_to_keep_your_account_secure_fd2d4cf1' | translate)
         }}
       </p>
     </div>
@@ -26,32 +22,32 @@
       >
         {{
           busy()
-            ? i18n.t('Sending request…', 'جارٍ إرسال الطلب…')
-            : i18n.t('Send verification', 'أرسل التأكيد')
+            ? ('web.features.settings.copy.sending_request_be085536' | translate)
+            : ('web.features.settings.copy.send_verification_9e1caae6' | translate)
         }}
       </button>
       @if (capabilities.data()?.emailDelivery === false) {
         <p class="text-xs text-muted">
-          {{ i18n.t('Email delivery is currently unavailable.', 'إرسال البريد غير متاح حالياً.') }}
+          {{ ('web.features.settings.copy.email_delivery_is_currently_unavailable_541c25ef' | translate) }}
         </p>
       }
     } @else {
       <span class="badge bg-mint text-mint-ink"
-        ><lq-icon name="check" [size]="13" />{{ i18n.t('Verified', 'مؤكد') }}</span
+        ><lq-icon name="check" [size]="13" />{{ ('web.features.settings.copy.verified_c89721e5' | translate) }}</span
       >
     }
   </div>
   <div class="py-5">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <h3 class="text-sm font-medium">{{ i18n.t('Active sessions', 'الجلسات النشطة') }}</h3>
+      <h3 class="text-sm font-medium">{{ ('web.features.settings.copy.active_sessions_3298f0f4' | translate) }}</h3>
       <button class="btn btn-secondary text-xs" (click)="logoutAll()">
-        {{ i18n.t('Sign out everywhere', 'تسجيل الخروج من كل الأجهزة') }}
+        {{ ('web.features.settings.copy.sign_out_everywhere_b34bf79a' | translate) }}
       </button>
     </div>
     @for (session of sessions.data(); track session.id) {
       <p class="mt-3 flex items-center gap-2 text-xs text-muted">
-        <lq-icon name="lock" [size]="13" />{{ i18n.t('Started', 'بدأت') }}
-        {{ session.createdAt | date: 'MMM d, h:mm a' }} · {{ i18n.t('Expires', 'تنتهي') }}
+        <lq-icon name="lock" [size]="13" />{{ ('web.features.settings.copy.started_97b5823e' | translate) }}
+        {{ session.createdAt | date: 'MMM d, h:mm a' }} · {{ ('web.features.settings.copy.expires_c7aa0523' | translate) }}
         {{ session.expiresAt | date: 'h:mm a' }}
       </p>
     }
@@ -59,37 +55,31 @@
   <div class="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
     <div>
       <h3 class="text-sm font-medium">
-        {{ i18n.t('Take your journey with you', 'خذ رحلتك معك') }}
+        {{ ('web.features.settings.copy.take_your_journey_with_you_ece77ae0' | translate) }}
       </h3>
       <p class="mt-1 text-xs text-muted">
-        {{ i18n.t('Download a copy of your personal data.', 'نزّل نسخة من بياناتك الشخصية.') }}
+        {{ ('web.features.settings.copy.download_a_copy_of_your_personal_data_fec40daf' | translate) }}
       </p>
     </div>
     <button class="btn btn-secondary text-xs" [disabled]="busy()" (click)="export()">
-      <lq-icon name="download" [size]="15" />{{ i18n.t('Export my data', 'تصدير بياناتي') }}
+      <lq-icon name="download" [size]="15" />{{ ('web.features.settings.copy.export_my_data_4322f4fd' | translate) }}
     </button>
   </div>
 </section>
 <section class="card mt-6 p-6">
-  <h2 class="text-sm font-semibold">{{ i18n.t('Leave when you need to', 'غادر متى احتجت') }}</h2>
+  <h2 class="text-sm font-semibold">{{ ('web.features.settings.copy.leave_when_you_need_to_9f55a1ee' | translate) }}</h2>
   <p class="my-3 text-xs leading-6 text-muted">
     {{
-      i18n.t(
-        'You are in control of your account. Deleting it ends all sessions and removes your
-    profile identity and private reflections. Auditable transaction records are retained.',
-        'أنت
-    تتحكم في حسابك. حذفه ينهي الجلسات ويزيل هوية ملفك وتأملاتك الخاصة. تبقى سجلات المعاملات القابلة
-    للتدقيق.'
-      )
+      ('web.features.settings.copy.you_are_in_control_of_your_account_deleting_it_ends_all_sessions_and_removes_your_profile_identity_and_private_reflections_auditable_transaction_records_are_retained_f588daf0' | translate)
     }}
   </p>
   <button class="btn btn-secondary text-xs text-rose-600" (click)="deleting.set(true)">
-    {{ i18n.t('Delete my account', 'حذف حسابي') }}
+    {{ ('web.features.settings.copy.delete_my_account_0498d7af' | translate) }}
   </button>
 </section>
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
-  [header]="i18n.t('Delete your account', 'حذف حسابك')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [header]="('web.features.settings.copy.delete_your_account_190e562e' | translate)"
   [visible]="deleting()"
   (visibleChange)="deleting.set($event)"
   [modal]="true"
@@ -97,14 +87,10 @@
   ><form [formGroup]="form" (ngSubmit)="remove()">
     <p class="mb-5 text-xs leading-6 text-muted">
       {{
-        i18n.t(
-          'This cannot be undone. Export your data first if you want to keep a copy.',
-          'لا يمكن
-      التراجع عن هذا. صدّر بياناتك أولاً إذا أردت الاحتفاظ بنسخة.'
-        )
+        ('web.features.settings.copy.this_cannot_be_undone_export_your_data_first_if_you_want_to_keep_a_copy_a0a2eaed' | translate)
       }}
     </p>
-    <lq-field id="delete-password" [label]="i18n.t('Your password', 'كلمة مرورك')"
+    <lq-field id="delete-password" [label]="('web.features.settings.copy.your_password_15253243' | translate)"
       ><input
         id="delete-password"
         type="password"
@@ -113,7 +99,7 @@
         autocomplete="current-password" /></lq-field
     ><lq-field
       id="delete-confirmation"
-      [label]="i18n.t('Type DELETE to confirm', 'اكتب DELETE للتأكيد')"
+      [label]="('web.features.settings.copy.type_delete_to_confirm_ed381e69' | translate)"
       ><input id="delete-confirmation" class="field" formControlName="confirmation"
     /></lq-field>
     @if (error()) {
@@ -124,7 +110,7 @@
       type="submit"
       [disabled]="busy() || form.invalid"
     >
-      {{ i18n.t('Permanently delete account', 'حذف الحساب نهائياً') }}
+      {{ ('web.features.settings.copy.permanently_delete_account_ffbdcae2' | translate) }}
     </button>
   </form></p-dialog
 >

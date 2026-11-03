@@ -1,5 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Component, DestroyRef, PLATFORM_ID, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { DialogModule } from 'primeng/dialog';
 import { Preferences } from '@lifequest/utilities';
 import { Icon } from '@lifequest/ui';
@@ -7,12 +8,13 @@ import { PwaInstallation } from './install';
 
 @Component({
   selector: 'lq-install-experience',
-  imports: [DialogModule, Icon],
+  imports: [
+    TranslatePipe,DialogModule, Icon],
   template: `
     @if (install.canOffer()) {
       <aside
         class="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-brand/20 bg-brand-soft p-4 sm:p-5"
-        aria-label="{{ i18n.t('Install MIRHAL', 'تثبيت مِرحال') }}"
+        aria-label="{{ ('common.copy.install_mirhal_8a3f95dd' | translate) }}"
       >
         <span
           class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface text-brand"
@@ -21,24 +23,21 @@ import { PwaInstallation } from './install';
         </span>
         <div class="min-w-0 flex-1">
           <h2 class="text-sm font-semibold">
-            {{ i18n.t('MIRHAL, close at hand.', 'مِرحال أقرب إليك.') }}
+            {{ ('web.app.copy.mirhal_close_at_hand_5f53cbfc' | translate) }}
           </h2>
           <p class="mt-1 text-xs leading-5 text-muted">
             {{
-              i18n.t(
-                'Add a home-screen shortcut for quick access. Your account still needs an internet connection.',
-                'أضف اختصاراً إلى الشاشة الرئيسية للوصول بسهولة. يظل حسابك بحاجة إلى اتصال بالإنترنت.'
-              )
+              ('web.app.copy.add_a_home_screen_shortcut_for_quick_access_your_account_still_needs_an_internet_connection_1d9ed936' | translate)
             }}
           </p>
         </div>
         <button type="button" class="btn btn-secondary min-h-11" (click)="openInstall()">
-          {{ i18n.t('Install or get help', 'تثبيت أو معرفة الطريقة') }}
+          {{ ('web.app.copy.install_or_get_help_dd7abda0' | translate) }}
         </button>
         <button
           type="button"
           class="icon-button"
-          [attr.aria-label]="i18n.t('Maybe later', 'ربما لاحقاً')"
+          [attr.aria-label]="('web.app.copy.maybe_later_7bfa4a05' | translate)"
           (click)="install.dismiss()"
         >
           <lq-icon name="x" [size]="17" />
@@ -54,7 +53,7 @@ import { PwaInstallation } from './install';
       [resizable]="false"
       [closeOnEscape]="true"
       [style]="{ width: 'min(29rem, calc(100vw - 2rem))' }"
-      [header]="i18n.t('Make MIRHAL easy to reach.', 'اجعل مِرحال أقرب إليك.')"
+      [header]="('web.app.copy.make_mirhal_easy_to_reach_d53f61be' | translate)"
       [appendTo]="'body'"
     >
       <div class="flex items-start gap-4">
@@ -66,70 +65,52 @@ import { PwaInstallation } from './install';
         <div>
           <p class="text-sm font-medium">
             {{
-              i18n.t(
-                'Open MIRHAL from your home screen in its own window.',
-                'افتح مِرحال من شاشتك الرئيسية في نافذة مستقلة.'
-              )
+              ('web.app.copy.open_mirhal_from_your_home_screen_in_its_own_window_2c9b5edb' | translate)
             }}
           </p>
           @if (install.platform() === 'ios-safari') {
             <p class="mt-3 text-sm leading-6 text-muted">
               {{
-                i18n.t(
-                  'In Safari, tap Share, then Add to Home Screen.',
-                  'في Safari، اضغط مشاركة، ثم إضافة إلى الشاشة الرئيسية.'
-                )
+                ('web.app.copy.in_safari_tap_share_then_add_to_home_screen_8fb7218a' | translate)
               }}
             </p>
           } @else if (install.platform() === 'android') {
             <p class="mt-3 text-sm leading-6 text-muted">
               {{
-                i18n.t(
-                  'Open your browser menu and choose Install app or Add to Home screen. The wording can vary by browser.',
-                  'افتح قائمة المتصفح واختر تثبيت التطبيق أو الإضافة إلى الشاشة الرئيسية. قد تختلف التسمية حسب المتصفح.'
-                )
+                ('web.app.copy.open_your_browser_menu_and_choose_install_app_or_add_to_home_screen_the_wording_can_vary_by_browser_0066fed5' | translate)
               }}
             </p>
           } @else if (install.platform() === 'mac-safari') {
             <p class="mt-3 text-sm leading-6 text-muted">
               {{
-                i18n.t(
-                  'In Safari, choose File, then Add to Dock.',
-                  'في Safari، اختر ملف، ثم إضافة إلى Dock.'
-                )
+                ('web.app.copy.in_safari_choose_file_then_add_to_dock_df3dd673' | translate)
               }}
             </p>
           } @else if (install.canInstall()) {
             <p class="mt-3 text-sm leading-6 text-muted">
               {{
-                i18n.t(
-                  'Your browser can install MIRHAL. Continue when you are ready.',
-                  'يمكن لمتصفحك تثبيت مِرحال. تابع حين تكون مستعداً.'
-                )
+                ('web.app.copy.your_browser_can_install_mirhal_continue_when_you_are_ready_7b7a584f' | translate)
               }}
             </p>
           } @else {
             <p class="mt-3 text-sm leading-6 text-muted">
-              {{ i18n.t('Your browser does not provide installation instructions here. You can still use MIRHAL in this browser.', 'لا يوفر متصفحك تعليمات التثبيت هنا. يمكنك متابعة استخدام مِرحال في المتصفح.') }}
+              {{ ('web.app.copy.your_browser_does_not_provide_installation_instructions_here_you_can_still_use_mirhal_in_this_browser_1cdd3a74' | translate) }}
             </p>
           }
           <p class="mt-3 text-xs leading-5 text-muted">
             {{
-              i18n.t(
-                'Your goals, habits, and tasks still need an internet connection.',
-                'تظل أهدافك وعاداتك ومهامك بحاجة إلى اتصال بالإنترنت.'
-              )
+              ('web.app.copy.your_goals_habits_and_tasks_still_need_an_internet_connection_ea87caa8' | translate)
             }}
           </p>
         </div>
       </div>
       <div class="mt-6 flex flex-wrap justify-end gap-2">
         <button type="button" class="btn btn-quiet" (click)="dismiss()">
-          {{ i18n.t('Maybe later', 'ربما لاحقاً') }}
+          {{ ('web.app.copy.maybe_later_7bfa4a05' | translate) }}
         </button>
         @if (install.canInstall()) {
           <button type="button" class="btn btn-primary" (click)="installNow()">
-            {{ i18n.t('Install MIRHAL', 'ثبّت مِرحال') }}
+            {{ ('common.copy.install_mirhal_8a3f95dd' | translate) }}
           </button>
         }
       </div>

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { Api, Page, Notification, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
@@ -6,6 +7,7 @@ import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '
 @Component({
   selector: 'lq-notifications',
   imports: [
+    TranslatePipe,
     Pagination,
     RouterLink,
     LocalizedDatePipe,
@@ -17,16 +19,13 @@ import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '
     Icon,
   ],
   template: `<lq-page-header
-      [eyebrow]="i18n.t('LITTLE UPDATES FROM YOUR JOURNEY', 'تحديثات صغيرة من رحلتك')"
-      [title]="i18n.t('A few things to know.', 'بعض الأشياء لتعرفها.')"
+      [eyebrow]="('web.features.notifications.copy.little_updates_from_your_journey_947cd12c' | translate)"
+      [title]="('web.features.notifications.copy.a_few_things_to_know_9a51a76b' | translate)"
       [description]="
-        i18n.t(
-          'Review your notifications, open related updates, and mark them as read.',
-          'راجع إشعاراتك، وافتح التحديثات المرتبطة بها، وحددها كمقروءة.'
-        )
+        ('web.features.notifications.copy.review_your_notifications_open_related_updates_and_mark_them_as_read_2f485fb7' | translate)
       "
       ><button class="btn btn-secondary" (click)="readAll()">
-        {{ i18n.t('Mark all as read', 'تحديد الكل كمقروء') }}
+        {{ ('web.features.notifications.copy.mark_all_as_read_6d267c97' | translate) }}
       </button></lq-page-header
     >
     @if (resource.loading() && !resource.data()) {
@@ -64,19 +63,16 @@ import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '
             @if (!item.readAt) {
               <span
                 class="mt-2 size-2 shrink-0 rounded-full bg-brand"
-                [attr.aria-label]="i18n.t('Unread', 'غير مقروء')"
+                [attr.aria-label]="('web.features.notifications.copy.unread_0eb8c982' | translate)"
               ></span>
             }
           </a>
         } @empty {
           <lq-empty
             icon="bell"
-            [title]="i18n.t('A little quiet is good, too.', 'قليل من الهدوء جيد أيضاً.')"
+            [title]="('web.features.notifications.copy.a_little_quiet_is_good_too_a9b1cbb1' | translate)"
             [description]="
-              i18n.t(
-                'Your invitations and milestones will find a home here.',
-                'ستجد دعواتك وإنجازاتك مكاناً هنا.'
-              )
+              ('web.features.notifications.copy.your_invitations_and_milestones_will_find_a_home_here_7fca0749' | translate)
             "
           />
         }

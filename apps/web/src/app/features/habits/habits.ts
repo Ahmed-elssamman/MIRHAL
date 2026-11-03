@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Area, errorMessage, Goal, Habit, Page, Toasts } from '@lifequest/data-access';
+import { Api, Area, Goal, Habit, Page, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import {
   EmptyState,
@@ -24,6 +25,7 @@ import {
 @Component({
   selector: 'lq-habits',
   imports: [
+    TranslatePipe,
     RouterLink,
     ReactiveFormsModule,
     DialogModule,
@@ -135,7 +137,7 @@ export class HabitsPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

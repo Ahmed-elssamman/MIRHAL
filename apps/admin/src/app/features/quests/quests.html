@@ -1,14 +1,11 @@
 <lq-page-header
-  [eyebrow]="i18n.t('THOUGHTFUL WEEKLY MISSIONS', 'مهام أسبوعية هادفة')"
-  [title]="i18n.t('Give explorers a starting point.', 'امنح المستكشفين نقطة بداية.')"
+  [eyebrow]="('admin.features.quests.copy.thoughtful_weekly_missions_39ac780f' | translate)"
+  [title]="('admin.features.quests.copy.give_explorers_a_starting_point_119b4e0b' | translate)"
   [description]="
-    i18n.t(
-      'Publish optional quest templates. Each explorer can adapt the steps to their own life.',
-      'انشر قوالب اختيارية للمهام الأسبوعية. يمكن لكل مستكشف تعديلها لتناسب حياته.'
-    )
+    ('admin.features.quests.copy.publish_optional_quest_templates_each_explorer_can_adapt_the_steps_to_their_own_life_c3a24c3c' | translate)
   "
   ><button class="btn btn-primary" (click)="edit()">
-    {{ i18n.t('New template', 'قالب جديد') }}
+    {{ ('admin.features.quests.copy.new_template_9e679e11' | translate) }}
   </button></lq-page-header
 >
 @if (resource.loading() && !resource.data()) {
@@ -31,21 +28,18 @@
         </ol>
         <div class="flex items-center justify-between gap-2">
           <span class="badge bg-brand-soft text-brand">{{
-            item.active ? i18n.t('Published', 'منشور') : i18n.t('Hidden', 'مخفي')
+            item.active ? ('admin.features.quests.copy.published_19c90329' | translate) : ('admin.features.quests.copy.hidden_3c2dfe59' | translate)
           }}</span
           ><button class="btn btn-secondary text-xs" (click)="edit(item)">
-            {{ i18n.t('Edit template', 'تعديل القالب') }}
+            {{ ('admin.features.quests.copy.edit_template_959c6b11' | translate) }}
           </button>
         </div>
       </article>
     } @empty {
       <lq-empty
-        [title]="i18n.t('A little inspiration goes a long way.', 'قليل من الإلهام يصنع فرقاً.')"
+        [title]="('admin.features.quests.copy.a_little_inspiration_goes_a_long_way_18ad09ac' | translate)"
         [description]="
-          i18n.t(
-            'Create a practical mission with a few achievable steps.',
-            'أنشئ مهمة عملية بخطوات يمكن تحقيقها.'
-          )
+          ('admin.features.quests.copy.create_a_practical_mission_with_a_few_achievable_steps_f2e2970b' | translate)
         "
       />
     }
@@ -53,24 +47,24 @@
   <lq-pagination [page]="data.page" [total]="data.total" (change)="page($event)" />
 }
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
-  [header]="i18n.t('Shape a weekly mission', 'صمّم مهمة أسبوعية')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [header]="('admin.features.quests.copy.shape_a_weekly_mission_5ddf4e0a' | translate)"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '36rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
-    <lq-field id="template-title" [label]="i18n.t('English title', 'العنوان بالإنجليزية')"
+    <lq-field id="template-title" [label]="('admin.features.quests.copy.english_title_bf09af4d' | translate)"
       ><input id="template-title" class="field" formControlName="title" /></lq-field
-    ><lq-field id="template-ar" [label]="i18n.t('Arabic title', 'العنوان بالعربية')"
+    ><lq-field id="template-ar" [label]="('admin.features.quests.copy.arabic_title_8ef4586b' | translate)"
       ><input id="template-ar" dir="rtl" class="field" formControlName="titleAr" /></lq-field
     ><lq-field
       id="template-description"
-      [label]="i18n.t('English description', 'الوصف بالإنجليزية')"
+      [label]="('admin.features.quests.copy.english_description_46d24ce5' | translate)"
     >
       <textarea id="template-description" class="field" formControlName="description"></textarea>
     </lq-field>
-    <lq-field id="template-description-ar" [label]="i18n.t('Arabic description', 'الوصف بالعربية')">
+    <lq-field id="template-description-ar" [label]="('admin.features.quests.copy.arabic_description_e9fbe5cf' | translate)">
       <textarea
         id="template-description-ar"
         dir="rtl"
@@ -79,23 +73,23 @@
       ></textarea>
     </lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="template-area" [label]="i18n.t('Life area', 'مجال الحياة')"
+      <lq-field id="template-area" [label]="('common.copy.life_area_9e7a62cc' | translate)"
         ><select id="template-area" class="field" formControlName="areaId">
           @for (area of areas.data(); track area.id) {
             <option [value]="area.id">{{ i18n.t(area.name, area.nameAr) }}</option>
           }
         </select></lq-field
-      ><lq-field id="template-difficulty" [label]="i18n.t('Effort', 'الجهد')"
+      ><lq-field id="template-difficulty" [label]="('common.copy.effort_d56430cf' | translate)"
         ><select id="template-difficulty" class="field" formControlName="difficulty">
-          <option value="EASY">{{ i18n.t('Gentle', 'بسيط') }}</option>
-          <option value="MEDIUM">{{ i18n.t('Steady', 'متوسط') }}</option>
-          <option value="HARD">{{ i18n.t('Stretch', 'تحدٍ') }}</option>
+          <option value="EASY">{{ ('admin.features.quests.copy.gentle_da999fd8' | translate) }}</option>
+          <option value="MEDIUM">{{ ('common.copy.steady_cd945433' | translate) }}</option>
+          <option value="HARD">{{ ('admin.features.quests.copy.stretch_03d3b9ca' | translate) }}</option>
         </select></lq-field
       >
     </div>
     <lq-field
       id="template-items"
-      [label]="i18n.t('English steps, one per line', 'الخطوات بالإنجليزية، خطوة في كل سطر')"
+      [label]="('admin.features.quests.copy.english_steps_one_per_line_a77a627f' | translate)"
     >
       <textarea
         id="template-items"
@@ -105,7 +99,7 @@
       ></textarea></lq-field
     ><lq-field
       id="template-items-ar"
-      [label]="i18n.t('Arabic steps in the same order', 'الخطوات بالعربية بالترتيب نفسه')"
+      [label]="('admin.features.quests.copy.arabic_steps_in_the_same_order_32eba670' | translate)"
     >
       <textarea
         id="template-items-ar"
@@ -116,14 +110,14 @@
       ></textarea></lq-field
     ><label class="mb-5 flex min-h-11 items-center gap-3 text-sm"
       ><input type="checkbox" formControlName="active" class="accent-brand" />{{
-        i18n.t('Available to explorers', 'متاح للمستكشفين')
+        ('admin.features.quests.copy.available_to_explorers_a3c2b3c5' | translate)
       }}</label
     >
     @if (error()) {
       <p role="alert" class="mb-4 text-sm text-rose-600">{{ error() }}</p>
     }
     <button type="submit" class="btn btn-primary w-full" [disabled]="saving() || form.invalid">
-      {{ i18n.t('Save template', 'حفظ القالب') }}
+      {{ ('admin.features.quests.copy.save_template_34e8dee2' | translate) }}
     </button>
   </form></p-dialog
 >

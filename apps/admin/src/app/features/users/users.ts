@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -9,6 +10,7 @@ import { AdminUser } from '../../models';
 @Component({
   selector: 'lq-admin-users',
   imports: [
+    TranslatePipe,
     RouterLink,
     LocalizedDatePipe,
     FormsModule,

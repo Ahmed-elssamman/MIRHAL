@@ -3,12 +3,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { provideTranslateLoader, provideTranslateService } from '@ngx-translate/core';
+import { MirhalTranslationLoader } from '@lifequest/i18n';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { NotificationOverlay } from '../app/features/notifications/notification-overlay';
 
 const notification = { id: 'n1', title: 'Notice', body: 'Details', type: 'FRIEND_REQUEST', href: null, readAt: null, createdAt: '2026-10-30T00:00:00Z' };
 describe('notification overlay', () => {
-  beforeEach(() => TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), MessageService] }));
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), MessageService, provideTranslateService({ loader: provideTranslateLoader(MirhalTranslationLoader) })] }));
   it('marks an unlinked item read without navigating', async () => {
     const fixture = TestBed.createComponent(NotificationOverlay);
     const page = fixture.componentInstance;

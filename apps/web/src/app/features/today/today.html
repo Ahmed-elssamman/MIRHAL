@@ -1,17 +1,14 @@
 <lq-page-header
-  [eyebrow]="i18n.t('RIGHT HERE. RIGHT NOW.', 'هنا. والآن.')"
-  [title]="i18n.t('Today is enough.', 'اليوم يكفي.')"
+  [eyebrow]="('web.features.today.copy.right_here_right_now_148c89e7' | translate)"
+  [title]="('web.features.today.copy.today_is_enough_56024b6c' | translate)"
   [description]="
-    i18n.t(
-      'Review today’s tasks and habits, record a check-in, and choose your next step.',
-      'راجع مهامك وعاداتك اليوم، وسجّل تأملك، واختر خطوتك التالية.'
-    )
+    ('web.features.today.copy.review_today_s_tasks_and_habits_record_a_check_in_and_choose_your_next_step_35445286' | translate)
   "
   ><div class="flex flex-wrap gap-2">
     <a routerLink="/habits" [queryParams]="{ quickAdd: 'habit' }" class="btn btn-secondary"
-      ><lq-icon name="plus" [size]="17" />{{ i18n.t('Add a habit', 'أضف عادة') }}</a
+      ><lq-icon name="plus" [size]="17" />{{ ('web.features.today.copy.add_a_habit_470b22ed' | translate) }}</a
     ><a routerLink="/tasks" [queryParams]="{ quickAdd: 'task' }" class="btn btn-primary"
-      ><lq-icon name="plus" [size]="17" />{{ i18n.t('Add a task', 'أضف مهمة') }}</a
+      ><lq-icon name="plus" [size]="17" />{{ ('common.copy.add_a_task_7f97e88c' | translate) }}</a
     >
   </div></lq-page-header
 >
@@ -28,7 +25,7 @@
           [size]="24"
       /></span>
       <div class="min-w-0 flex-1">
-        <p class="eyebrow mb-2">{{ i18n.t('YOUR NEXT STEP', 'خطوتك التالية') }}</p>
+        <p class="eyebrow mb-2">{{ ('web.features.today.copy.your_next_step_23888133' | translate) }}</p>
         <h2
           id="next-step-title"
           aria-live="polite"
@@ -46,21 +43,21 @@
           <p class="mt-2 text-sm leading-6 text-muted">
             {{
               action.task.priority === 'HIGH'
-                ? i18n.t('A priority worth your attention today.', 'أولوية تستحق اهتمامك اليوم.')
+                ? ('web.features.today.copy.a_priority_worth_your_attention_today_a78aadc6' | translate)
                 : action.task.project?.title
-                  ? i18n.t('A step toward ', 'خطوة نحو ') + action.task.project?.title
-                  : i18n.t('One useful step toward your plans.', 'خطوة مفيدة نحو خططك.')
+                  ? ('web.features.today.copy.a_step_toward_870f44cf' | translate) + action.task.project?.title
+                  : ('web.features.today.copy.one_useful_step_toward_your_plans_ba045285' | translate)
             }}
           </p>
         } @else if (action.kind === 'quest') {
           <p class="mt-2 text-sm leading-6 text-muted">
-            {{ i18n.t('A step toward ', 'خطوة نحو ') + action.quest.title }}
+            {{ ('web.features.today.copy.a_step_toward_870f44cf' | translate) + action.quest.title }}
           </p>
         } @else {
           <p class="mt-2 text-sm leading-6 text-muted">
             {{
               action.habit.whyItMatters ||
-                i18n.t('A small action for ', 'خطوة صغيرة من أجل ') +
+                ('web.features.today.copy.a_small_action_for_c225bc54' | translate) +
                   i18n.t(action.habit.area.name, action.habit.area.nameAr)
             }}
           </p>
@@ -78,7 +75,7 @@
               : complete(action.habit.id, false)
         "
       >
-        <lq-icon name="check" [size]="17" />{{ i18n.t('Mark done', 'سجّل الإنجاز') }}
+        <lq-icon name="check" [size]="17" />{{ ('web.features.today.copy.mark_done_6bb395d0' | translate) }}
       </button>
     </div>
   </section>
@@ -95,28 +92,25 @@
     class="mb-6 rounded-2xl border border-line bg-surface p-5 sm:p-6"
     aria-labelledby="next-step-title"
   >
-    <p class="eyebrow mb-2">{{ i18n.t('YOUR NEXT STEP', 'خطوتك التالية') }}</p>
+    <p class="eyebrow mb-2">{{ ('web.features.today.copy.your_next_step_23888133' | translate) }}</p>
     <h2 id="next-step-title" class="text-lg font-semibold">
-      {{ i18n.t('Your plan is clear for now.', 'خطتك خالية الآن.') }}
+      {{ ('web.features.today.copy.your_plan_is_clear_for_now_90d70121' | translate) }}
     </h2>
     @if (checkedIn()) {
       <p class="mt-2 text-sm leading-6 text-muted">
         {{
-          i18n.t(
-            'You have done enough for today. Your progress is yours.',
-            'أنجزت ما يكفي اليوم. تقدمك ملك لك.'
-          )
+          ('web.features.today.copy.you_have_done_enough_for_today_your_progress_is_yours_14901646' | translate)
         }}
       </p>
       <a routerLink="/journey" class="btn btn-secondary mt-4 min-h-11">{{
-        i18n.t('See my journey', 'شاهد رحلتي')
+        ('web.features.today.copy.see_my_journey_85c4110e' | translate)
       }}</a>
     } @else {
       <p class="mt-2 text-sm leading-6 text-muted">
-        {{ i18n.t('Take a breath, or check in with yourself.', 'خذ نفساً، أو تأمل حالك اليوم.') }}
+        {{ ('web.features.today.copy.take_a_breath_or_check_in_with_yourself_7515945c' | translate) }}
       </p>
       <a href="#daily-check-in" class="btn btn-secondary mt-4 min-h-11">{{
-        i18n.t('Check in', 'تأمل يومك')
+        ('web.features.today.copy.check_in_09bb911e' | translate)
       }}</a>
     }
   </section>
@@ -129,22 +123,18 @@
     <h2 class="text-sm font-semibold">
       {{
         completeCount() === scheduledCount() && scheduledCount() > 0
-          ? i18n.t(
-              'Look at you. You showed
-      up.',
-              'انظر إليك. لقد حاولت.'
-            )
-          : i18n.t('Every small action counts.', 'كل خطوة صغيرة تُحسب.')
+          ? ('web.features.today.copy.look_at_you_you_showed_up_ff87e521' | translate)
+          : ('common.copy.every_small_action_counts_7691fadd' | translate)
       }}
     </h2>
     <p class="mb-3 mt-1 text-[11px] text-muted">
       {{ completeCount() }} / {{ scheduledCount() }}
-      {{ i18n.t('habits complete', 'عادات مكتملة') }}
+      {{ ('web.features.today.copy.habits_complete_560223d5' | translate) }}
     </p>
     <lq-progress [value]="scheduledCount() ? (completeCount() / scheduledCount()) * 100 : 0" />
   </div>
   <a routerLink="/quests" class="btn btn-secondary w-full text-xs sm:w-auto"
-    >{{ i18n.t('My weekly quest', 'مهمتي الأسبوعية') }}<lq-icon name="arrow-right" [size]="14"
+    >{{ ('web.features.today.copy.my_weekly_quest_be9092e0' | translate) }}<lq-icon name="arrow-right" [size]="14"
   /></a>
 </div>
 <div class="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(300px,1fr)]">
@@ -156,9 +146,9 @@
     } @else {
       <section class="card p-5 sm:p-6">
         <lq-section-title
-          [title]="i18n.t('Your daily rhythm', 'إيقاعك اليومي')"
+          [title]="('web.features.today.copy.your_daily_rhythm_4517220d' | translate)"
           link="/habits"
-          [linkLabel]="i18n.t('Manage', 'إدارة')"
+          [linkLabel]="('web.features.today.copy.manage_d7aff116' | translate)"
         />
         <div class="divide-y divide-line">
           @for (habit of scheduled(); track habit.id) {
@@ -172,15 +162,11 @@
               <lq-icon name="sun" [size]="32" class="mb-4 text-brand" />
               <p class="text-sm text-muted">
                 {{
-                  i18n.t(
-                    'No habits scheduled today. Make space for what you need.',
-                    'لا توجد عادات
-            اليوم. اصنع مساحة لما تحتاجه.'
-                  )
+                  ('web.features.today.copy.no_habits_scheduled_today_make_space_for_what_you_need_281443c1' | translate)
                 }}
               </p>
               <a routerLink="/habits" class="btn btn-secondary mt-4">{{
-                i18n.t('Explore my habits', 'استكشف عاداتي')
+                ('web.features.today.copy.explore_my_habits_5e9fb361' | translate)
               }}</a>
             </div>
           }
@@ -197,9 +183,9 @@
     }
     <section class="card p-5 sm:p-6">
       <lq-section-title
-        [title]="i18n.t('A little focused work', 'قليل من العمل المركز')"
+        [title]="('web.features.today.copy.a_little_focused_work_9c8b4ece' | translate)"
         link="/tasks"
-        [linkLabel]="i18n.t('All tasks', 'كل المهام')"
+        [linkLabel]="('web.features.today.copy.all_tasks_0284459e' | translate)"
       />
       @if (tasks.loading() && !tasks.data()) {
         <lq-skeleton />
@@ -212,7 +198,7 @@
               <button
                 type="button"
                 class="flex size-11 shrink-0 items-center justify-center rounded-lg border border-line text-muted hover:border-brand hover:text-brand"
-                [attr.aria-label]="i18n.t('Complete ', 'إتمام ') + task.title"
+                [attr.aria-label]="('common.copy.complete_a8883fa6' | translate) + task.title"
                 [disabled]="pendingTaskIds().has(task.id)"
                 (click)="completeTask(task.id)"
               >
@@ -221,24 +207,20 @@
               <div class="min-w-0 flex-1">
                 <p class="text-xs font-medium">{{ task.title }}</p>
                 @if (pendingTaskIds().has(task.id)) {
-                  <p role="status" class="mt-1 text-xs text-muted">{{ i18n.t('Saving…', 'جارٍ الحفظ…') }}</p>
+                  <p role="status" class="mt-1 text-xs text-muted">{{ ('common.copy.saving_74119e7f' | translate) }}</p>
                 }
                 <p class="mt-1 text-[10px] text-muted">{{ task.project?.title }}</p>
               </div>
               @if (task.estimatedMinutes) {
                 <span class="text-[10px] text-muted"
-                  >{{ task.estimatedMinutes }} {{ i18n.t('min', 'دقيقة') }}</span
+                  >{{ task.estimatedMinutes }} {{ ('common.copy.min_c98f4557' | translate) }}</span
                 >
               }
             </div>
           } @empty {
             <p class="py-5 text-xs leading-6 text-muted">
               {{
-                i18n.t(
-                  'Your list is clear. Enjoy a little breathing room, or choose one meaningful
-          task.',
-                  'قائمتك خالية. استمتع ببعض الراحة، أو اختر مهمة ذات معنى.'
-                )
+                ('web.features.today.copy.your_list_is_clear_enjoy_a_little_breathing_room_or_choose_one_meaningful_task_2a4322ae' | translate)
               }}
             </p>
           }
@@ -257,15 +239,11 @@
       ><lq-icon name="leaf" class="mt-1 text-mint-ink" [size]="22" />
       <div>
         <h2 class="text-xs font-semibold">
-          {{ i18n.t('A missed day is information.', 'اليوم الفائت معلومة.') }}
+          {{ ('web.features.today.copy.a_missed_day_is_information_e86234cb' | translate) }}
         </h2>
         <p class="mt-2 text-xs leading-6 text-muted">
           {{
-            i18n.t(
-              'If something isn’t working, try a smaller step in Habit Lab.',
-              'إذا لم تنجح
-          عادة، جرّب خطوة أصغر في مختبر العادات.'
-            )
+            ('web.features.today.copy.if_something_isn_t_working_try_a_smaller_step_in_habit_lab_84ad7272' | translate)
           }}
         </p>
       </div>
