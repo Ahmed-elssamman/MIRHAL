@@ -14,7 +14,12 @@ afterEach(() => {
 describe('auth email', () => {
   it('renders a registered friend request with a friends link and no registration expiry', () => {
     for (const language of ['en', 'ar'] as const) {
-      const email = renderAuthEmail('FRIEND_REQUEST', language, 'https://web.example.test/friends', { appUrl: 'https://web.example.test', inviterName: '<Sender>' });
+      const email = renderAuthEmail(
+        'FRIEND_REQUEST',
+        language,
+        'https://web.example.test/friends',
+        { appUrl: 'https://web.example.test', inviterName: '<Sender>' },
+      );
       expect(email.html).toContain('https://web.example.test/friends');
       expect(email.html).toContain('&lt;Sender&gt;');
       expect(email.text).not.toContain('expires in 7 days');
@@ -304,7 +309,7 @@ describe('auth email', () => {
       close: vi.fn(),
     } as unknown as ReturnType<typeof nodemailer.default.createTransport>);
 
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const mail = new MailAdapter();
     await mail.send('recipient@example.test', 'VERIFY_EMAIL', 'test-token', 'en');
 
@@ -334,7 +339,7 @@ describe('auth email', () => {
       close: vi.fn(),
     } as unknown as ReturnType<typeof nodemailer.default.createTransport>);
 
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const mail = new MailAdapter();
     await expect(mail.send('user@example.test', 'VERIFY_EMAIL', 'tok', 'en')).rejects.toThrow();
     expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('"classification":"permanent"'));
@@ -347,7 +352,7 @@ describe('auth email', () => {
     process.env['SMTP_FROM'] = 'MIRHAL <noreply@example.test>';
     process.env['RESEND_API_KEY'] = 'test-only';
 
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const fetchMock = vi.fn().mockRejectedValue(new Error('Connection refused'));
     vi.stubGlobal('fetch', fetchMock);
 

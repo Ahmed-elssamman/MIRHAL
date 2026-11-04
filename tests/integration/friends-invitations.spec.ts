@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException } from '@nestjs/common';
 import { describe, expect, it, vi } from 'vitest';
 import { FriendsService } from '../../apps/api/src/social/friends.service';
 import { Database } from '../../apps/api/src/common/database';
@@ -234,13 +234,11 @@ describe('friend email invitations workflow', () => {
       const tx = {
         friendship: {
           findUnique: vi.fn().mockResolvedValue(null),
-          create: vi
-            .fn()
-            .mockResolvedValue({
-              id: 'friendship',
-              status: 'PENDING',
-              updatedAt: new Date('2026-10-30T00:00:00Z'),
-            }),
+          create: vi.fn().mockResolvedValue({
+            id: 'friendship',
+            status: 'PENDING',
+            updatedAt: new Date('2026-10-30T00:00:00Z'),
+          }),
         },
         profile: {
           findUnique: vi.fn().mockResolvedValue({ displayName: 'Sender' }),

@@ -24,7 +24,7 @@ services:
       - key: APP_URL
         sync: false
       - key: RATE_LIMIT_MODE
-        value: memory
+        value: redis
       - key: EMAIL_PROVIDER
         value: resend
       - key: MAIL_MODE

@@ -6,7 +6,8 @@ import { resolve } from 'node:path';
 const root = resolve('.local');
 mkdirSync(root, { recursive: true, mode: 0o700 });
 const pgdata = resolve(root, 'postgres');
-const envFile = resolve('.env');
+const localEnvFile = resolve('.env.local');
+const envFile = existsSync(localEnvFile) ? localEnvFile : resolve('.env');
 if (!existsSync(envFile)) {
   const password = randomBytes(24).toString('hex');
   const url = `postgresql://lifequest:${password}@127.0.0.1:55432/lifequest`;
@@ -79,5 +80,5 @@ for (const database of ['lifequest', 'lifequest_test']) {
     run('createdb', ['-h', '127.0.0.1', '-p', '55432', '-U', 'lifequest', database]);
 }
 console.log(
-  'Local development and isolated test databases are ready. Credentials are stored only in .env.',
+  'Local development and isolated test databases are ready. Local credentials stay in the ignored environment file.',
 );

@@ -67,17 +67,16 @@ Use **Node.js 22.12+** (Node 24 is used on Vercel), **npm**, and **PostgreSQL**.
 git clone https://github.com/Ahmed-elssamman/LifeQuest.git
 cd LifeQuest
 npm ci
-cp -n .env.example .env
-```
-
-Set `DATABASE_URL` and `DIRECT_URL` in `.env` to your intended PostgreSQL runtime and migration connections. Verify the migration target before running the following commands:
-
-```bash
-npm run db:generate
-npm run db:deploy
-npm run db:seed
+cp -n .env.local.example .env.local
+npm run db:local
+npm run db:deploy:local
+npm run db:seed:local
 npm run dev
 ```
+
+The local launcher loads `.env.local` and refuses database URLs outside localhost on port `55432`; it never falls back to the private `.env`. `cp -n` preserves an existing local configuration. `npm run db:local` provisions `lifequest` and the isolated `lifequest_test` database without replacing `.env`.
+
+To use the production API from local web/admin servers, change only `API_ORIGIN` in `.env.local` to `https://mirhal.onrender.com` and run `npm run dev:hybrid`. This starts only the frontends; the API proxy forwards `/api` to that origin. Write actions in hybrid mode affect the selected production account and data.
 
 | Application          | Local address                                             | Start separately    |
 | -------------------- | --------------------------------------------------------- | ------------------- |
@@ -104,7 +103,7 @@ The seed creates reference data. To create development accounts, set the optiona
 | `VERCEL_WEB_ORIGIN` / `VERCEL_ADMIN_ORIGIN`                  | Production aliases used by the Vercel packaging and configuration scripts.                                                                |
 | `BLOB_READ_WRITE_TOKEN` / `CRON_SECRET`                      | Private Vercel storage and scheduled-maintenance credentials.                                                                             |
 
-With PostgreSQL binaries on your PATH, `npm run db:local` provisions isolated local databases without replacing existing Neon configuration. See the [database guide](docs/architecture/database.md) for details.
+`npm run db:deploy:local` and `npm run db:seed:local` also validate the localhost database URLs before connecting. For test fixtures, use `npm run db:deploy:test:local` and `npm run db:seed:test:local`; integration tests require `TEST_DATABASE_URL` to remain an isolated local database ending in `_test`. Run `npm run db:generate` after schema changes. See the [database guide](docs/architecture/database.md) for migration details.
 
 </details>
 

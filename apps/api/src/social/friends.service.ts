@@ -210,8 +210,13 @@ export class FriendsService {
       return { valid: false as const, reason: 'revoked' as const };
     if (invitation.expiresAt <= new Date()) {
       if (invitation.status === 'PENDING') {
-        await this.db.invitation.update({
-          where: { id: invitation.id },
+        await this.db.invitation.updateMany({
+          where: {
+            id: invitation.id,
+            tokenHash,
+            status: 'PENDING',
+            expiresAt: { lte: new Date() },
+          },
           data: { status: 'EXPIRED' },
         });
       }

@@ -8,8 +8,14 @@ import {
 
 describe('Configuration Architecture', () => {
   it('declares production Redis as an owner-provided Render environment variable', () => {
-    const blueprint = parse(readFileSync('render.yaml', 'utf8')) as { services: { envVars: { key: string; sync?: boolean }[] }[] };
+    const blueprint = parse(readFileSync('render.yaml', 'utf8')) as {
+      services: { envVars: { key: string; sync?: boolean }[] }[];
+    };
     expect(blueprint.services[0]?.envVars).toContainEqual({ key: 'REDIS_URL', sync: false });
+    expect(blueprint.services[0]?.envVars).toContainEqual({
+      key: 'RATE_LIMIT_MODE',
+      value: 'redis',
+    });
   });
   const baseValidEnv = {
     NODE_ENV: 'development',
@@ -82,8 +88,12 @@ describe('Configuration Architecture', () => {
       RATE_LIMIT_MODE: 'redis',
     };
     expect(() => validateEnvironment(prodEnv)).toThrow(/REDIS_URL to be configured/);
-    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'auto' })).toThrow(/REDIS_URL to be configured/);
-    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'memory' })).toThrow(/REDIS_URL to be configured/);
+    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'auto' })).toThrow(
+      /REDIS_URL to be configured/,
+    );
+    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'memory' })).toThrow(
+      /REDIS_URL to be configured/,
+    );
   });
 
   it('accepts the Render production email mode and rejects the old invalid enabled value', () => {
