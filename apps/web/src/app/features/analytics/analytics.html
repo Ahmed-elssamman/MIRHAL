@@ -1,8 +1,9 @@
 <lq-page-header
-  [eyebrow]="('web.features.analytics.copy.understand_your_own_patterns_e1fe872d' | translate)"
-  [title]="('web.features.analytics.copy.a_little_perspective_goes_a_long_way_a0f5737e' | translate)"
+  [eyebrow]="'web.features.analytics.copy.understand_your_own_patterns_e1fe872d' | translate"
+  [title]="'web.features.analytics.copy.a_little_perspective_goes_a_long_way_a0f5737e' | translate"
   [description]="
-    ('web.features.analytics.copy.review_your_activity_and_progress_to_see_patterns_in_your_habits_and_goals_178fa074' | translate)
+    'web.features.analytics.copy.review_your_activity_and_progress_to_see_patterns_in_your_habits_and_goals_178fa074'
+      | translate
   "
 />
 @if (resource.loading() && !resource.data()) {
@@ -12,28 +13,31 @@
 } @else if (resource.data(); as data) {
   <div class="mb-6 grid gap-4 sm:grid-cols-3">
     <lq-stat
-      [label]="('web.features.analytics.copy.lifetime_progress_ced4ccf5' | translate)"
+      [label]="'web.features.analytics.copy.lifetime_progress_ced4ccf5' | translate"
       [value]="data.xp.earned"
       suffix="XP"
       icon="zap"
     /><lq-stat
-      [label]="('web.features.analytics.copy.moments_of_reflection_e863916c' | translate)"
+      [label]="'web.features.analytics.copy.moments_of_reflection_e863916c' | translate"
       [value]="data.checkInCount"
-      [suffix]="('web.features.analytics.copy.in_28_days_9a12d59b' | translate)"
+      [suffix]="'web.features.analytics.copy.in_28_days_9a12d59b' | translate"
       icon="sun"
       tone="bg-amber-50 text-amber-700"
     /><lq-stat
-      [label]="('web.features.analytics.copy.intentions_to_begin_again_9c55b40c' | translate)"
+      [label]="'web.features.analytics.copy.intentions_to_begin_again_9c55b40c' | translate"
       [value]="data.recoveryCount"
       icon="leaf"
       tone="bg-mint text-mint-ink"
     />
   </div>
   <section class="card mb-6 p-6">
-    <lq-section-title [title]="('web.features.analytics.copy.the_rhythm_you_re_building_d40176ad' | translate)" />
+    <lq-section-title
+      [title]="'web.features.analytics.copy.the_rhythm_you_re_building_d40176ad' | translate"
+    />
     <p class="mb-3 text-xs text-muted">
       {{
-        ('web.features.analytics.copy.habit_actions_over_28_days_green_dots_mark_your_check_ins_34318dcb' | translate)
+        'web.features.analytics.copy.habit_actions_over_28_days_green_dots_mark_your_check_ins_34318dcb'
+          | translate
       }}
     </p>
     @defer (on viewport) {
@@ -51,11 +55,12 @@
         >
         <div>
           <h2 class="text-lg font-semibold">
-            {{ ('web.features.analytics.copy.why_this_score_771b1caa' | translate) }}
+            {{ 'web.features.analytics.copy.why_this_score_771b1caa' | translate }}
           </h2>
           <p class="mt-2 text-xs leading-6 text-muted">
             {{
-              ('web.features.analytics.copy.a_transparent_view_of_your_journey_a_guide_never_a_grade_8425674c' | translate)
+              'web.features.analytics.copy.a_transparent_view_of_your_journey_a_guide_never_a_grade_8425674c'
+                | translate
             }}
           </p>
         </div>
@@ -65,7 +70,7 @@
           <div>
             <div class="mb-2 flex justify-between text-xs">
               <span
-                >{{ factor(factorItem.key) }}
+                >{{ 'web.features.analytics.factors.' + factorItem.key | translate }}
                 <span class="text-muted">({{ factorItem.weight * 100 }}%)</span></span
               ><span class="font-semibold text-brand">{{
                 factorItem.contribution.toFixed(1)
@@ -78,7 +83,9 @@
     </section>
     <div class="space-y-6">
       <section class="card p-6">
-        <lq-section-title [title]="('web.features.analytics.copy.a_balanced_view_735ebee5' | translate)" />
+        <lq-section-title
+          [title]="'web.features.analytics.copy.a_balanced_view_735ebee5' | translate"
+        />
         <div class="space-y-5">
           @for (area of data.areas; track area.id) {
             <div class="flex items-center gap-3">
@@ -101,26 +108,19 @@
       <section class="rounded-2xl bg-mint p-6 text-mint-ink">
         <lq-icon name="flask" [size]="25" />
         <h2 class="mt-3 text-base font-semibold">
-          {{ ('web.features.analytics.copy.something_to_explore_90d25b9f' | translate) }}
+          {{ 'web.features.analytics.copy.something_to_explore_90d25b9f' | translate }}
         </h2>
         <p class="mt-3 text-xs leading-6">
           {{
             data.weakestHabit
-              ? i18n.t(
-                  'Could “' +
-                    data.weakestHabit +
-                    '” use a gentler version? Try
-        changing one small thing.',
-                  'هل تحتاج «' +
-                    data.weakestHabit +
-                    '» لنسخة ألطف؟ جرّب تغيير شيء
-        صغير.'
-                )
-              : ('web.features.analytics.copy.start_with_a_tiny_habit_your_patterns_will_become_clearer_over_time_e5108ac0' | translate)
+              ? ('web.features.analytics.weakestHabitPrompt'
+                | translate: { habit: data.weakestHabit })
+              : ('web.features.analytics.copy.start_with_a_tiny_habit_your_patterns_will_become_clearer_over_time_e5108ac0'
+                | translate)
           }}
         </p>
         <a routerLink="/habit-lab" class="btn mt-4 bg-surface/70 text-xs text-mint-ink"
-          >{{ ('web.features.analytics.copy.explore_habit_lab_1b3da575' | translate)
+          >{{ 'web.features.analytics.copy.explore_habit_lab_1b3da575' | translate
           }}<lq-icon name="arrow-right" [size]="15"
         /></a>
       </section>

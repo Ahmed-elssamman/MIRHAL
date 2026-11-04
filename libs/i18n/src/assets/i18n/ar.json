@@ -10,7 +10,6 @@
       "satShort": "السبت"
     },
     "loading": "جارٍ تحميل الصفحة",
-    "reload": "إعادة التحميل",
     "productName": "مِرحال",
     "xp": "XP",
     "labels": {
@@ -168,7 +167,8 @@
       "keep_your_changes_abdbed03": "هل تريد الاحتفاظ بالتغييرات؟",
       "your_changes_have_not_been_saved_yet_d5aabe41": "لم تُحفظ تغييراتك بعد.",
       "discard_changes_690c678c": "تجاهل التغييرات",
-      "keep_editing_d233d38c": "متابعة التعديل"
+      "keep_editing_d233d38c": "متابعة التعديل",
+      "loading_mirhal_060e96e4": "جارٍ تحميل مِرحال"
     },
     "copy": {
       "scrollable_records_222ef37e": "سجلات قابلة للتمرير",
@@ -379,6 +379,55 @@
         }
       },
       "content": {
+        "catalogs": {
+          "rewardsTitle": "مكافآت تستحق الانتظار.",
+          "rewardsDescription": "أدر كتالوج المكافآت المشترك. تحتفظ عمليات الاسترداد السابقة بتكلفتها الأصلية.",
+          "achievementsTitle": "محطات ذات معنى.",
+          "achievementsDescription": "إنجازات يقيّمها الخادم. لا تمحو التغييرات عمليات الفتح السابقة.",
+          "helpTitle": "طريق أوضح لكل مستكشف.",
+          "helpDescription": "حافظ على إرشادات مفيدة باللغتين. يظهر المحتوى كنص آمن.",
+          "announcementsTitle": "أخبار صغيرة من مِرحال.",
+          "announcementsDescription": "شارك تحديثات المنتج والإعلانات المدروسة."
+        },
+        "fields": {
+          "title": "العنوان",
+          "description": "الوصف",
+          "active": "نشط",
+          "arabicTitle": "العنوان بالعربية",
+          "arabicDescription": "الوصف بالعربية",
+          "xpCost": "تكلفة الخبرة",
+          "icon": "الأيقونة",
+          "category": "الفئة",
+          "arabicCategory": "الفئة بالعربية",
+          "uniqueIdentifier": "معرّف فريد",
+          "unlockCondition": "شرط الفتح",
+          "requiredCount": "العدد المطلوب",
+          "xpReward": "مكافأة الخبرة",
+          "hiddenUntilUnlocked": "مخفي حتى الفتح",
+          "articleIdentifier": "معرّف المقال",
+          "englishContent": "المحتوى الإنجليزي",
+          "arabicContent": "المحتوى العربي",
+          "published": "منشور",
+          "announcement": "الإعلان",
+          "arabicAnnouncement": "الإعلان بالعربية"
+        },
+        "options": {
+          "gift": "هدية",
+          "coffee": "قهوة",
+          "book": "كتاب",
+          "film": "فيلم",
+          "sun": "شمس",
+          "heart": "قلب",
+          "award": "جائزة",
+          "flame": "شعلة",
+          "sprout": "نبتة",
+          "people": "أشخاص",
+          "flag": "راية",
+          "completedHabits": "العادات المكتملة",
+          "recordedCheckIns": "المراجعات اليومية المسجلة",
+          "completedQuests": "المهام الأسبوعية المكتملة",
+          "completedChallenges": "التحديات المكتملة"
+        },
         "copy": {
           "thoughtful_product_content_fb664003": "محتوى منتج مدروس",
           "create_new_f1bbdf87": "إنشاء جديد",
@@ -394,6 +443,13 @@
         }
       },
       "feedback": {
+        "filters": {
+          "all": "كل الملاحظات",
+          "bugs": "الأخطاء",
+          "suggestions": "الاقتراحات",
+          "complaints": "الشكاوى",
+          "featureRequests": "طلبات الميزات"
+        },
         "copy": {
           "listen_understand_improve_fd4f4206": "استمع. افهم. حسّن.",
           "conversations_that_move_us_forward_bedc2b10": "محادثات تدفعنا للأمام.",
@@ -450,7 +506,9 @@
           "arabic_steps_in_the_same_order_32eba670": "الخطوات بالعربية بالترتيب نفسه",
           "available_to_explorers_a3c2b3c5": "متاح للمستكشفين",
           "save_template_34e8dee2": "حفظ القالب"
-        }
+        },
+        "missingArabicDescription": "هذا الوصف غير متاح بالعربية بعد.",
+        "missingArabicStep": "هذه الخطوة غير متاحة بالعربية بعد."
       },
       "users": {
         "copy": {
@@ -765,7 +823,16 @@
           "something_to_explore_90d25b9f": "شيء يستحق الاستكشاف",
           "start_with_a_tiny_habit_your_patterns_will_become_clearer_over_time_e5108ac0": "ابدأ\r\n        بعادة صغيرة. ستتضح أنماطك مع الوقت.",
           "explore_habit_lab_1b3da575": "استكشف مختبر العادات"
-        }
+        },
+        "factors": {
+          "habits": "استمرارية العادات",
+          "quests": "المهام الأسبوعية",
+          "goals": "تقدم الأهداف",
+          "checkIns": "التأمل اليومي",
+          "projects": "تقدم المشروعات",
+          "recovery": "نوايا التعافي"
+        },
+        "weakestHabitPrompt": "هل تحتاج «{{habit}}» إلى نسخة ألطف؟ جرّب تغيير شيء صغير."
       },
       "challenges": {
         "copy": {
@@ -1050,7 +1117,16 @@
           "a_way_to_celebrate_146e31bd": "طريقة للاحتفال",
           "a_thought_worth_keeping_saved_72da4233": "فكرة تستحق الاحتفاظ بها. حُفظت.",
           "save_this_chapter_e9875911": "احفظ هذا الفصل"
-        }
+        },
+        "factors": {
+          "habits": "العادات",
+          "quests": "المهام الأسبوعية",
+          "goals": "الأهداف",
+          "checkIns": "التأملات",
+          "projects": "المشاريع",
+          "recovery": "التعافي"
+        },
+        "missingArabicPhaseDescription": "وصف هذا الفصل غير متاح بالعربية بعد."
       },
       "landing": {
         "copy": {
@@ -1388,10 +1464,6 @@
       }
     }
   },
-  "updates": {
-    "ready": "يتوفر تحديث. احفظ عملك قبل إعادة التحميل.",
-    "unrecoverable": "يحتاج مِرحال إلى إعادة التحميل للمتابعة."
-  },
   "metadata": {
     "title": "مِرحال | حياتك، رحلتك",
     "description": "مِرحال يساعدك على جمع أهدافك وعاداتك وتقدمك اليومي، والنمو وفق وتيرتك.",
@@ -1510,16 +1582,17 @@
       }
     },
     "ui": {
+      "completeHabit": "إتمام {{name}}",
+      "pagination": "التنقل بين الصفحات",
+      "items": "عنصر",
+      "previousPage": "الصفحة السابقة",
+      "nextPage": "الصفحة التالية",
       "copy": {
         "tiny_version_a8882185": "خطوة صغيرة",
         "dismiss_celebration_94ccaa7b": "إغلاق الاحتفال",
         "a_new_chapter_a881ac27": "فصل جديد",
         "every_small_step_brought_you_here_take_a_moment_to_enjoy_your_progress_2d6d7cbf": "كل خطوة صغيرة أوصلتك إلى هنا. خذ لحظة لتستمتع بتقدمك.",
         "see_my_progress_3e6615b1": "شاهد تقدمي",
-        "pagination_c08520ef": "الصفحات",
-        "items_dfcc9529": "عنصر",
-        "previous_page_d3d6aa6d": "الصفحة السابقة",
-        "next_page_5348ffad": "الصفحة التالية",
         "mirhal_5f33ddf4": "مِرحال",
         "a_small_detour_5ee0e344": "عقبة صغيرة",
         "try_again_fb7db552": "حاول مجدداً",

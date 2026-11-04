@@ -1,11 +1,12 @@
 <lq-page-header
-  [eyebrow]="('admin.features.quests.copy.thoughtful_weekly_missions_39ac780f' | translate)"
-  [title]="('admin.features.quests.copy.give_explorers_a_starting_point_119b4e0b' | translate)"
+  [eyebrow]="'admin.features.quests.copy.thoughtful_weekly_missions_39ac780f' | translate"
+  [title]="'admin.features.quests.copy.give_explorers_a_starting_point_119b4e0b' | translate"
   [description]="
-    ('admin.features.quests.copy.publish_optional_quest_templates_each_explorer_can_adapt_the_steps_to_their_own_life_c3a24c3c' | translate)
+    'admin.features.quests.copy.publish_optional_quest_templates_each_explorer_can_adapt_the_steps_to_their_own_life_c3a24c3c'
+      | translate
   "
   ><button class="btn btn-primary" (click)="edit()">
-    {{ ('admin.features.quests.copy.new_template_9e679e11' | translate) }}
+    {{ 'admin.features.quests.copy.new_template_9e679e11' | translate }}
   </button></lq-page-header
 >
 @if (resource.loading() && !resource.data()) {
@@ -19,27 +20,44 @@
         <p class="eyebrow">{{ i18n.t(item.area.name, item.area.nameAr) }}</p>
         <h2 class="mt-3 text-lg font-semibold">{{ i18n.t(item.title, item.titleAr) }}</h2>
         <p class="mt-2 text-xs leading-6 text-muted">
-          {{ i18n.t(item.description, item.descriptionAr || 'تحتاج هذه الفقرة إلى ترجمة عربية.') }}
+          {{
+            i18n.t(
+              item.description,
+              item.descriptionAr || ('admin.features.quests.missingArabicDescription' | translate)
+            )
+          }}
         </p>
         <ol class="my-4 list-inside list-decimal space-y-2 text-xs text-muted">
           @for (step of item.items; track step.id) {
-            <li>{{ i18n.t(step.title, step.titleAr || 'تحتاج هذه الخطوة إلى ترجمة عربية.') }}</li>
+            <li>
+              {{
+                i18n.t(
+                  step.title,
+                  step.titleAr || ('admin.features.quests.missingArabicStep' | translate)
+                )
+              }}
+            </li>
           }
         </ol>
         <div class="flex items-center justify-between gap-2">
           <span class="badge bg-brand-soft text-brand">{{
-            item.active ? ('admin.features.quests.copy.published_19c90329' | translate) : ('admin.features.quests.copy.hidden_3c2dfe59' | translate)
+            item.active
+              ? ('admin.features.quests.copy.published_19c90329' | translate)
+              : ('admin.features.quests.copy.hidden_3c2dfe59' | translate)
           }}</span
           ><button class="btn btn-secondary text-xs" (click)="edit(item)">
-            {{ ('admin.features.quests.copy.edit_template_959c6b11' | translate) }}
+            {{ 'admin.features.quests.copy.edit_template_959c6b11' | translate }}
           </button>
         </div>
       </article>
     } @empty {
       <lq-empty
-        [title]="('admin.features.quests.copy.a_little_inspiration_goes_a_long_way_18ad09ac' | translate)"
+        [title]="
+          'admin.features.quests.copy.a_little_inspiration_goes_a_long_way_18ad09ac' | translate
+        "
         [description]="
-          ('admin.features.quests.copy.create_a_practical_mission_with_a_few_achievable_steps_f2e2970b' | translate)
+          'admin.features.quests.copy.create_a_practical_mission_with_a_few_achievable_steps_f2e2970b'
+            | translate
         "
       />
     }
@@ -47,24 +65,31 @@
   <lq-pagination [page]="data.page" [total]="data.total" (change)="page($event)" />
 }
 <p-dialog
-  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
-  [header]="('admin.features.quests.copy.shape_a_weekly_mission_5ddf4e0a' | translate)"
+  [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
+  [header]="'admin.features.quests.copy.shape_a_weekly_mission_5ddf4e0a' | translate"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '36rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
-    <lq-field id="template-title" [label]="('admin.features.quests.copy.english_title_bf09af4d' | translate)"
+    <lq-field
+      id="template-title"
+      [label]="'admin.features.quests.copy.english_title_bf09af4d' | translate"
       ><input id="template-title" class="field" formControlName="title" /></lq-field
-    ><lq-field id="template-ar" [label]="('admin.features.quests.copy.arabic_title_8ef4586b' | translate)"
+    ><lq-field
+      id="template-ar"
+      [label]="'admin.features.quests.copy.arabic_title_8ef4586b' | translate"
       ><input id="template-ar" dir="rtl" class="field" formControlName="titleAr" /></lq-field
     ><lq-field
       id="template-description"
-      [label]="('admin.features.quests.copy.english_description_46d24ce5' | translate)"
+      [label]="'admin.features.quests.copy.english_description_46d24ce5' | translate"
     >
       <textarea id="template-description" class="field" formControlName="description"></textarea>
     </lq-field>
-    <lq-field id="template-description-ar" [label]="('admin.features.quests.copy.arabic_description_e9fbe5cf' | translate)">
+    <lq-field
+      id="template-description-ar"
+      [label]="'admin.features.quests.copy.arabic_description_e9fbe5cf' | translate"
+    >
       <textarea
         id="template-description-ar"
         dir="rtl"
@@ -73,23 +98,27 @@
       ></textarea>
     </lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="template-area" [label]="('common.copy.life_area_9e7a62cc' | translate)"
+      <lq-field id="template-area" [label]="'common.copy.life_area_9e7a62cc' | translate"
         ><select id="template-area" class="field" formControlName="areaId">
           @for (area of areas.data(); track area.id) {
             <option [value]="area.id">{{ i18n.t(area.name, area.nameAr) }}</option>
           }
         </select></lq-field
-      ><lq-field id="template-difficulty" [label]="('common.copy.effort_d56430cf' | translate)"
+      ><lq-field id="template-difficulty" [label]="'common.copy.effort_d56430cf' | translate"
         ><select id="template-difficulty" class="field" formControlName="difficulty">
-          <option value="EASY">{{ ('admin.features.quests.copy.gentle_da999fd8' | translate) }}</option>
-          <option value="MEDIUM">{{ ('common.copy.steady_cd945433' | translate) }}</option>
-          <option value="HARD">{{ ('admin.features.quests.copy.stretch_03d3b9ca' | translate) }}</option>
+          <option value="EASY">
+            {{ 'admin.features.quests.copy.gentle_da999fd8' | translate }}
+          </option>
+          <option value="MEDIUM">{{ 'common.copy.steady_cd945433' | translate }}</option>
+          <option value="HARD">
+            {{ 'admin.features.quests.copy.stretch_03d3b9ca' | translate }}
+          </option>
         </select></lq-field
       >
     </div>
     <lq-field
       id="template-items"
-      [label]="('admin.features.quests.copy.english_steps_one_per_line_a77a627f' | translate)"
+      [label]="'admin.features.quests.copy.english_steps_one_per_line_a77a627f' | translate"
     >
       <textarea
         id="template-items"
@@ -99,7 +128,7 @@
       ></textarea></lq-field
     ><lq-field
       id="template-items-ar"
-      [label]="('admin.features.quests.copy.arabic_steps_in_the_same_order_32eba670' | translate)"
+      [label]="'admin.features.quests.copy.arabic_steps_in_the_same_order_32eba670' | translate"
     >
       <textarea
         id="template-items-ar"
@@ -110,14 +139,14 @@
       ></textarea></lq-field
     ><label class="mb-5 flex min-h-11 items-center gap-3 text-sm"
       ><input type="checkbox" formControlName="active" class="accent-brand" />{{
-        ('admin.features.quests.copy.available_to_explorers_a3c2b3c5' | translate)
+        'admin.features.quests.copy.available_to_explorers_a3c2b3c5' | translate
       }}</label
     >
     @if (error()) {
       <p role="alert" class="mb-4 text-sm text-rose-600">{{ error() }}</p>
     }
     <button type="submit" class="btn btn-primary w-full" [disabled]="saving() || form.invalid">
-      {{ ('admin.features.quests.copy.save_template_34e8dee2' | translate) }}
+      {{ 'admin.features.quests.copy.save_template_34e8dee2' | translate }}
     </button>
   </form></p-dialog
 >

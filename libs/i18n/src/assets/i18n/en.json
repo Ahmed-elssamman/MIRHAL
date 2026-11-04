@@ -10,7 +10,6 @@
       "satShort": "Sat"
     },
     "loading": "Loading page",
-    "reload": "Reload",
     "productName": "MIRHAL",
     "xp": "XP",
     "labels": {
@@ -168,7 +167,8 @@
       "keep_your_changes_abdbed03": "Keep your changes?",
       "your_changes_have_not_been_saved_yet_d5aabe41": "Your changes have not been saved yet.",
       "discard_changes_690c678c": "Discard changes",
-      "keep_editing_d233d38c": "Keep editing"
+      "keep_editing_d233d38c": "Keep editing",
+      "loading_mirhal_060e96e4": "Loading MIRHAL"
     },
     "copy": {
       "scrollable_records_222ef37e": "Scrollable records",
@@ -379,6 +379,55 @@
         }
       },
       "content": {
+        "catalogs": {
+          "rewardsTitle": "Rewards worth looking forward to.",
+          "rewardsDescription": "Manage the shared reward catalog. Existing redemptions retain their original cost.",
+          "achievementsTitle": "Milestones that mean something.",
+          "achievementsDescription": "Server-evaluated achievements. Changes never erase existing unlocks.",
+          "helpTitle": "A clearer path for every explorer.",
+          "helpDescription": "Maintain helpful, bilingual guidance. Content is displayed as safe text.",
+          "announcementsTitle": "A little news from MIRHAL.",
+          "announcementsDescription": "Share product updates and thoughtful announcements."
+        },
+        "fields": {
+          "title": "Title",
+          "description": "Description",
+          "active": "Active",
+          "arabicTitle": "Arabic title",
+          "arabicDescription": "Arabic description",
+          "xpCost": "XP cost",
+          "icon": "Icon",
+          "category": "Category",
+          "arabicCategory": "Arabic category",
+          "uniqueIdentifier": "Unique identifier",
+          "unlockCondition": "Unlock condition",
+          "requiredCount": "Required count",
+          "xpReward": "XP reward",
+          "hiddenUntilUnlocked": "Hidden until unlocked",
+          "articleIdentifier": "Article identifier",
+          "englishContent": "English content",
+          "arabicContent": "Arabic content",
+          "published": "Published",
+          "announcement": "Announcement",
+          "arabicAnnouncement": "Arabic announcement"
+        },
+        "options": {
+          "gift": "Gift",
+          "coffee": "Coffee",
+          "book": "Book",
+          "film": "Film",
+          "sun": "Sun",
+          "heart": "Heart",
+          "award": "Award",
+          "flame": "Flame",
+          "sprout": "Sprout",
+          "people": "People",
+          "flag": "Flag",
+          "completedHabits": "Completed habits",
+          "recordedCheckIns": "Recorded check-ins",
+          "completedQuests": "Completed quests",
+          "completedChallenges": "Completed challenges"
+        },
         "copy": {
           "thoughtful_product_content_fb664003": "THOUGHTFUL PRODUCT CONTENT",
           "create_new_f1bbdf87": "Create new",
@@ -394,6 +443,13 @@
         }
       },
       "feedback": {
+        "filters": {
+          "all": "All feedback",
+          "bugs": "Bugs",
+          "suggestions": "Suggestions",
+          "complaints": "Complaints",
+          "featureRequests": "Feature requests"
+        },
         "copy": {
           "listen_understand_improve_fd4f4206": "LISTEN. UNDERSTAND. IMPROVE.",
           "conversations_that_move_us_forward_bedc2b10": "Conversations that move us forward.",
@@ -450,7 +506,9 @@
           "arabic_steps_in_the_same_order_32eba670": "Arabic steps in the same order",
           "available_to_explorers_a3c2b3c5": "Available to explorers",
           "save_template_34e8dee2": "Save template"
-        }
+        },
+        "missingArabicDescription": "This description is not available in Arabic yet.",
+        "missingArabicStep": "This step is not available in Arabic yet."
       },
       "users": {
         "copy": {
@@ -765,7 +823,16 @@
           "something_to_explore_90d25b9f": "Something to explore",
           "start_with_a_tiny_habit_your_patterns_will_become_clearer_over_time_e5108ac0": "Start with a tiny habit. Your patterns will become clearer over time.",
           "explore_habit_lab_1b3da575": "Explore Habit Lab"
-        }
+        },
+        "factors": {
+          "habits": "Habit consistency",
+          "quests": "Weekly quests",
+          "goals": "Goal progress",
+          "checkIns": "Daily reflection",
+          "projects": "Project progress",
+          "recovery": "Recovery intentions"
+        },
+        "weakestHabitPrompt": "Could “{{habit}}” use a gentler version? Try changing one small thing."
       },
       "challenges": {
         "copy": {
@@ -1050,7 +1117,16 @@
           "a_way_to_celebrate_146e31bd": "A way to celebrate",
           "a_thought_worth_keeping_saved_72da4233": "A thought worth keeping. Saved.",
           "save_this_chapter_e9875911": "Save this chapter"
-        }
+        },
+        "factors": {
+          "habits": "Habits",
+          "quests": "Weekly quests",
+          "goals": "Goals",
+          "checkIns": "Reflections",
+          "projects": "Projects",
+          "recovery": "Recovery"
+        },
+        "missingArabicPhaseDescription": "This chapter description is not available in Arabic yet."
       },
       "landing": {
         "copy": {
@@ -1388,10 +1464,6 @@
       }
     }
   },
-  "updates": {
-    "ready": "An update is ready. Save your work before reloading.",
-    "unrecoverable": "MIRHAL needs to reload to continue."
-  },
   "metadata": {
     "title": "MIRHAL | Your Life. Your Journey.",
     "description": "MIRHAL helps you bring goals, habits, and everyday progress together, and grow at your own pace.",
@@ -1510,16 +1582,17 @@
       }
     },
     "ui": {
+      "completeHabit": "Complete {{name}}",
+      "pagination": "Pagination",
+      "items": "items",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
       "copy": {
         "tiny_version_a8882185": "Tiny version",
         "dismiss_celebration_94ccaa7b": "Dismiss celebration",
         "a_new_chapter_a881ac27": "A NEW CHAPTER",
         "every_small_step_brought_you_here_take_a_moment_to_enjoy_your_progress_2d6d7cbf": "Every small step brought you here. Take a moment to enjoy your progress.",
         "see_my_progress_3e6615b1": "See my progress",
-        "pagination_c08520ef": "Pagination",
-        "items_dfcc9529": "items",
-        "previous_page_d3d6aa6d": "Previous page",
-        "next_page_5348ffad": "Next page",
         "mirhal_5f33ddf4": "MIRHAL",
         "a_small_detour_5ee0e344": "A small detour",
         "try_again_fb7db552": "Try again",

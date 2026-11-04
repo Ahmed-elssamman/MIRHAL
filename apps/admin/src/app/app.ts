@@ -1,9 +1,19 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { LoadingService } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
-import { RouterOutlet } from '@angular/router';
-import { Overlays } from '../../../../libs/ui/src/overlays';
-import { GlobalLoader } from '../../../../libs/ui/src/loader';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalLoader } from '@lifequest/ui/loader';
+import { Overlays } from '@lifequest/ui/overlays';
 @Component({
   selector: 'lq-root',
   imports: [RouterOutlet, Overlays, GlobalLoader],

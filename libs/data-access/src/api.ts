@@ -1,9 +1,9 @@
 import { Injectable, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { errorMessage } from './errors';
-export { errorMessage } from './errors';
-import { firstValueFrom } from 'rxjs';
+import { HttpClient, HttpContext } from '@angular/common/http';
+import { ApiErrors } from './errors';
+import { API_ERROR_TOAST, API_LOADING_SCOPE, LoadingScope } from './request-context';
+import { firstValueFrom, Observable, timeout } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { Celebrations } from './celebrations';
 
@@ -20,19 +20,11 @@ export class LoadingService {
   private readonly inFlight = signal(0);
   private readonly blockingCount = signal(0);
   private readonly navigating = signal(false);
-  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
-  private showTimer: ReturnType<typeof setTimeout> | undefined;
-  private hideTimer: ReturnType<typeof setTimeout> | undefined;
-  private visibleSince = 0;
-  readonly isLoading = signal(false);
-
-  // Instantaneous state indicators
-  readonly isLoading = computed(() => this.inFlight() > 0 || this.navigating());
-  readonly isBlocking = computed(() => this.blockingCount() > 0);
-
   // Smooth, debounced visual signals that prevent flickers
   readonly showTopBar = signal(false);
   readonly showOverlay = signal(false);
+  readonly isLoading = computed(() => this.inFlight() > 0 || this.navigating());
+  readonly isBlocking = computed(() => this.blockingCount() > 0);
 
   private showTopBarTimer: ReturnType<typeof setTimeout> | null = null;
   private hideTopBarTimer: ReturnType<typeof setTimeout> | null = null;
@@ -44,7 +36,7 @@ export class LoadingService {
 
   // Centralized, configurable display thresholds
   readonly DISPLAY_DELAY_MS = 150;
-  readonly MIN_VISIBLE_MS = 400;
+  readonly MIN_VISIBLE_MS = 300;
 
   start() {
     this.inFlight.update((c) => c + 1);
@@ -160,7 +152,6 @@ export class Api {
   private readonly celebrations = inject(Celebrations);
   private readonly errors = inject(ApiErrors);
   private readonly publicReads = new Map<string, { expires: number; value: Promise<unknown> }>();
-  private readonly inFlightReads = new Map<string, Promise<unknown>>();
 
   private context(options: ApiRequestOptions = {}) {
     return new HttpContext()
@@ -168,46 +159,42 @@ export class Api {
       .set(API_LOADING_SCOPE, options.loading ?? 'silent');
   }
 
-  get<T>(path: string): Promise<T> {
+  errorMessage(error: unknown) {
+    return this.errors.message(error);
+  }
+
+  private track<T>(request: Observable<T>): Promise<T> {
+    return firstValueFrom(request.pipe(timeout({ first: 90_000 })));
+  }
+
+  get<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
+    const context = this.context(options);
     if (path === 'life-areas') {
-      const cached = this.publicReads.get(path);
+      const cacheKey = `${path}:${options.loading ?? 'silent'}:${options.notifyOnError ? 'toast' : 'silent'}`;
+      const cached = this.publicReads.get(cacheKey);
       if (cached && cached.expires > Date.now()) return cached.value as Promise<T>;
       const value = this.track(
-        firstValueFrom(this.http.get<T>(`/api/${path}`, { withCredentials: true })).catch(
-          (error) => {
-            this.publicReads.delete(path);
-            throw error;
-          },
-        ),
-      );
-      this.publicReads.set(path, { expires: Date.now() + 300000, value });
+        this.http.get<T>(`/api/${path}`, { withCredentials: true, context }),
+      ).catch((error) => {
+        this.publicReads.delete(cacheKey);
+        throw error;
+      });
+      this.publicReads.set(cacheKey, { expires: Date.now() + 300000, value });
       return value;
     }
 
-    // In-flight request coalescing: prevents duplicate parallel GET requests across components
-    const inFlight = this.inFlightReads.get(path);
-    if (inFlight) {
-      return inFlight as Promise<T>;
-    }
-
-    const promise = this.track(
-      firstValueFrom(this.http.get<T>(`/api/${path}`, { withCredentials: true })),
-    ).finally(() => {
-      this.inFlightReads.delete(path);
-    });
-
-    this.inFlightReads.set(path, promise);
-    return promise;
+    return this.track(this.http.get<T>(`/api/${path}`, { withCredentials: true, context }));
   }
   post<T>(path: string, body: unknown = {}, options: ApiRequestOptions = {}) {
     return this.track(
-      firstValueFrom(this.http.post<T>(`/api/${path}`, body, { withCredentials: true })).then(
-        (result) => {
-          this.celebrations.receive(result);
-          return result;
-        },
-      ),
-    );
+      this.http.post<T>(`/api/${path}`, body, {
+        withCredentials: true,
+        context: this.context(options),
+      }),
+    ).then((result) => {
+      this.celebrations.receive(result);
+      return result;
+    });
   }
   patch<T>(path: string, body: unknown, options: ApiRequestOptions = {}) {
     return this.track(
@@ -228,14 +215,12 @@ export class Api {
       }),
     );
   }
-  put<T>(path: string, body: unknown = {}) {
+  delete<T>(path: string, options: ApiRequestOptions = {}) {
     return this.track(
-      firstValueFrom(this.http.put<T>(`/api/${path}`, body, { withCredentials: true })),
-    );
-  }
-  delete<T>(path: string) {
-    return this.track(
-      firstValueFrom(this.http.delete<T>(`/api/${path}`, { withCredentials: true })),
+      this.http.delete<T>(`/api/${path}`, {
+        withCredentials: true,
+        context: this.context(options),
+      }),
     );
   }
   resource<T>(path: string) {

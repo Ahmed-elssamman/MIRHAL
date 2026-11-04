@@ -1,13 +1,14 @@
 <lq-page-header
-  [eyebrow]="('web.features.journey.copy.the_season_you_are_building_910f0df0' | translate)"
-  [title]="('web.features.journey.copy.your_story_is_still_unfolding_ceefaab3' | translate)"
+  [eyebrow]="'web.features.journey.copy.the_season_you_are_building_910f0df0' | translate"
+  [title]="'web.features.journey.copy.your_story_is_still_unfolding_ceefaab3' | translate"
   [description]="
-    ('web.features.journey.copy.review_your_journey_over_time_and_write_reflections_on_your_progress_d9eec944' | translate)
+    'web.features.journey.copy.review_your_journey_over_time_and_write_reflections_on_your_progress_d9eec944'
+      | translate
   "
 >
   <div class="w-full min-w-0 sm:w-64">
     <label class="field-label mb-2 block" for="journey-month">{{
-      ('web.features.journey.copy.choose_a_chapter_66233c7e' | translate)
+      'web.features.journey.copy.choose_a_chapter_66233c7e' | translate
     }}</label>
     <p-datepicker
       inputId="journey-month"
@@ -25,7 +26,9 @@
       [appendTo]="'body'"
       styleClass="w-full"
       inputStyleClass="w-full"
-      [ariaLabel]="('web.features.journey.copy.choose_a_chapter_by_month_and_year_0095751d' | translate)"
+      [ariaLabel]="
+        'web.features.journey.copy.choose_a_chapter_by_month_and_year_0095751d' | translate
+      "
     />
   </div>
 </lq-page-header>
@@ -39,10 +42,11 @@
       <div class="mb-7 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p class="text-[10px] uppercase tracking-widest text-white/70">
-            {{ season.year }} · {{ ('web.features.journey.copy.your_season_of_growth_1bfcc71b' | translate) }}
+            {{ season.year }} ·
+            {{ 'web.features.journey.copy.your_season_of_growth_1bfcc71b' | translate }}
           </p>
           <h2 class="mt-3 text-2xl font-semibold">
-            {{ ('web.features.journey.copy.a_little_more_you_every_month_1a1fdc6f' | translate) }}
+            {{ 'web.features.journey.copy.a_little_more_you_every_month_1a1fdc6f' | translate }}
           </h2>
         </div>
         <lq-icon name="map" [size]="30" class="text-[#c4b6f4]" />
@@ -65,7 +69,8 @@
               {{
                 i18n.t(
                   phase.description,
-                  phase.descriptionAr || 'وصف هذا الفصل غير متاح بالعربية بعد.'
+                  phase.descriptionAr ||
+                    ('web.features.journey.missingArabicPhaseDescription' | translate)
                 )
               }}
             </p>
@@ -90,39 +95,23 @@
           </h2>
           <p class="mt-2 text-xs leading-6 text-muted">
             {{ data.summary.periodXp }} XP · {{ data.summary.checkInCount }}
-            {{
-              ('web.features.journey.copy.recent_check_ins_953109f2' | translate)
-            }}
+            {{ 'web.features.journey.copy.recent_check_ins_953109f2' | translate }}
           </p>
         </div>
       </section>
       <details class="card p-6">
         <summary class="cursor-pointer text-sm font-semibold">
-          {{ ('web.features.journey.copy.why_this_journey_score_bf89aa26' | translate) }}
+          {{ 'web.features.journey.copy.why_this_journey_score_bf89aa26' | translate }}
         </summary>
         <p class="mt-4 text-xs leading-6 text-muted">
           {{
-            ('web.features.journey.copy.habits_quests_and_check_ins_reflect_the_selected_month_goal_and_project_progress_and_habit_schedules_use_their_current_configuration_this_is_a_guide_for_reflection_not_a_grade_92428f33' | translate)
+            'web.features.journey.copy.habits_quests_and_check_ins_reflect_the_selected_month_goal_and_project_progress_and_habit_schedules_use_their_current_configuration_this_is_a_guide_for_reflection_not_a_grade_92428f33'
+              | translate
           }}
         </p>
         @for (factor of data.summary.journey.contributions; track factor.key) {
           <div class="mt-3 flex flex-wrap justify-between gap-2 text-xs">
-            <span>{{
-              i18n.t(
-                factor.key,
-                factor.key === 'habits'
-                  ? 'العادات'
-                  : factor.key === 'quests'
-                    ? 'المهام الأسبوعية'
-                    : factor.key === 'goals'
-                      ? 'الأهداف'
-                      : factor.key === 'checkIns'
-                        ? 'التأملات'
-                        : factor.key === 'projects'
-                          ? 'المشاريع'
-                          : 'التعافي'
-              )
-            }}</span
+            <span>{{ 'web.features.journey.factors.' + factor.key | translate }}</span
             ><span
               >{{ factor.value.toFixed(0) }}% × {{ (factor.weight * 100).toFixed(0) }}% =
               {{ factor.contribution.toFixed(1) }}</span
@@ -132,7 +121,7 @@
       </details>
       <section class="card p-6">
         <h2 class="mb-4 text-base font-semibold">
-          {{ ('web.features.journey.copy.balance_across_your_life_238a0d7b' | translate) }}
+          {{ 'web.features.journey.copy.balance_across_your_life_238a0d7b' | translate }}
         </h2>
         @for (area of data.summary.areas; track area.id) {
           <div class="flex min-h-11 items-center justify-between gap-3 text-xs">
@@ -142,13 +131,15 @@
         }
         @if (data.summary.weakestHabit) {
           <p class="mt-4 text-xs leading-6 text-muted">
-            {{ ('web.features.journey.copy.a_little_support_may_help_9228dfaf' | translate)
+            {{ 'web.features.journey.copy.a_little_support_may_help_9228dfaf' | translate
             }}{{ data.summary.weakestHabit }}
           </p>
         }
       </section>
       <section class="card p-6">
-        <lq-section-title [title]="('web.features.journey.copy.notes_from_the_journey_1438b6f9' | translate)" />
+        <lq-section-title
+          [title]="'web.features.journey.copy.notes_from_the_journey_1438b6f9' | translate"
+        />
         @for (reflection of data.reflections; track reflection.id) {
           <article class="mb-4 rounded-xl bg-canvas p-4">
             <p class="eyebrow">{{ reflection.month }} / {{ reflection.year }}</p>
@@ -158,7 +149,8 @@
         } @empty {
           <p class="text-xs leading-6 text-muted">
             {{
-              ('web.features.journey.copy.your_first_reflection_is_a_place_to_begin_what_would_you_like_to_remember_3db73998' | translate)
+              'web.features.journey.copy.your_first_reflection_is_a_place_to_begin_what_would_you_like_to_remember_3db73998'
+                | translate
             }}
           </p>
         }
@@ -166,26 +158,32 @@
     </div>
     <section class="card p-6">
       <h2 class="mb-2 text-lg font-semibold">
-        {{ ('web.features.journey.copy.pause_notice_begin_again_9a6fab8c' | translate) }}
+        {{ 'web.features.journey.copy.pause_notice_begin_again_9a6fab8c' | translate }}
       </h2>
       <p class="mb-6 text-xs leading-6 text-muted">
         {{
-          ('web.features.journey.copy.a_short_reflection_for_this_month_keep_the_learning_leave_the_pressure_95b68b83' | translate)
+          'web.features.journey.copy.a_short_reflection_for_this_month_keep_the_learning_leave_the_pressure_95b68b83'
+            | translate
         }}
       </p>
       <form [formGroup]="form" [lqUnsavedForm]="form" (ngSubmit)="save()">
-        <lq-field id="journey-win" [label]="('web.features.journey.copy.my_biggest_little_win_0a7a6b1c' | translate)">
+        <lq-field
+          id="journey-win"
+          [label]="'web.features.journey.copy.my_biggest_little_win_0a7a6b1c' | translate"
+        >
           <textarea
             id="journey-win"
             class="field"
             rows="2"
             formControlName="biggestWin"
           ></textarea></lq-field
-        ><lq-field id="journey-reason" [label]="('common.copy.what_got_in_the_way_5ac58329' | translate)"
+        ><lq-field
+          id="journey-reason"
+          [label]="'common.copy.what_got_in_the_way_5ac58329' | translate"
           ><input id="journey-reason" class="field" formControlName="failureReason" /></lq-field
         ><lq-field
           id="journey-adjustment"
-          [label]="('web.features.journey.copy.one_adjustment_for_next_month_bad80998' | translate)"
+          [label]="'web.features.journey.copy.one_adjustment_for_next_month_bad80998' | translate"
         >
           <textarea
             id="journey-adjustment"
@@ -193,19 +191,21 @@
             rows="2"
             formControlName="adjustment"
           ></textarea></lq-field
-        ><lq-field id="journey-reward" [label]="('web.features.journey.copy.a_way_to_celebrate_146e31bd' | translate)"
+        ><lq-field
+          id="journey-reward"
+          [label]="'web.features.journey.copy.a_way_to_celebrate_146e31bd' | translate"
           ><input id="journey-reward" class="field" formControlName="reward"
         /></lq-field>
         @if (saved()) {
           <p role="status" class="mb-4 text-xs text-mint-ink">
-            {{ ('web.features.journey.copy.a_thought_worth_keeping_saved_72da4233' | translate) }}
+            {{ 'web.features.journey.copy.a_thought_worth_keeping_saved_72da4233' | translate }}
           </p>
         }
         @if (error()) {
           <p role="alert" class="mb-4 text-xs text-rose-600">{{ error() }}</p>
         }
         <button class="btn btn-primary w-full" type="submit" [disabled]="saving()">
-          {{ ('web.features.journey.copy.save_this_chapter_e9875911' | translate) }}
+          {{ 'web.features.journey.copy.save_this_chapter_e9875911' | translate }}
         </button>
       </form>
     </section>

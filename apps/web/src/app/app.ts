@@ -12,10 +12,11 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlays } from '../../../../libs/ui/src/overlays';
 import { GlobalLoader } from '../../../../libs/ui/src/loader';
+import { PwaUpdates } from './pwa/updates';
 @Component({
   selector: 'lq-root',
   imports: [RouterOutlet, Overlays, LevelCelebration, GlobalLoader],

@@ -19,6 +19,7 @@
       "@lifequest/domain": ["libs/domain/src/index.ts"],
       "@lifequest/contracts": ["libs/contracts/src/index.ts"],
       "@lifequest/ui": ["libs/ui/src/index.ts"],
+      "@lifequest/ui/loader": ["libs/ui/src/loader.ts"],
       "@lifequest/ui/overlays": ["libs/ui/src/overlays.ts"],
       "@lifequest/ui/level-celebration": ["libs/ui/src/level-celebration.ts"],
       "@lifequest/data-access": ["libs/data-access/src/index.ts"],

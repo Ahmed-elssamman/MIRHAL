@@ -1,28 +1,19 @@
 <lq-page-header
-  [eyebrow]="('admin.features.feedback.copy.listen_understand_improve_fd4f4206' | translate)"
-  [title]="('admin.features.feedback.copy.conversations_that_move_us_forward_bedc2b10' | translate)"
+  [eyebrow]="'admin.features.feedback.copy.listen_understand_improve_fd4f4206' | translate"
+  [title]="'admin.features.feedback.copy.conversations_that_move_us_forward_bedc2b10' | translate"
   [description]="
-    ('admin.features.feedback.copy.give_every_suggestion_concern_and_bug_report_a_thoughtful_next_step_1fdd4706' | translate)
+    'admin.features.feedback.copy.give_every_suggestion_concern_and_bug_report_a_thoughtful_next_step_1fdd4706'
+      | translate
   "
 />
 <div class="mb-6 flex flex-wrap gap-2">
   @for (
     tab of [
-      {
-        id: 'ALL',
-        en: 'All feedback',
-        ar: 'كل
-  الملاحظات',
-      },
-      { id: 'BUG', en: 'Bugs', ar: 'أخطاء' },
-      { id: 'SUGGESTION', en: 'Suggestions', ar: 'اقتراحات' },
-      { id: 'COMPLAINT', en: 'Complaints', ar: 'شكاوى' },
-      {
-        id: 'FEATURE',
-        en: 'Feature
-  requests',
-        ar: 'طلبات ميزات',
-      },
+      { id: 'ALL', labelKey: 'admin.features.feedback.filters.all' },
+      { id: 'BUG', labelKey: 'admin.features.feedback.filters.bugs' },
+      { id: 'SUGGESTION', labelKey: 'admin.features.feedback.filters.suggestions' },
+      { id: 'COMPLAINT', labelKey: 'admin.features.feedback.filters.complaints' },
+      { id: 'FEATURE', labelKey: 'admin.features.feedback.filters.featureRequests' },
     ];
     track tab.id
   ) {
@@ -31,7 +22,7 @@
       [class]="filter() === tab.id ? 'bg-brand text-on-brand' : 'btn-secondary'"
       (click)="setFilter(tab.id)"
     >
-      {{ i18n.t(tab.en, tab.ar) }}
+      {{ tab.labelKey | translate }}
     </button>
   }
 </div>
@@ -59,10 +50,12 @@
           <span>{{
             item.anonymous
               ? ('admin.features.feedback.copy.anonymous_explorer_e8115255' | translate)
-              : (item.user?.profile?.displayName ?? ('admin.features.feedback.copy.explorer_ded347ea' | translate))
+              : (item.user?.profile?.displayName ??
+                ('admin.features.feedback.copy.explorer_ded347ea' | translate))
           }}</span
           ><span
-            >{{ item.replies.length }} {{ ('admin.features.feedback.copy.replies_notes_25b4f130' | translate) }} ·
+            >{{ item.replies.length }}
+            {{ 'admin.features.feedback.copy.replies_notes_25b4f130' | translate }} ·
             {{ i18n.label(item.priority) }}</span
           >
         </div>
@@ -70,9 +63,9 @@
     } @empty {
       <lq-empty
         icon="message"
-        [title]="('admin.features.feedback.copy.a_clear_inbox_for_this_view_8d8c516b' | translate)"
+        [title]="'admin.features.feedback.copy.a_clear_inbox_for_this_view_8d8c516b' | translate"
         [description]="
-          ('admin.features.feedback.copy.new_conversations_will_appear_here_2475b408' | translate)
+          'admin.features.feedback.copy.new_conversations_will_appear_here_2475b408' | translate
         "
       />
     }
@@ -82,7 +75,7 @@
   }
 }
 <p-dialog
-  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
   [header]="selected()?.title ?? ''"
   [visible]="!!selected()"
   (visibleChange)="!$event && selected.set(null)"
@@ -97,7 +90,8 @@
           class="flex min-h-11 items-center break-all text-xs font-medium text-brand underline"
           [href]="'/api/feedback/' + item.id + '/attachments/' + file.id"
           download
-          >{{ ('admin.features.feedback.copy.download_screenshot_bf235565' | translate) }}{{ file.name }}</a
+          >{{ 'admin.features.feedback.copy.download_screenshot_bf235565' | translate
+          }}{{ file.name }}</a
         >
       }
     </div>
@@ -120,13 +114,15 @@
     </div>
     <form [formGroup]="form" (ngSubmit)="save()">
       <div class="grid gap-4 sm:grid-cols-2">
-        <lq-field id="admin-feedback-status" [label]="('common.copy.status_005ef20f' | translate)"
+        <lq-field id="admin-feedback-status" [label]="'common.copy.status_005ef20f' | translate"
           ><select id="admin-feedback-status" class="field" formControlName="status">
             @for (status of statuses; track status) {
               <option [value]="status">{{ i18n.label(status) }}</option>
             }
           </select></lq-field
-        ><lq-field id="admin-feedback-priority" [label]="('common.copy.priority_e68d9f29' | translate)"
+        ><lq-field
+          id="admin-feedback-priority"
+          [label]="'common.copy.priority_e68d9f29' | translate"
           ><select id="admin-feedback-priority" class="field" formControlName="priority">
             <option value="LOW">{{ i18n.label('LOW') }}</option>
             <option value="MEDIUM">{{ i18n.label('MEDIUM') }}</option>
@@ -134,7 +130,10 @@
           </select></lq-field
         >
       </div>
-      <lq-field id="admin-feedback-reply" [label]="('admin.features.feedback.copy.a_thoughtful_response_c80358f3' | translate)">
+      <lq-field
+        id="admin-feedback-reply"
+        [label]="'admin.features.feedback.copy.a_thoughtful_response_c80358f3' | translate"
+      >
         <textarea
           id="admin-feedback-reply"
           class="field"
@@ -143,14 +142,14 @@
         ></textarea></lq-field
       ><label class="mb-5 flex min-h-11 items-center gap-3 text-xs"
         ><input type="checkbox" class="size-4 accent-brand" formControlName="internal" />{{
-          ('admin.features.feedback.copy.internal_note_hidden_from_the_explorer_462021b2' | translate)
+          'admin.features.feedback.copy.internal_note_hidden_from_the_explorer_462021b2' | translate
         }}</label
       >
       @if (error()) {
         <p role="alert" class="mb-4 text-xs text-rose-600">{{ error() }}</p>
       }
       <button class="btn btn-primary w-full" type="submit" [disabled]="saving()">
-        {{ ('admin.features.feedback.copy.save_update_da4ed679' | translate) }}
+        {{ 'admin.features.feedback.copy.save_update_da4ed679' | translate }}
       </button>
     </form>
   }

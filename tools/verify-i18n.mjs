@@ -27,7 +27,10 @@ function findDuplicateKeys(node, path, duplicates) {
 const parseJson = async (path) => {
   const source = (await readFile(path, 'utf8')).replace(/^\uFEFF/, '');
   const parseErrors = [];
-  const tree = parseTree(source, parseErrors, { allowTrailingComma: false, disallowComments: true });
+  const tree = parseTree(source, parseErrors, {
+    allowTrailingComma: false,
+    disallowComments: true,
+  });
   if (parseErrors.length || !tree) throw new Error(`Invalid JSON in ${path}.`);
   const duplicates = [];
   findDuplicateKeys(tree, path, duplicates);
@@ -45,7 +48,11 @@ function flatten(value, prefix = '') {
 }
 
 function fallbackKey(value) {
-  const slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'copy';
+  const slug =
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '') || 'copy';
   let hash = 2166136261;
   for (let index = 0; index < value.length; index++) {
     hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
@@ -75,10 +82,15 @@ if (/[ØÙÂ][\u0080-\u00ff]/u.test(JSON.stringify(arabic))) {
   failures.push('Arabic dictionary contains text with a known mojibake pattern.');
 }
 
-const files = [...(await sourceFiles(join(root, 'apps'))), ...(await sourceFiles(join(root, 'libs')))];
+const files = [
+  ...(await sourceFiles(join(root, 'apps'))),
+  ...(await sourceFiles(join(root, 'libs'))),
+];
 const source = (await Promise.all(files.map((path) => readFile(path, 'utf8')))).join('\n');
 const fallbackMatches = [
-  ...source.matchAll(/(?:i18n|preferences)\.t\(\s*'((?:[^'\\]|\\.)*)'\s*,\s*'((?:[^'\\]|\\.)*)'\s*\)/g),
+  ...source.matchAll(
+    /(?:i18n|preferences)\.t\(\s*'((?:[^'\\]|\\.)*)'\s*,\s*'((?:[^'\\]|\\.)*)'\s*\)/g,
+  ),
   ...source.matchAll(/(?:i18n|preferences)\.t\(\s*\\?'([^']*)\\?'\s*,\s*\\?'([^']*)\\?'\s*\)/g),
 ];
 const seenFallbackPairs = new Set();
@@ -95,8 +107,14 @@ if (process.argv.includes('--sync-fallbacks')) {
     arabic.common.fallbacks[key] ??= arabicText;
   }
   await Promise.all([
-    writeFile(join(root, 'libs/i18n/src/assets/i18n/en.json'), `${JSON.stringify(english, null, 2)}\n`),
-    writeFile(join(root, 'libs/i18n/src/assets/i18n/ar.json'), `${JSON.stringify(arabic, null, 2)}\n`),
+    writeFile(
+      join(root, 'libs/i18n/src/assets/i18n/en.json'),
+      `${JSON.stringify(english, null, 2)}\n`,
+    ),
+    writeFile(
+      join(root, 'libs/i18n/src/assets/i18n/ar.json'),
+      `${JSON.stringify(arabic, null, 2)}\n`,
+    ),
   ]);
 }
 const keySet = new Set(flatten(english));
@@ -118,17 +136,31 @@ for (const [, englishText, arabicText] of fallbackCalls) {
 }
 
 const keyReferences = new Set([
-  ...[...source.matchAll(/["']((?:common|forms|settings|adminSettings|admin|auth|web|updates|metadata|errors|shared)\.[\w.-]+)["']/g)].map(([, key]) => key),
-  ...[...source.matchAll(/\\(["'])((?:common|forms|settings|adminSettings|admin|auth|web|updates|metadata|errors|shared)\.[\w.-]+)\\\1/g)].map(([, , key]) => key),
+  ...[
+    ...source.matchAll(
+      /["']((?:common|forms|settings|adminSettings|admin|auth|web|updates|metadata|errors|shared)\.[\w.-]+)["']/g,
+    ),
+  ].map(([, key]) => key),
+  ...[
+    ...source.matchAll(
+      /\\(["'])((?:common|forms|settings|adminSettings|admin|auth|web|updates|metadata|errors|shared)\.[\w.-]+)\\\1/g,
+    ),
+  ].map(([, , key]) => key),
 ]);
 for (const [, englishText] of fallbackCalls) {
   keyReferences.add(`common.fallbacks.${fallbackKey(englishText)}`);
 }
-const dynamicNamespaces = ['common.labels.', 'web.profile.avatars.'];
+const dynamicNamespaces = [
+  'common.labels.',
+  'web.profile.avatars.',
+  'web.features.analytics.factors.',
+  'web.features.journey.factors.',
+];
 const unusedKeys = flatten(english).filter(
   (key) => !keyReferences.has(key) && !dynamicNamespaces.some((prefix) => key.startsWith(prefix)),
 );
-for (const key of unusedKeys) failures.push(`Translation key is not referenced by static code: ${key}.`);
+for (const key of unusedKeys)
+  failures.push(`Translation key is not referenced by static code: ${key}.`);
 
 if (failures.length) {
   console.error(failures.join('\n'));

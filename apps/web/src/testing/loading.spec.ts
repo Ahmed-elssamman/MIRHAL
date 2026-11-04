@@ -36,12 +36,15 @@ describe('scoped loading indicator', () => {
     loading.start();
     vi.advanceTimersByTime(150);
     expect(loading.isLoading()).toBe(true);
+    expect(loading.showTopBar()).toBe(true);
 
     loading.stop();
     vi.advanceTimersByTime(299);
-    expect(loading.isLoading()).toBe(true);
+    expect(loading.isLoading()).toBe(false);
+    expect(loading.showTopBar()).toBe(true);
     vi.advanceTimersByTime(1);
     expect(loading.isLoading()).toBe(false);
+    expect(loading.showTopBar()).toBe(false);
   });
   it('keeps feature resources local while their page skeleton owns loading feedback', () => {
     const loading = TestBed.inject(LoadingService);
@@ -67,9 +70,11 @@ describe('scoped loading indicator', () => {
     expect(loading.isLoading()).toBe(true);
     http.expectOne('/api/two').flush({}, { status: 503, statusText: 'Unavailable' });
     await second;
-    expect(loading.isLoading()).toBe(true);
+    expect(loading.isLoading()).toBe(false);
+    expect(loading.showTopBar()).toBe(true);
     vi.advanceTimersByTime(300);
     expect(loading.isLoading()).toBe(false);
+    expect(loading.showTopBar()).toBe(false);
     loading.stop();
     expect(loading.isLoading()).toBe(false);
   });
@@ -101,8 +106,10 @@ describe('scoped loading indicator', () => {
     subscription.unsubscribe();
 
     expect(request.cancelled).toBe(true);
-    expect(loading.isLoading()).toBe(true);
+    expect(loading.isLoading()).toBe(false);
+    expect(loading.showTopBar()).toBe(true);
     vi.advanceTimersByTime(300);
     expect(loading.isLoading()).toBe(false);
+    expect(loading.showTopBar()).toBe(false);
   });
 });

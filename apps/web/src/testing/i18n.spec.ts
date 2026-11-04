@@ -47,6 +47,7 @@ describe('shared ngx-translate dictionaries', () => {
     expect(translations.instant('auth.placeholders.email')).toBe('you@example.com');
     expect(translations.instant('common.productName')).toBe('MIRHAL');
     expect(translations.instant('common.xp')).toBe('XP');
+    expect(translations.instant('shared.ui.completeHabit', { name: 'Walk' })).toBe('Complete Walk');
     expect(preferences.label('IN_PROGRESS')).toBe('in progress');
     expect(translations.instant('web.landing.pillars.direction.title')).toBe(
       'A direction that matters',
@@ -55,9 +56,7 @@ describe('shared ngx-translate dictionaries', () => {
       '“Feel stronger and more energetic.”',
     );
     expect(translations.instant('web.checkIn.moods.bright')).toBe('Bright');
-    expect(translations.instant('web.feedback.categories.usability')).toBe(
-      'Make it easier to use',
-    );
+    expect(translations.instant('web.feedback.categories.usability')).toBe('Make it easier to use');
     expect(translations.instant('web.challenges.modes.cooperative')).toBe('Better together');
     expect(translations.instant('web.challenges.sharing.progress')).toBe(
       'Share my progress percentage',
@@ -68,10 +67,13 @@ describe('shared ngx-translate dictionaries', () => {
     expect(translations.instant('web.profile.avatars.dawn')).toBe('Dawn');
     expect(translations.instant('web.navigation.yourJourney')).toBe('YOUR JOURNEY');
     expect(translations.instant('web.help.connections.monthlyReview')).toBe('Monthly review');
-    expect(translations.instant('web.help.todayCards.reflection.text')).toContain('Make tomorrow easier.');
+    expect(translations.instant('web.help.todayCards.reflection.text')).toContain(
+      'Make tomorrow easier.',
+    );
 
     await firstValueFrom(translations.use('ar'));
     expect(translations.instant('settings.title')).toBe('اجعلها مساحتك المريحة.');
+    expect(translations.instant('shared.ui.completeHabit', { name: 'المشي' })).toBe('إتمام المشي');
     expect(translations.instant('auth.brandAdmin')).toBe('إدارة رحلة التوازن');
     expect(preferences.label('IN_PROGRESS')).toBe('جارٍ العمل');
     expect(translations.instant('web.onboarding.steps.area.text')).toBe(
@@ -85,7 +87,9 @@ describe('shared ngx-translate dictionaries', () => {
     expect(translations.instant('web.profile.avatars.dawn')).toBe('الفجر');
     expect(translations.instant('web.navigation.yourJourney')).toBe('رحلتك');
     expect(translations.instant('web.help.connections.monthlyReview')).toBe('مراجعة شهرية');
-    expect(translations.instant('web.help.todayCards.reflection.text')).toContain('اجعل الغد أسهل.');
+    expect(translations.instant('web.help.todayCards.reflection.text')).toContain(
+      'اجعل الغد أسهل.',
+    );
     expect(translations.instant('web.help.steps.step01.label')).toBe('الاتجاه');
     expect(translations.instant('web.features.landing.copy.begin_your_journey_55d0b609')).toBe(
       'ابدأ رحلتك',

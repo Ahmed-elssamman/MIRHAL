@@ -1,9 +1,11 @@
 <lq-page-header
-  [eyebrow]="('admin.features.content.copy.thoughtful_product_content_fb664003' | translate)"
-  [title]="i18n.t(definition.title, definition.ar)"
-  [description]="i18n.t(definition.description, definition.arDescription)"
+  [eyebrow]="'admin.features.content.copy.thoughtful_product_content_fb664003' | translate"
+  [title]="definition.titleKey | translate"
+  [description]="definition.descriptionKey | translate"
   ><button class="btn btn-primary" (click)="edit()">
-    <lq-icon name="plus" [size]="17" />{{ ('admin.features.content.copy.create_new_f1bbdf87' | translate) }}
+    <lq-icon name="plus" [size]="17" />{{
+      'admin.features.content.copy.create_new_f1bbdf87' | translate
+    }}
   </button></lq-page-header
 >
 @if (resource.loading() && !resource.data()) {
@@ -40,23 +42,26 @@
         }
         @if (item.threshold) {
           <p class="mb-4 text-xs text-muted">
-            {{ ('admin.features.content.copy.threshold_17897598' | translate) }}: {{ item.threshold }}
+            {{ 'admin.features.content.copy.threshold_17897598' | translate }}: {{ item.threshold }}
           </p>
         }
         <button class="btn btn-secondary mt-auto w-full text-xs" (click)="edit(item)">
-          {{ ('admin.features.content.copy.edit_content_87ea62a4' | translate) }}
+          {{ 'admin.features.content.copy.edit_content_87ea62a4' | translate }}
         </button>
       </article>
     } @empty {
       <div class="col-span-full">
         <lq-empty
           [icon]="definition.icon"
-          [title]="('admin.features.content.copy.a_thoughtful_addition_starts_here_4c69bcd9' | translate)"
+          [title]="
+            'admin.features.content.copy.a_thoughtful_addition_starts_here_4c69bcd9' | translate
+          "
           [description]="
-            ('admin.features.content.copy.create_useful_content_for_the_community_3dd93259' | translate)
+            'admin.features.content.copy.create_useful_content_for_the_community_3dd93259'
+              | translate
           "
           ><button class="btn btn-primary" (click)="edit()">
-            {{ ('admin.features.content.copy.create_the_first_item_f3bf4fe3' | translate) }}
+            {{ 'admin.features.content.copy.create_the_first_item_f3bf4fe3' | translate }}
           </button></lq-empty
         >
       </div>
@@ -72,9 +77,11 @@
   />
 }
 <p-dialog
-  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
   [header]="
-    editing() ? ('admin.features.content.copy.edit_content_87ea62a4' | translate) : ('admin.features.content.copy.create_content_c3070970' | translate)
+    editing()
+      ? ('admin.features.content.copy.edit_content_87ea62a4' | translate)
+      : ('admin.features.content.copy.create_content_c3070970' | translate)
   "
   [visible]="open()"
   (visibleChange)="open.set($event)"
@@ -85,13 +92,13 @@
       @if (field.kind === 'checkbox') {
         <label class="mb-4 flex min-h-11 items-center gap-3 text-xs"
           ><input type="checkbox" class="size-4 accent-brand" [formControlName]="field.key" />{{
-            i18n.t(field.label, field.ar)
+            field.labelKey | translate
           }}</label
         >
       } @else {
         <lq-field
           [id]="'content-' + field.key"
-          [label]="i18n.t(field.label, field.ar)"
+          [label]="field.labelKey | translate"
           [required]="field.required ?? false"
         >
           @switch (field.kind) {
@@ -106,7 +113,7 @@
             @case ('select') {
               <select [id]="'content-' + field.key" class="field" [formControlName]="field.key">
                 @for (option of field.options; track option) {
-                  <option [value]="option.value">{{ i18n.t(option.label, option.ar) }}</option>
+                  <option [value]="option.value">{{ option.labelKey | translate }}</option>
                 }
               </select>
             }
@@ -126,7 +133,7 @@
       <p role="alert" class="mb-4 text-xs text-rose-600">{{ error() }}</p>
     }
     <button class="btn btn-primary w-full" type="submit" [disabled]="saving() || form.invalid">
-      {{ ('admin.features.content.copy.save_content_10df375d' | translate) }}
+      {{ 'admin.features.content.copy.save_content_10df375d' | translate }}
     </button>
   </form></p-dialog
 >

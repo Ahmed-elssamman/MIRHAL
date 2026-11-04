@@ -10,6 +10,7 @@ import { SecuritySettings } from './security';
 @Component({
   selector: 'lq-settings',
   imports: [
+    TranslatePipe,
     UnsavedForm,
     ReactiveFormsModule,
     PageHeader,
