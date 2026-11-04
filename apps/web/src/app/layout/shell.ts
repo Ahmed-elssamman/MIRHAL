@@ -9,6 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
@@ -24,6 +25,7 @@ import { PwaInstallation } from '../pwa/install';
 @Component({
   selector: 'lq-shell',
   imports: [
+    TranslatePipe,
     Avatar,
     RouterLink,
     RouterLinkActive,
@@ -55,33 +57,32 @@ export class Shell {
   readonly today = new Date();
   readonly navigation = [
     {
-      label: 'YOUR JOURNEY',
-      ar: 'رحلتك',
+      labelKey: 'web.navigation.yourJourney',
       items: [
-        { path: '/today', title: 'Today', ar: 'اليوم', icon: 'calendar' },
-        { path: '/tasks', title: 'Tasks', ar: 'المهام', icon: 'tasks' },
-        { path: '/habits', title: 'Habits', ar: 'العادات', icon: 'sprout' },
-        { path: '/journey', title: 'My journey', ar: 'رحلتي', icon: 'map' },
-        { path: '/friends', title: 'Friends', ar: 'الأصدقاء', icon: 'users' },
-        { path: '/dashboard', title: 'Home', ar: 'الرئيسية', icon: 'home' },
+        { path: '/today', titleKey: 'web.navigation.today', icon: 'calendar' },
+        { path: '/tasks', titleKey: 'web.navigation.tasks', icon: 'tasks' },
+        { path: '/habits', titleKey: 'web.navigation.habits', icon: 'sprout' },
+        { path: '/journey', titleKey: 'web.navigation.myJourney', icon: 'map' },
+        { path: '/friends', titleKey: 'web.navigation.friends', icon: 'users' },
+        { path: '/dashboard', titleKey: 'web.navigation.home', icon: 'home' },
       ],
     },
   ];
   readonly more = [
-    { path: '/goals', title: 'Goals', ar: 'الأهداف', icon: 'target' },
-    { path: '/projects', title: 'Projects', ar: 'المشروعات', icon: 'folder' },
-    { path: '/habit-lab', title: 'Habit Lab', ar: 'مختبر العادات', icon: 'flask' },
-    { path: '/challenges', title: 'Challenges', ar: 'التحديات', icon: 'swords' },
-    { path: '/rewards', title: 'Rewards', ar: 'المكافآت', icon: 'gift' },
-    { path: '/achievements', title: 'Achievements', ar: 'الإنجازات', icon: 'award' },
-    { path: '/analytics', title: 'Analytics', ar: 'التحليلات', icon: 'chart' },
-    { path: '/quests', title: 'Weekly quests', ar: 'المهام الأسبوعية', icon: 'flag' },
+    { path: '/goals', titleKey: 'web.navigation.goals', icon: 'target' },
+    { path: '/projects', titleKey: 'web.navigation.projects', icon: 'folder' },
+    { path: '/habit-lab', titleKey: 'web.navigation.habitLab', icon: 'flask' },
+    { path: '/challenges', titleKey: 'web.navigation.challenges', icon: 'swords' },
+    { path: '/rewards', titleKey: 'web.navigation.rewards', icon: 'gift' },
+    { path: '/achievements', titleKey: 'web.navigation.achievements', icon: 'award' },
+    { path: '/analytics', titleKey: 'web.navigation.analytics', icon: 'chart' },
+    { path: '/quests', titleKey: 'web.navigation.weeklyQuests', icon: 'flag' },
   ];
   readonly bottom = [
-    { path: '/today', title: 'Today', ar: 'اليوم', icon: 'calendar' },
-    { path: '/habits', title: 'Habits', ar: 'العادات', icon: 'sprout' },
-    { path: '/tasks', title: 'Tasks', ar: 'المهام', icon: 'tasks' },
-    { path: '/journey', title: 'Journey', ar: 'رحلتي', icon: 'map' },
+    { path: '/today', titleKey: 'web.navigation.today', icon: 'calendar' },
+    { path: '/habits', titleKey: 'web.navigation.habits', icon: 'sprout' },
+    { path: '/tasks', titleKey: 'web.navigation.tasks', icon: 'tasks' },
+    { path: '/journey', titleKey: 'web.navigation.journey', icon: 'map' },
   ];
   constructor() {
     const destroyRef = inject(DestroyRef);

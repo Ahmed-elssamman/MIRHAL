@@ -1,10 +1,16 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { parse } from 'yaml';
 import {
   validateEnvironment,
   StartupConfigurationError,
 } from '../../apps/api/src/common/config/env.schema';
 
 describe('Configuration Architecture', () => {
+  it('declares production Redis as an owner-provided Render environment variable', () => {
+    const blueprint = parse(readFileSync('render.yaml', 'utf8')) as { services: { envVars: { key: string; sync?: boolean }[] }[] };
+    expect(blueprint.services[0]?.envVars).toContainEqual({ key: 'REDIS_URL', sync: false });
+  });
   const baseValidEnv = {
     NODE_ENV: 'development',
     DATABASE_URL: 'postgresql://postgres:secret@localhost:5432/mirhal_dev',
@@ -53,6 +59,7 @@ describe('Configuration Architecture', () => {
       ADMIN_ORIGIN: 'https://admin.mirhal.com',
       APP_URL: 'https://app.mirhal.com',
       MAIL_MODE: 'disabled',
+      REDIS_URL: 'redis://localhost:6379',
     };
     expect(() => validateEnvironment(prodEnv)).not.toThrow();
 
@@ -64,7 +71,7 @@ describe('Configuration Architecture', () => {
     ).toThrow(/WEB_ORIGIN must be an HTTPS origin/);
   });
 
-  it('requires REDIS_URL in production when RATE_LIMIT_MODE is redis', () => {
+  it('requires REDIS_URL in production for every rate-limit mode', () => {
     const prodEnv = {
       ...baseValidEnv,
       NODE_ENV: 'production',
@@ -75,6 +82,8 @@ describe('Configuration Architecture', () => {
       RATE_LIMIT_MODE: 'redis',
     };
     expect(() => validateEnvironment(prodEnv)).toThrow(/REDIS_URL to be configured/);
+    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'auto' })).toThrow(/REDIS_URL to be configured/);
+    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'memory' })).toThrow(/REDIS_URL to be configured/);
   });
 
   it('accepts the Render production email mode and rejects the old invalid enabled value', () => {
@@ -89,6 +98,7 @@ describe('Configuration Architecture', () => {
       RESEND_API_KEY: 'mock-key-for-test',
       SMTP_FROM: 'MIRHAL <mail@mirhal.example>',
       SUPPORT_EMAIL: 'support@mirhal.example',
+      REDIS_URL: 'redis://localhost:6379',
     };
     expect(validateEnvironment(prodEnv).MAIL_MODE).toBe('production');
     expect(validateEnvironment(prodEnv).SUPPORT_EMAIL).toBe('support@mirhal.example');

@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Area, Page, QuestTemplate, errorMessage, Toasts } from '@lifequest/data-access';
+import { Api, Area, Page, QuestTemplate, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { EmptyState, ErrorState, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
 import { applyServerValidation, DiscardChanges, FormField, UnsavedForm } from '@lifequest/forms';
 @Component({
   selector: 'lq-admin-quests',
   imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     DialogModule,
     EmptyState,
@@ -93,7 +95,7 @@ export class AdminQuestsPage {
       );
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

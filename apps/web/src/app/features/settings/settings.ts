@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Api, errorMessage, Profile } from '@lifequest/data-access';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Api, Profile } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { Preferences } from '@lifequest/utilities';
 import { Icon, PageHeader, Skeleton } from '@lifequest/ui';
@@ -9,6 +10,7 @@ import { SecuritySettings } from './security';
 @Component({
   selector: 'lq-settings',
   imports: [
+    TranslatePipe,
     UnsavedForm,
     ReactiveFormsModule,
     PageHeader,
@@ -25,9 +27,15 @@ export class SettingsPage {
   private readonly fb = inject(FormBuilder);
   readonly auth = inject(AuthStore);
   readonly i18n = inject(Preferences);
+  private navigationBeforeEdit = this.i18n.showAdditionalNavigation();
   readonly saving = signal(false);
   readonly saved = signal(false);
   readonly error = signal('');
+  readonly privacySettings = [
+    { key: 'shareChallengeScore', labelKey: 'settings.shareChallengeScores' },
+    { key: 'shareStreak', labelKey: 'settings.shareStreaks' },
+    { key: 'notificationsEnabled', labelKey: 'settings.inAppNotifications' },
+  ];
   readonly form = this.fb.nonNullable.group({
     theme: [this.auth.user()?.profile.theme ?? 'system'],
     language: [this.auth.user()?.profile.language ?? 'en'],
@@ -36,19 +44,26 @@ export class SettingsPage {
     shareStreak: [this.auth.user()?.profile.shareStreak ?? false],
     notificationsEnabled: [this.auth.user()?.profile.notificationsEnabled ?? true],
     reducedMotion: [this.auth.user()?.profile.reducedMotion ?? false],
+    showAdditionalNavigation: [
+      this.auth.user()?.profile.showAdditionalNavigation ?? this.i18n.showAdditionalNavigation(),
+    ],
   });
   async save() {
     this.saving.set(true);
+    this.saved.set(false);
     this.error.set('');
     try {
       const profile = await this.api.patch<Profile>('profile', this.form.getRawValue());
       const user = this.auth.user();
       if (user) this.auth.setUser({ ...user, profile });
+      this.navigationBeforeEdit = profile.showAdditionalNavigation ?? false;
       this.form.markAsPristine();
       this.saved.set(true);
     } catch (error) {
+      this.i18n.setShowAdditionalNavigation(this.navigationBeforeEdit);
+      this.form.controls.showAdditionalNavigation.setValue(this.navigationBeforeEdit);
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

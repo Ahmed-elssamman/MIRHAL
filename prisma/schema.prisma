@@ -187,6 +187,7 @@ model User {
   friendshipsSent     Friendship[]           @relation("FriendshipSender")
   friendshipsReceived Friendship[]           @relation("FriendshipReceiver")
   invitationsSent     Invitation[]           @relation("SentInvitations")
+  invitationsPending  Invitation[]           @relation("PendingInvitationRecipient")
   challenges          Challenge[]
   participations      ChallengeParticipant[]
   notifications       Notification[]
@@ -214,6 +215,7 @@ model Profile {
   shareStreak           Boolean    @default(false)
   notificationsEnabled  Boolean    @default(true)
   reducedMotion         Boolean    @default(false)
+  showAdditionalNavigation Boolean?
   preferredRoutine      String     @default("morning")
   onboardingCompletedAt DateTime?
   createdAt             DateTime   @default(now())
@@ -690,6 +692,8 @@ model Invitation {
   id         String           @id @default(cuid())
   senderId   String
   sender     User             @relation("SentInvitations", fields: [senderId], references: [id], onDelete: Cascade)
+  recipientId String?
+  recipient User? @relation("PendingInvitationRecipient", fields: [recipientId], references: [id], onDelete: SetNull)
   email      String
   tokenHash  String           @unique
   status     InvitationStatus @default(PENDING)
@@ -700,6 +704,7 @@ model Invitation {
 
   @@index([email, status])
   @@index([senderId, status])
+  @@index([recipientId, status])
 }
 
 model Challenge {

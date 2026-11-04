@@ -1,14 +1,11 @@
 <lq-page-header
-  [eyebrow]="i18n.t('THE BIGGER PICTURE', 'الصورة الأكبر')"
-  [title]="i18n.t('Give your growth a direction.', 'امنح نموك اتجاهاً.')"
+  [eyebrow]="('web.features.goals.copy.the_bigger_picture_127ffece' | translate)"
+  [title]="('web.features.goals.copy.give_your_growth_a_direction_779f1f16' | translate)"
   [description]="
-    i18n.t(
-      'Meaningful outcomes, made possible by small everyday actions.',
-      'نتائج ذات معنى، تصنعها خطوات يومية صغيرة.'
-    )
+    ('web.features.goals.copy.set_goals_for_the_outcomes_you_want_organize_milestones_and_review_your_progress_dcf3dd0e' | translate)
   "
   ><button class="btn btn-primary" (click)="create()">
-    <lq-icon name="plus" [size]="17" />{{ i18n.t('New goal', 'هدف جديد') }}
+    <lq-icon name="plus" [size]="17" />{{ ('web.features.goals.copy.new_goal_cb36caac' | translate) }}
   </button></lq-page-header
 >
 @if (resource.loading() && !resource.data()) {
@@ -33,16 +30,12 @@
         <p class="mb-6 mt-2 line-clamp-3 text-xs leading-6 text-muted">
           {{
             goal.description ||
-              i18n.t(
-                'One step at a time toward something that matters.',
-                'خطوة بخطوة
-      نحو ما يهمك.'
-              )
+              ('web.features.goals.copy.one_step_at_a_time_toward_something_that_matters_177a7bc4' | translate)
           }}
         </p>
         <div class="mt-auto">
           <div class="mb-2 flex items-center justify-between text-xs">
-            <span class="text-muted">{{ i18n.t('Progress', 'التقدم') }}</span
+            <span class="text-muted">{{ ('web.features.goals.copy.progress_1a36a166' | translate) }}</span
             ><span class="font-semibold text-brand">{{ goal.progress.toFixed(0) }}%</span>
           </div>
           <lq-progress [value]="goal.progress" />
@@ -50,25 +43,21 @@
             <span>{{
               goal.targetDate
                 ? (goal.targetDate | date: 'MMM d, y')
-                : i18n.t(
-                    'At your own
-          pace',
-                    'بإيقاعك الخاص'
-                  )
+                : ('web.features.goals.copy.at_your_own_pace_ffdaa07f' | translate)
             }}</span
             ><span>{{
               goal.strategy === 'PROJECT'
-                ? i18n.t('Linked projects', 'مشروعات مرتبطة')
+                ? ('web.features.goals.copy.linked_projects_19d46aa2' | translate)
                 : goal.strategy === 'NUMERIC'
-                  ? i18n.t('Numeric target', 'هدف رقمي')
+                  ? ('web.features.goals.copy.numeric_target_214640c1' | translate)
                   : goal.strategy === 'MILESTONE'
-                    ? i18n.t('Milestones', 'مراحل')
-                    : i18n.t('Personal progress', 'تقدم شخصي')
+                    ? ('web.features.goals.copy.milestones_836aa82a' | translate)
+                    : ('web.features.goals.copy.personal_progress_7e890d48' | translate)
             }}</span>
           </div>
           <details class="mt-4 border-t border-line pt-3">
             <summary class="min-h-10 cursor-pointer text-xs font-medium text-brand">
-              {{ i18n.t('Milestones', 'المراحل') }} · {{ goal.milestones.length }}
+              {{ ('web.features.goals.copy.milestones_836aa82a' | translate) }} · {{ goal.milestones.length }}
             </summary>
             <lq-milestones
               [goalId]="goal.id"
@@ -78,12 +67,12 @@
           </details>
           <div class="mt-5 flex gap-2 border-t border-line pt-4">
             <button class="btn btn-secondary flex-1 text-xs" (click)="edit(goal)">
-              {{ i18n.t('Update goal', 'تحديث الهدف') }}</button
+              {{ ('web.features.goals.copy.update_goal_c5a3ba27' | translate) }}</button
             ><button class="btn btn-quiet text-xs" (click)="archive(goal)">
               {{
                 goal.status === 'ARCHIVED'
-                  ? i18n.t('Restore', 'استعادة')
-                  : i18n.t('Archive', 'أرشفة')
+                  ? ('web.features.goals.copy.restore_0ff87f71' | translate)
+                  : ('web.features.goals.copy.archive_73690b65' | translate)
               }}
             </button>
           </div>
@@ -94,16 +83,13 @@
         <lq-empty
           icon="target"
           [title]="
-            i18n.t('What would make this season meaningful?', 'ما الذي يجعل هذا الموسم ذا معنى؟')
+            ('common.copy.what_would_make_this_season_meaningful_803df70a' | translate)
           "
           [description]="
-            i18n.t(
-              'Choose one outcome you care about. We’ll help you break it down.',
-              'اختر نتيجة واحدة تهمك. سنساعدك على تقسيمها.'
-            )
+            ('web.features.goals.copy.choose_one_outcome_you_care_about_we_ll_help_you_break_it_down_5ee38f04' | translate)
           "
           ><button class="btn btn-primary" (click)="create()">
-            {{ i18n.t('Create my first goal', 'إنشاء هدفي الأول') }}
+            {{ ('web.features.goals.copy.create_my_first_goal_d5649b3a' | translate) }}
           </button></lq-empty
         >
       </div>
@@ -112,9 +98,9 @@
   <lq-pagination [page]="data.page" [total]="data.total" (change)="page($event)" />
 }
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
   [header]="
-    editing() ? i18n.t('Shape your goal', 'شكّل هدفك') : i18n.t('A new direction', 'اتجاه جديد')
+    editing() ? ('web.features.goals.copy.shape_your_goal_c5d6cea8' | translate) : ('web.features.goals.copy.a_new_direction_ef72547b' | translate)
   "
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
@@ -124,16 +110,16 @@
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
     <lq-field
       id="goal-title"
-      [label]="i18n.t('What do you want to achieve?', 'ماذا تريد أن تحقق؟')"
+      [label]="('web.features.goals.copy.what_do_you_want_to_achieve_413e0a90' | translate)"
       [required]="true"
       ><input
         id="goal-title"
         class="field"
         formControlName="title"
         [placeholder]="
-          i18n.t('e.g. Feel stronger and more energetic', 'مثال: أشعر بقوة وطاقة أكبر')
+          ('web.features.goals.copy.e_g_feel_stronger_and_more_energetic_87d2e343' | translate)
         " /></lq-field
-    ><lq-field id="goal-description" [label]="i18n.t('Why does it matter?', 'لماذا يهمك؟')">
+    ><lq-field id="goal-description" [label]="('web.features.goals.copy.why_does_it_matter_874f7a15' | translate)">
       <textarea
         id="goal-description"
         class="field"
@@ -142,7 +128,7 @@
       ></textarea>
     </lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="goal-area" [label]="i18n.t('Life area', 'مجال الحياة')"
+      <lq-field id="goal-area" [label]="('common.copy.life_area_9e7a62cc' | translate)"
         ><select class="field" id="goal-area" formControlName="areaId">
           @for (area of areas.data(); track area.id) {
             <option [value]="area.id">{{ i18n.t(area.name, area.nameAr) }}</option>
@@ -150,26 +136,26 @@
         </select></lq-field
       ><lq-field
         id="goal-date"
-        [label]="i18n.t('Target date (optional)', 'التاريخ المستهدف (اختياري)')"
+        [label]="('web.features.goals.copy.target_date_optional_92b56d23' | translate)"
         ><input id="goal-date" class="field" type="date" formControlName="targetDate"
       /></lq-field>
     </div>
     <lq-field
       id="goal-strategy"
-      [label]="i18n.t('How should progress be measured?', 'كيف نقيس التقدم؟')"
+      [label]="('web.features.goals.copy.how_should_progress_be_measured_11c77829' | translate)"
       ><select id="goal-strategy" class="field" formControlName="strategy">
         <option value="MANUAL">
-          {{ i18n.t('My own progress estimate', 'تقديري الشخصي للتقدم') }}
+          {{ ('web.features.goals.copy.my_own_progress_estimate_a9644b68' | translate) }}
         </option>
         <option value="PROJECT">
-          {{ i18n.t('From linked projects', 'من المشروعات المرتبطة') }}
+          {{ ('web.features.goals.copy.from_linked_projects_f49ee80c' | translate) }}
         </option>
-        <option value="NUMERIC">{{ i18n.t('A numeric target', 'هدف رقمي') }}</option>
-        <option value="MILESTONE">{{ i18n.t('From milestones', 'من المراحل') }}</option>
+        <option value="NUMERIC">{{ ('web.features.goals.copy.a_numeric_target_840cd4e8' | translate) }}</option>
+        <option value="MILESTONE">{{ ('web.features.goals.copy.from_milestones_7f4ff2b4' | translate) }}</option>
       </select></lq-field
     >
     @if (form.controls.strategy.value === 'MANUAL') {
-      <lq-field id="goal-progress" [label]="i18n.t('Progress (%)', 'التقدم (%)')"
+      <lq-field id="goal-progress" [label]="('web.features.goals.copy.progress_d661a1a8' | translate)"
         ><input
           id="goal-progress"
           class="field"
@@ -181,14 +167,14 @@
     }
     @if (form.controls.strategy.value === 'NUMERIC') {
       <div class="grid grid-cols-2 gap-4">
-        <lq-field id="goal-value" [label]="i18n.t('Current value', 'القيمة الحالية')"
+        <lq-field id="goal-value" [label]="('web.features.goals.copy.current_value_6d5de2cf' | translate)"
           ><input
             id="goal-value"
             class="field"
             type="number"
             min="0"
             formControlName="numericValue" /></lq-field
-        ><lq-field id="goal-target" [label]="i18n.t('Target', 'المستهدف')"
+        ><lq-field id="goal-target" [label]="('common.copy.target_8b67f168' | translate)"
           ><input
             id="goal-target"
             class="field"
@@ -197,35 +183,35 @@
             formControlName="numericTarget"
         /></lq-field>
       </div>
-      <lq-field id="goal-unit" [label]="i18n.t('Unit (optional)', 'الوحدة (اختياري)')">
+      <lq-field id="goal-unit" [label]="('web.features.goals.copy.unit_optional_38a66272' | translate)">
         <input id="goal-unit" class="field" formControlName="unit" />
       </lq-field>
     }
     <details class="mb-5 rounded-xl border border-line p-4">
       <summary class="min-h-11 cursor-pointer text-sm font-medium">
-        {{ i18n.t('More planning options', 'خيارات تخطيط إضافية') }}
+        {{ ('common.copy.more_planning_options_d9145397' | translate) }}
       </summary>
-      <lq-field id="goal-start" [label]="i18n.t('Start date (optional)', 'تاريخ البدء (اختياري)')">
+      <lq-field id="goal-start" [label]="('common.copy.start_date_optional_69d4dbbc' | translate)">
         <input id="goal-start" class="field" type="date" formControlName="startDate" />
       </lq-field>
-      <lq-field id="goal-priority" [label]="i18n.t('Priority', 'الأولوية')">
+      <lq-field id="goal-priority" [label]="('common.copy.priority_e68d9f29' | translate)">
         <select id="goal-priority" class="field" formControlName="priority">
-          <option value="LOW">{{ i18n.t('Low', 'منخفضة') }}</option>
-          <option value="MEDIUM">{{ i18n.t('Medium', 'متوسطة') }}</option>
-          <option value="HIGH">{{ i18n.t('High', 'عالية') }}</option>
+          <option value="LOW">{{ ('common.copy.low_b1dd9521' | translate) }}</option>
+          <option value="MEDIUM">{{ ('common.copy.medium_09be5f96' | translate) }}</option>
+          <option value="HIGH">{{ ('common.copy.high_be0a061d' | translate) }}</option>
         </select>
       </lq-field>
-      <lq-field id="goal-notes" [label]="i18n.t('Private notes', 'ملاحظات خاصة')">
+      <lq-field id="goal-notes" [label]="('common.copy.private_notes_8e70eb59' | translate)">
         <textarea id="goal-notes" class="field" rows="3" formControlName="notes"></textarea>
       </lq-field>
       @if (editing()) {
-        <lq-field id="goal-status" [label]="i18n.t('Status', 'الحالة')">
+        <lq-field id="goal-status" [label]="('common.copy.status_005ef20f' | translate)">
           <select id="goal-status" class="field" formControlName="status">
-            <option value="PLANNED">{{ i18n.t('Planned', 'مخطط') }}</option>
-            <option value="ACTIVE">{{ i18n.t('Active', 'نشط') }}</option>
-            <option value="PAUSED">{{ i18n.t('Paused', 'متوقف مؤقتاً') }}</option>
-            <option value="COMPLETED">{{ i18n.t('Completed', 'مكتمل') }}</option>
-            <option value="ARCHIVED">{{ i18n.t('Archived', 'مؤرشف') }}</option>
+            <option value="PLANNED">{{ ('common.copy.planned_cf807545' | translate) }}</option>
+            <option value="ACTIVE">{{ ('common.copy.active_1f89134f' | translate) }}</option>
+            <option value="PAUSED">{{ ('common.copy.paused_de281feb' | translate) }}</option>
+            <option value="COMPLETED">{{ ('common.copy.completed_ec88aab2' | translate) }}</option>
+            <option value="ARCHIVED">{{ ('common.copy.archived_af5c5293' | translate) }}</option>
           </select>
         </lq-field>
       }
@@ -235,9 +221,9 @@
     }
     <div class="flex justify-end gap-2 border-t border-line pt-4">
       <button type="button" class="btn btn-secondary" (click)="discard.close(false, open, form)">
-        {{ i18n.t('Cancel', 'إلغاء') }}</button
+        {{ ('common.copy.cancel_35afca3b' | translate) }}</button
       ><button type="submit" class="btn btn-primary" [disabled]="saving() || form.invalid">
-        {{ saving() ? i18n.t('Saving…', 'جارٍ الحفظ…') : i18n.t('Save goal', 'حفظ الهدف') }}
+        {{ saving() ? ('common.copy.saving_74119e7f' | translate) : ('web.features.goals.copy.save_goal_8614c2cb' | translate) }}
       </button>
     </div>
   </form></p-dialog

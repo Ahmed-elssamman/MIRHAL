@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -7,7 +8,6 @@ import {
   Api,
   Area,
   Challenge,
-  errorMessage,
   Friend,
   Habit,
   Page,
@@ -28,6 +28,7 @@ import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-challenges',
   imports: [
+    TranslatePipe,
     Pagination,
     LocalizedDatePipe,
     RouterLink,
@@ -83,52 +84,20 @@ export class ChallengesPage {
     shareStreak: [false],
   });
   readonly modes = [
-    {
-      id: 'CONSISTENCY',
-      en: 'Consistency',
-      ar: 'الاستمرارية',
-      text: 'Show up, day by day.',
-      arText: 'حاول، يوماً بعد يوم.',
-    },
-    {
-      id: 'SCORE',
-      en: 'Score battle',
-      ar: 'تحدي النقاط',
-      text: 'Habit points fixed at the start, with fair daily caps.',
-      arText: 'نقاط عادات تُثبت عند البداية، بحدود يومية عادلة.',
-    },
-    {
-      id: 'IMPROVEMENT',
-      en: 'Personal improvement',
-      ar: 'التحسن الشخصي',
-      text: 'Progress from your own baseline.',
-      arText: 'تقدم مقارنة ببدايتك.',
-    },
-    {
-      id: 'TARGET',
-      en: 'A shared target',
-      ar: 'هدف مشترك',
-      text: 'Move toward a concrete number.',
-      arText: 'تقدم نحو رقم محدد.',
-    },
-    {
-      id: 'STREAK',
-      en: 'Steady streak',
-      ar: 'سلسلة مستمرة',
-      text: 'Build consecutive days of action.',
-      arText: 'ابنِ أياماً متتالية من العمل.',
-    },
-    {
-      id: 'COOPERATIVE',
-      en: 'Better together',
-      ar: 'أفضل معاً',
-      text: 'Combine your progress as a team.',
-      arText: 'اجمعوا تقدمكم كفريق.',
-    },
+    { id: 'CONSISTENCY', key: 'web.challenges.modes.consistency' },
+    { id: 'SCORE', key: 'web.challenges.modes.score' },
+    { id: 'IMPROVEMENT', key: 'web.challenges.modes.improvement' },
+    { id: 'TARGET', key: 'web.challenges.modes.target' },
+    { id: 'STREAK', key: 'web.challenges.modes.streak' },
+    { id: 'COOPERATIVE', key: 'web.challenges.modes.cooperative' },
+  ];
+  readonly shareSettings = [
+    { key: 'shareScore', translationKey: 'web.challenges.sharing.score' },
+    { key: 'shareProgress', translationKey: 'web.challenges.sharing.progress' },
+    { key: 'shareStreak', translationKey: 'web.challenges.sharing.streak' },
   ];
   modeLabel(mode: string) {
-    const found = this.modes.find((item) => item.id === mode);
-    return found ? this.i18n.t(found.en, found.ar) : mode;
+    return this.modes.find((item) => item.id === mode)?.key ?? mode;
   }
   create() {
     this.form.reset({
@@ -172,7 +141,7 @@ export class ChallengesPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }
@@ -208,7 +177,7 @@ export class ChallengesPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.acceptance, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

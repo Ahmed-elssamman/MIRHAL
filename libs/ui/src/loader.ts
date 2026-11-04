@@ -1,15 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { LoadingService } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
 
 @Component({
   selector: 'lq-global-loader',
+  imports: [TranslatePipe],
   template: `
     @if (loading.showOverlay()) {
       <div
         role="status"
         aria-live="polite"
-        [attr.aria-label]="i18n.t('Loading MIRHAL', 'جارٍ تحميل مِرحال')"
+        [attr.aria-label]="'common.fallbacks.loading_mirhal_060e96e4' | translate"
         class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-surface-50/85 dark:bg-surface-950/85 backdrop-blur-sm transition-opacity duration-300"
       >
         <!-- Branded MIRHAL Container -->
@@ -56,7 +57,7 @@ import { Preferences } from '@lifequest/utilities';
     @if (loading.showTopBar()) {
       <div
         role="progressbar"
-        [attr.aria-label]="i18n.t('Loading page', 'جارٍ تحميل الصفحة')"
+        [attr.aria-label]="'common.loading' | translate"
         aria-valuemin="0"
         aria-valuemax="100"
         class="fixed inset-x-0 top-0 z-[10000] h-1 overflow-hidden bg-brand/15 shadow-sm pointer-events-none"
@@ -69,5 +70,4 @@ import { Preferences } from '@lifequest/utilities';
 })
 export class GlobalLoader {
   readonly loading = inject(LoadingService);
-  readonly i18n = inject(Preferences);
 }

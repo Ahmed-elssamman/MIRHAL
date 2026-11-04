@@ -1,15 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Api, errorMessage } from '@lifequest/data-access';
+import { Api, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { Icon, Logo } from '@lifequest/ui';
 import { FormField } from '@lifequest/forms';
-import { AuthStore } from './index';
+import { AuthStore } from '@lifequest/auth';
 @Component({
   selector: 'lq-auth-page',
-  imports: [RouterLink, ReactiveFormsModule, Icon, Logo, FormField],
+  imports: [
+    TranslatePipe,RouterLink, ReactiveFormsModule, Icon, Logo, FormField],
   templateUrl: './auth-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -23,6 +25,7 @@ export class AuthPage {
   readonly isAdmin = this.route.snapshot.data['admin'] === true;
   private readonly auth = inject(AuthStore);
   private readonly api = inject(Api);
+  private readonly toasts = inject(Toasts);
   readonly capabilities = this.api.resource<{ emailDelivery: boolean }>('auth/capabilities');
   readonly settings = this.api.resource<{ key: string; value: string }[]>('public-settings');
   readonly notice = computed(
@@ -189,6 +192,28 @@ export class AuthPage {
           );
           return;
         }
+        if (!this.isAdmin && mode === 'login' && this.inviteToken()) {
+          try {
+            const result = await this.api.post<{
+              status: 'pending' | 'awaiting_verification' | 'already_friends';
+            }>('friends/invitations/accept', { token: this.inviteToken() });
+            this.toasts.success(
+              result.status === 'awaiting_verification'
+                ? this.i18n.t(
+                    'Verify your email to receive the friend request.',
+                    'أكد بريدك الإلكتروني لاستلام طلب الصداقة.',
+                  )
+                : result.status === 'already_friends'
+                  ? this.i18n.t('You are already friends.', 'أنتما صديقان بالفعل.')
+                  : this.i18n.t(
+                      'Your friend request is ready to review.',
+                      'طلب الصداقة جاهز للمراجعة.',
+                    ),
+            );
+          } catch (error) {
+            this.toasts.error(error);
+          }
+        }
         await this.router.navigate([
           this.isAdmin
             ? '/overview'
@@ -198,7 +223,7 @@ export class AuthPage {
         ]);
       }
     } catch (error) {
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.busy.set(false);
     }

@@ -47,14 +47,15 @@ export class OutboxWorker {
     if (jobs.length === 0) return result;
 
     for (const job of jobs) {
-      result.processed++;
       const start = performance.now();
 
-      // Claim job
-      await this.db.outboxJob.update({
-        where: { id: job.id },
+      // Competing workers may have read the same job; only one may dispatch it.
+      const claim = await this.db.outboxJob.updateMany({
+        where: { id: job.id, status: { in: ['PENDING', 'FAILED'] }, nextAttemptAt: { lte: now } },
         data: { status: 'PROCESSING' },
       });
+      if (claim.count !== 1) continue;
+      result.processed++;
 
       try {
         const payload = JSON.parse(job.payload);

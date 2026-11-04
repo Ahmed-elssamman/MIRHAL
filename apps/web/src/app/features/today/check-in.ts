@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Api, errorMessage, Toasts } from '@lifequest/data-access';
+import { Api, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { Icon } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-check-in',
-  imports: [ReactiveFormsModule, Icon, FormField],
+  imports: [
+    TranslatePipe,ReactiveFormsModule, Icon, FormField],
   templateUrl: './check-in.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -30,11 +32,11 @@ export class CheckInForm {
     recoveryIntention: [''],
   });
   readonly moods = [
-    { value: 1, en: 'Heavy', ar: 'ثقيل', face: '◔' },
-    { value: 2, en: 'Low', ar: 'منخفض', face: '◑' },
-    { value: 3, en: 'Okay', ar: 'جيد', face: '◕' },
-    { value: 4, en: 'Good', ar: 'سعيد', face: '☀' },
-    { value: 5, en: 'Bright', ar: 'مشرق', face: '✦' },
+    { value: 1, key: 'web.checkIn.moods.heavy', face: '◔' },
+    { value: 2, key: 'web.checkIn.moods.low', face: '◑' },
+    { value: 3, key: 'web.checkIn.moods.okay', face: '◕' },
+    { value: 4, key: 'web.checkIn.moods.good', face: '☀' },
+    { value: 5, key: 'web.checkIn.moods.bright', face: '✦' },
   ];
   async save() {
     this.busy.set(true);
@@ -49,7 +51,7 @@ export class CheckInForm {
       this.saved.emit();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.busy.set(false);
     }

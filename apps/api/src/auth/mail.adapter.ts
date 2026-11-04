@@ -8,7 +8,7 @@ import {
 import { createHash } from 'node:crypto';
 import type { TokenPurpose } from '@prisma/client';
 import { EmailLanguage, EmailPurpose, renderAuthEmail } from './mail.templates';
-import { MailMessage, classifyDeliveryError } from '../mail/mail.types';
+import { DeliveryError, MailMessage, classifyDeliveryError } from '../mail/mail.types';
 import { MailFactory } from '../mail/mail.factory';
 
 type Message = { to: string; purpose: EmailPurpose; url: string; language: EmailLanguage };
@@ -155,13 +155,16 @@ export class MailAdapter implements OnModuleInit {
     eventId: string,
     language: EmailLanguage = 'ar',
     inviteToken?: string,
+    registered = false,
   ) {
     this.assertConfigured();
     const origin = new URL(process.env['APP_URL'] ?? 'http://localhost:4200').origin;
-    const url = inviteToken
+    const url = registered
+      ? new URL('/friends', origin).href
+      : inviteToken
       ? new URL(`/auth/register?inviteToken=${encodeURIComponent(inviteToken)}`, origin).href
       : new URL('/auth/register', origin).href;
-    const purpose: EmailPurpose = 'FRIEND_INVITE';
+    const purpose: EmailPurpose = registered ? 'FRIEND_REQUEST' : 'FRIEND_INVITE';
     const mail: Message = { to, purpose, url, language };
     if (process.env['NODE_ENV'] === 'test') {
       this.outbox.push(mail);
@@ -227,6 +230,7 @@ export class MailAdapter implements OnModuleInit {
       );
       throw new ServiceUnavailableException(
         'Email could not be delivered. Please try again later.',
+        { cause: new DeliveryError(classification) },
       );
     }
   }

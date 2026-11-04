@@ -10,12 +10,12 @@ config({ quiet: true });
 const source = process.env.TEST_DATABASE_URL;
 if (!source) throw new Error('TEST_DATABASE_URL is required.');
 const url = new URL(source);
-if (!['localhost', '127.0.0.1'].includes(url.hostname) || !url.pathname.endsWith('_test'))
+if (!['localhost', '127.0.0.1'].includes(url.hostname) || !url.pathname.endsWith('_test') || url.searchParams.has('host') || url.searchParams.has('hostaddr'))
   throw new Error('E2E requires a dedicated local test database.');
 const admin = new PrismaClient({ datasources: { db: { url: source } } });
-const name = 'lifequest_e2e_test';
-if (!(await admin.$queryRaw`SELECT 1 FROM pg_database WHERE datname = ${name}`).length)
-  await admin.$executeRawUnsafe(`CREATE DATABASE "${name}"`);
+// Every run creates a new isolated database; never truncate an existing one.
+const name = `lifequest_e2e_${randomBytes(8).toString('hex')}_test`;
+await admin.$executeRawUnsafe(`CREATE DATABASE "${name}"`);
 await admin.$disconnect();
 url.pathname = '/' + name;
 const credentials = {
@@ -53,20 +53,12 @@ for (const key of [
 ])
   delete env[key];
 try {
-  execFileSync('node_modules/.bin/prisma', ['migrate', 'deploy'], { env, stdio: 'pipe' });
+  execFileSync(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], { env, stdio: 'pipe' });
 } catch {
   throw new Error('Isolated E2E migrations failed.');
 }
-const db = new PrismaClient({ datasources: { db: { url: url.href } } });
-const tables =
-  await db.$queryRaw`SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename <> '_prisma_migrations'`;
-if (tables.length)
-  await db.$executeRawUnsafe(
-    `TRUNCATE ${tables.map((row) => '"' + row.tablename.replaceAll('"', '""') + '"').join(',')} CASCADE`,
-  );
-await db.$disconnect();
 try {
-  execFileSync('node_modules/.bin/tsx', ['prisma/seed.ts'], { env, stdio: 'pipe' });
+  execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', 'prisma/seed.ts'], { env, stdio: 'pipe' });
 } catch {
   throw new Error('Isolated E2E seed failed.');
 }

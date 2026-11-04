@@ -32,6 +32,7 @@ export class DeliveryError extends Error {
 export function classifyDeliveryError(error: unknown): DeliveryErrorClassification {
   if (error instanceof DeliveryError) return error.classification;
   if (typeof error === 'object' && error !== null) {
+    if ('cause' in error && error.cause instanceof DeliveryError) return error.cause.classification;
     if ('responseCode' in error && typeof error.responseCode === 'number') {
       return error.responseCode >= 500 ? 'permanent' : 'temporary';
     }

@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
-import { Api, Remote, errorMessage, Journey } from '@lifequest/data-access';
+import { Api, Remote, Journey } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { ErrorState, Icon, PageHeader, ProgressRing, SectionTitle, Skeleton } from '@lifequest/ui';
 import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
 @Component({
   selector: 'lq-journey',
   imports: [
+    TranslatePipe,
     FormsModule,
     ReactiveFormsModule,
     DatePickerModule,
@@ -88,7 +90,7 @@ export class JourneyPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

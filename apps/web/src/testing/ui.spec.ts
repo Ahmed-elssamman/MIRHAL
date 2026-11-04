@@ -1,14 +1,31 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it, vi } from 'vitest';
-import { ErrorState, Progress, Skeleton } from '@lifequest/ui';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ErrorState, GlobalLoader, Pagination, Progress, Skeleton } from '@lifequest/ui';
 import { FormField } from '@lifequest/forms';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Celebrations } from '@lifequest/data-access';
-import { LevelCelebration } from '../../../../libs/ui/src/level-celebration';
+import { Celebrations, LoadingService } from '@lifequest/data-access';
+import { LevelCelebration } from '@lifequest/ui/level-celebration';
 import { ActivityChart } from '../app/features/analytics/activity-chart';
 import { provideRouter } from '@angular/router';
+import {
+  provideTranslateLoader,
+  provideTranslateService,
+  TranslateService,
+} from '@ngx-translate/core';
+import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { firstValueFrom } from 'rxjs';
 
 describe('Accessible shared components', () => {
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        LocalizedDatePipe,
+        provideRouter([]),
+        provideTranslateService({ loader: provideTranslateLoader(MirhalTranslationLoader) }),
+      ],
+    });
+    await firstValueFrom(TestBed.inject(TranslateService).use('ar'));
+  });
   it('localizes standard habit units while preserving custom units', () => {
     const preferences = TestBed.inject(Preferences);
     preferences.language.set('ar');
@@ -21,8 +38,95 @@ describe('Accessible shared components', () => {
     expect(preferences.habitUnit('دقائق')).toBe('minutes');
     expect(preferences.habitUnit('صفحات')).toBe('pages');
   });
+  it('renders reusable pagination with accessible boundaries and emits one page change', () => {
+    const fixture = TestBed.createComponent(Pagination);
+    fixture.componentRef.setInput('page', 2);
+    fixture.componentRef.setInput('total', 60);
+    fixture.componentRef.setInput('limit', 25);
+    fixture.detectChanges();
+
+    const nav = fixture.nativeElement.querySelector('nav') as HTMLElement;
+    const current = fixture.nativeElement.querySelector('[aria-current="page"]') as HTMLElement;
+    const buttons = fixture.nativeElement.querySelectorAll(
+      'button',
+    ) as NodeListOf<HTMLButtonElement>;
+    const changes: number[] = [];
+    fixture.componentInstance.change.subscribe((page) => changes.push(page));
+
+    expect(nav.getAttribute('aria-label')).toBeTruthy();
+    expect(current.textContent.trim()).toBe('2 / 3');
+    expect(buttons.item(0).disabled).toBe(false);
+    expect(buttons.item(1).disabled).toBe(false);
+    buttons.item(0).click();
+    fixture.detectChanges();
+
+    expect(changes).toEqual([1]);
+  });
+  it('disables pagination at both boundaries and hides it when the page count is one', () => {
+    const fixture = TestBed.createComponent(Pagination);
+    fixture.componentRef.setInput('page', 1);
+    fixture.componentRef.setInput('total', 30);
+    fixture.componentRef.setInput('limit', 25);
+    fixture.detectChanges();
+
+    let buttons = fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>;
+    expect(buttons.item(0).disabled).toBe(true);
+    expect(buttons.item(1).disabled).toBe(false);
+
+    fixture.componentRef.setInput('page', 2);
+    fixture.detectChanges();
+    buttons = fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>;
+    expect(buttons.item(0).disabled).toBe(false);
+    expect(buttons.item(1).disabled).toBe(true);
+
+    fixture.componentRef.setInput('total', 25);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('nav')).toBeNull();
+  });
+  it('safely hides pagination for empty results and invalid page sizes', () => {
+    const fixture = TestBed.createComponent(Pagination);
+    fixture.componentRef.setInput('total', 0);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('nav')).toBeNull();
+
+    fixture.componentRef.setInput('total', 30);
+    fixture.componentRef.setInput('limit', 0);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('nav')).toBeNull();
+  });
+  it('updates translated pagination labels and direction when the language changes', async () => {
+    const fixture = TestBed.createComponent(Pagination);
+    fixture.componentRef.setInput('total', 50);
+    fixture.detectChanges();
+    const preferences = TestBed.inject(Preferences);
+    const translations = TestBed.inject(TranslateService);
+
+    preferences.setLanguage('en');
+    await firstValueFrom(translations.use('en'));
+    fixture.detectChanges();
+    const previous = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    expect(previous.getAttribute('aria-label')).toBe('Previous page');
+    expect(fixture.nativeElement.querySelector('nav').getAttribute('aria-label')).toBe(
+      'Pagination',
+    );
+    expect(
+      fixture.nativeElement.querySelectorAll('button').item(1).getAttribute('aria-label'),
+    ).toBe('Next page');
+    expect(document.documentElement.dir).toBe('ltr');
+
+    preferences.setLanguage('ar');
+    await firstValueFrom(translations.use('ar'));
+    fixture.detectChanges();
+    expect(previous.getAttribute('aria-label')).toBe('الصفحة السابقة');
+    expect(fixture.nativeElement.querySelector('nav').getAttribute('aria-label')).toBe(
+      'التنقل بين الصفحات',
+    );
+    expect(
+      fixture.nativeElement.querySelectorAll('button').item(1).getAttribute('aria-label'),
+    ).toBe('الصفحة التالية');
+    expect(document.documentElement.dir).toBe('rtl');
+  });
   it('formats dates in the selected language without shifting date-only values', () => {
-    TestBed.configureTestingModule({ providers: [LocalizedDatePipe] });
     const pipe = TestBed.inject(LocalizedDatePipe);
     const preferences = TestBed.inject(Preferences);
     preferences.language.set('ar');
@@ -31,7 +135,7 @@ describe('Accessible shared components', () => {
     preferences.language.set('en');
     expect(pipe.transform('2026-10-04', 'MMM d, y')).toContain('Oct 4, 2026');
   });
-  it('localizes chart accessibility text in both directions', () => {
+  it('localizes chart accessibility text in both directions', async () => {
     const fixture = TestBed.createComponent(ActivityChart);
     fixture.componentRef.setInput('items', [{ date: '2026-10-04', habits: 1, checkIn: true }]);
     const preferences = TestBed.inject(Preferences);
@@ -40,6 +144,7 @@ describe('Accessible shared components', () => {
     expect(fixture.nativeElement.querySelector('svg').getAttribute('aria-label')).toContain(
       'خطوات العادات',
     );
+    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
     preferences.language.set('en');
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('svg').getAttribute('aria-label')).toContain(
@@ -47,7 +152,6 @@ describe('Accessible shared components', () => {
     );
   });
   it('announces an earned level without a modal and allows dismissal', () => {
-    TestBed.configureTestingModule({ providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(LevelCelebration);
     const state = TestBed.inject(Celebrations);
     state.receive({ levelUp: { number: 2, title: 'Finding rhythm', titleAr: 'مستمر' } });
@@ -75,7 +179,7 @@ describe('Accessible shared components', () => {
     fixture.detectChanges();
     expect(progress.getAttribute('aria-valuenow')).toBe('0');
   });
-  it('uses localized accessible defaults for progress and loading', () => {
+  it('uses localized accessible defaults for progress and loading', async () => {
     const preferences = TestBed.inject(Preferences);
     preferences.language.set('ar');
     const progress = TestBed.createComponent(Progress);
@@ -88,7 +192,8 @@ describe('Accessible shared components', () => {
     expect(
       skeleton.nativeElement.querySelector('[aria-busy=true]').getAttribute('aria-label'),
     ).toBe('جارٍ التحميل');
-    preferences.language.set('en');
+    preferences.setLanguage('en');
+    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
     progress.detectChanges();
     skeleton.detectChanges();
     expect(
@@ -160,7 +265,6 @@ describe('Accessible shared components', () => {
   });
 
   it('prevents flicker on fast operations by delaying display threshold', async () => {
-    const { LoadingService } = await import('@lifequest/data-access');
     const loading = TestBed.inject(LoadingService);
     loading.reset();
 
@@ -181,8 +285,6 @@ describe('Accessible shared components', () => {
   });
 
   it('renders official MIRHAL branded loader on blocking operations', async () => {
-    const { LoadingService } = await import('@lifequest/data-access');
-    const { GlobalLoader } = await import('../../../../libs/ui/src/loader');
     const loading = TestBed.inject(LoadingService);
     loading.reset();
 

@@ -1,26 +1,18 @@
 <lq-page-header
-  [eyebrow]="i18n.t('A LITTLE COMPANY ON THE WAY', 'قليل من الرفقة في الطريق')"
-  [title]="i18n.t('Better, together.', 'أفضل، معاً.')"
+  [eyebrow]="('web.features.friends.copy.a_little_company_on_the_way_aa96c4f8' | translate)"
+  [title]="('web.features.friends.copy.better_together_6bcfdfd5' | translate)"
   [description]="
-    i18n.t(
-      'Connect with people you trust. Encourage each other without sharing more than you want.',
-      'تواصل مع من تثق بهم. شجعوا بعضكم دون مشاركة أكثر مما تريدون.'
-    )
+    ('web.features.friends.copy.invite_friends_respond_to_requests_and_manage_your_connections_c048e11f' | translate)
   "
   ><button class="btn btn-primary" (click)="open.set(true)">
-    <lq-icon name="plus" [size]="17" />{{ i18n.t('Add a friend', 'إضافة صديق') }}
+    <lq-icon name="plus" [size]="17" />{{ ('web.features.friends.copy.add_a_friend_829f4dad' | translate) }}
   </button></lq-page-header
 >
 <div class="mb-7 flex items-start gap-3 rounded-xl bg-brand-soft p-5">
   <lq-icon name="shield" class="mt-0.5 text-brand" [size]="21" />
   <p class="text-xs leading-6 text-muted">
     {{
-      i18n.t(
-        'Private by design. Friends see your name and the challenge progress you choose to
-    share. Your journal, mood, and habit details stay yours.',
-        'الخصوصية أساس التصميم. يرى الأصدقاء
-    اسمك وتقدم التحدي الذي تختار مشاركته. يومياتك ومزاجك وتفاصيل عاداتك تبقى لك.'
-      )
+      ('web.features.friends.copy.private_by_design_friends_see_your_name_and_the_challenge_progress_you_choose_to_share_your_journal_mood_and_habit_details_stay_yours_2c233dfd' | translate)
     }}
   </p>
 </div>
@@ -42,20 +34,12 @@
             <p class="mt-1 text-xs text-muted">
               {{
                 connection.status === 'ACCEPTED'
-                  ? i18n.t(
-                      'On the journey with you',
-                      'معك في
-          الرحلة'
-                    )
+                  ? ('web.features.friends.copy.on_the_journey_with_you_aa9a8e3a' | translate)
                   : connection.status === 'BLOCKED'
-                    ? i18n.t('Blocked', 'محظور')
+                    ? ('web.features.friends.copy.blocked_e378ac53' | translate)
                     : connection.incoming
-                      ? i18n.t(
-                          'Wants
-          to connect',
-                          'يريد التواصل'
-                        )
-                      : i18n.t('Request sent', 'تم إرسال الطلب')
+                      ? ('web.features.friends.copy.wants_to_connect_5d2f4ce0' | translate)
+                      : ('web.features.friends.copy.request_sent_b1f340fc' | translate)
               }}
             </p>
           </div>
@@ -67,21 +51,21 @@
               [disabled]="!!busy()"
               (click)="action(connection, 'accept')"
             >
-              {{ i18n.t('Accept', 'قبول') }}</button
+              {{ ('web.features.friends.copy.accept_50b26149' | translate) }}</button
             ><button
               class="btn btn-secondary text-xs"
               [disabled]="!!busy()"
               (click)="action(connection, 'reject')"
             >
-              {{ i18n.t('Decline', 'رفض') }}
+              {{ ('common.copy.decline_58eaef39' | translate) }}
             </button>
           } @else if (connection.status === 'ACCEPTED') {
             <a routerLink="/challenges" class="btn btn-primary w-full text-xs"
-              ><lq-icon name="swords" [size]="15" />{{ i18n.t('Grow together', 'تطورا معاً') }}</a
+              ><lq-icon name="swords" [size]="15" />{{ ('web.features.friends.copy.grow_together_8e0793a4' | translate) }}</a
             ><button class="btn btn-quiet flex-1 text-xs" (click)="remove(connection, 'remove')">
-              {{ i18n.t('Remove', 'إزالة') }}</button
+              {{ ('web.features.friends.copy.remove_21a5901d' | translate) }}</button
             ><button class="btn btn-quiet text-xs" (click)="remove(connection, 'block')">
-              {{ i18n.t('Block', 'حظر') }}
+              {{ ('web.features.friends.copy.block_bd074002' | translate) }}
             </button>
           } @else {
             <button
@@ -90,12 +74,8 @@
             >
               {{
                 connection.status === 'BLOCKED'
-                  ? i18n.t('Unblock', 'إلغاء الحظر')
-                  : i18n.t(
-                      'Cancel
-        request',
-                      'إلغاء الطلب'
-                    )
+                  ? ('web.features.friends.copy.unblock_987c7d5f' | translate)
+                  : ('web.features.friends.copy.cancel_request_2441d2c9' | translate)
               }}
             </button>
           }
@@ -105,15 +85,12 @@
       <div class="col-span-full">
         <lq-empty
           icon="users"
-          [title]="i18n.t('A shared journey starts with hello.', 'الرحلة المشتركة تبدأ بمرحباً.')"
+          [title]="('web.features.friends.copy.a_shared_journey_starts_with_hello_c0d17d98' | translate)"
           [description]="
-            i18n.t(
-              'Invite someone you trust. A little encouragement can go a long way.',
-              'ادعُ شخصاً تثق به. قليل من التشجيع يصنع فرقاً.'
-            )
+            ('web.features.friends.copy.invite_someone_you_trust_a_little_encouragement_can_go_a_long_way_aee09273' | translate)
           "
           ><button class="btn btn-primary" (click)="open.set(true)">
-            {{ i18n.t('Find a friend', 'اعثر على صديق') }}
+            {{ ('web.features.friends.copy.find_a_friend_81776b0b' | translate) }}
           </button></lq-empty
         >
       </div>
@@ -129,8 +106,8 @@
   />
 }
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
-  [header]="i18n.t('Invite a little company', 'ادعُ قليلاً من الرفقة')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [header]="('web.features.friends.copy.invite_a_little_company_e10a619e' | translate)"
   [visible]="open()"
   (visibleChange)="open.set($event)"
   [modal]="true"
@@ -138,20 +115,17 @@
   ><form [formGroup]="form" (ngSubmit)="invite()">
     <p class="mb-5 text-xs leading-6 text-muted">
       {{
-        i18n.t(
-          'Enter your friend’s email. If they already use MIRHAL, they’ll get a connection request; otherwise, we’ll send them an invitation.',
-          'أدخل بريد صديقك. إذا كان يستخدم مِرحال، سيصله طلب تواصل؛ وإذا لم يكن مسجلاً، سنرسل له دعوة.'
-        )
+        ('web.features.friends.copy.enter_your_friend_s_email_if_they_already_use_mirhal_they_ll_get_a_connection_request_otherwise_we_ll_send_them_an_invitation_b1414512' | translate)
       }}
     </p>
-    <lq-field id="friend-email" [label]="i18n.t('Friend’s email', 'بريد الصديق')"
+    <lq-field id="friend-email" [label]="('web.features.friends.copy.friend_s_email_a18a58f5' | translate)"
       ><input id="friend-email" class="field" type="email" formControlName="email" dir="ltr"
     /></lq-field>
     @if (error()) {
       <p role="alert" class="mb-4 text-sm text-rose-600">{{ error() }}</p>
     }
     <button class="btn btn-primary w-full" type="submit" [disabled]="saving() || form.invalid">
-      {{ i18n.t('Send friend request', 'إرسال طلب صداقة') }}
+      {{ ('web.features.friends.copy.send_friend_request_719d5c00' | translate) }}
     </button>
   </form></p-dialog
 >

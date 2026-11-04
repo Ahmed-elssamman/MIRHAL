@@ -9,10 +9,13 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 @Injectable({ providedIn: 'root' })
 export class Preferences {
   private readonly document = inject(DOCUMENT);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly translations = inject(TranslateService, { optional: true });
+  private navigationOwner: string | null = null;
   readonly language = signal<'en' | 'ar'>('ar');
   readonly theme = signal<'light' | 'dark' | 'system'>('system');
   readonly systemPrefersDark = signal(false);
@@ -53,7 +56,21 @@ export class Preferences {
     }
   }
   t(en: string, ar: string) {
+    const key = `common.fallbacks.${this.fallbackKey(en)}`;
+    const translated = this.translations?.instant(key);
+    if (translated === (this.rtl() ? ar : en)) return translated;
     return this.rtl() ? ar : en;
+  }
+  private fallbackKey(value: string) {
+    const slug = value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '') || 'copy';
+    let hash = 2166136261;
+    for (let index = 0; index < value.length; index++) {
+      hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
+    }
+    return `${slug}_${(hash >>> 0).toString(16).padStart(8, '0')}`;
   }
   habitUnit(value: string) {
     switch (value.trim().toLowerCase()) {
@@ -71,89 +88,18 @@ export class Preferences {
     }
   }
   label(value: string) {
-    const labels: Record<string, string> = {
-      ACTIVE: 'نشط',
-      PLANNED: 'مخطط',
-      PAUSED: 'متوقف',
-      COMPLETED: 'مكتمل',
-      ARCHIVED: 'مؤرشف',
-      SCHEDULED: 'مجدول',
-      INVITED: 'بانتظار الرد',
-      ACCEPTED: 'مقبول',
-      REJECTED: 'مرفوض',
-      CANCELLED: 'ملغى',
-      DRAFT: 'مسودة',
-      PENDING: 'معلق',
-      BLOCKED: 'محظور',
-      HIGH: 'عالية',
-      MEDIUM: 'متوسطة',
-      LOW: 'منخفضة',
-      SUBMITTED: 'مُرسل',
-      REVIEWING: 'قيد المراجعة',
-      IN_PROGRESS: 'جارٍ العمل',
-      RESOLVED: 'تم الحل',
-      CLOSED: 'مغلق',
-      SUSPENDED: 'موقوف',
-      DELETED: 'محذوف',
-      USER: 'مستخدم',
-      ADMIN: 'مدير',
-      SUPER_ADMIN: 'مدير عام',
-      MODERATOR: 'مشرف',
-      SUPPORT: 'دعم',
-      CONTENT_MANAGER: 'مدير محتوى',
-      ANALYST: 'محلل',
-      SCORE: 'منافسة النقاط',
-      CONSISTENCY: 'منافسة الالتزام',
-      IMPROVEMENT: 'منافسة التحسن',
-      TARGET: 'تحدي الهدف',
-      STREAK: 'تحدي الاستمرارية',
-      COOPERATIVE: 'تحدٍ تعاوني',
-      TODO: 'للقيام به',
-      BUG: 'مشكلة تقنية',
-      SUGGESTION: 'اقتراح',
-      UX: 'تجربة الاستخدام',
-      FEATURE: 'طلب ميزة',
-      CONTENT: 'المحتوى',
-      COMPLAINT: 'شكوى',
-      OTHER: 'أخرى',
-      signup: 'تسجيل حساب',
-      onboarding_completed: 'إكمال البداية',
-      goal_created: 'إنشاء هدف',
-      project_created: 'إنشاء مشروع',
-      task_completed: 'إكمال مهمة',
-      habit_created: 'إنشاء عادة',
-      habit_completed: 'إكمال عادة',
-      daily_checkin_completed: 'تسجيل التأمل اليومي',
-      quest_completed: 'إكمال مهمة أسبوعية',
-      challenge_created: 'إنشاء تحدٍ',
-      challenge_joined: 'الانضمام لتحدٍ',
-      challenge_completed: 'إكمال تحدٍ',
-      level_up: 'مستوى جديد',
-      achievement_unlocked: 'إنجاز جديد',
-      reward_redeemed: 'استبدال مكافأة',
-      feedback_submitted: 'إرسال ملاحظة',
-      personal: 'شخصية',
-      drinks: 'مشروبات',
-      food: 'طعام',
-      movies: 'أفلام',
-      gaming: 'ألعاب',
-      books: 'كتب',
-      shopping: 'تسوق',
-      outings: 'خروجات',
-      entertainment: 'ترفيه',
-      relaxation: 'استرخاء',
-      experiences: 'تجارب',
-      technology: 'تقنية',
-      fashion: 'أزياء',
-    };
-    return this.rtl()
-      ? (labels[value] ?? value.replaceAll('_', ' '))
-      : value.replaceAll('_', ' ').toLowerCase();
+    const key = 'common.labels.' + value.toLowerCase().replaceAll('-', '_');
+    const translated = this.translations?.instant(key);
+    if (translated && translated !== key) return translated;
+    return this.rtl() ? value.replaceAll('_', ' ') : value.replaceAll('_', ' ').toLowerCase();
   }
   setLanguage(value: 'en' | 'ar') {
     this.language.set(value);
     this.persist('lq-language', value);
     this.apply();
+    void this.translations?.use(value).subscribe({
+      error: (error: unknown) => console.error('Could not load language translations.', error),
+    });
   }
   setTheme(value: 'light' | 'dark' | 'system') {
     this.theme.set(value);
@@ -163,6 +109,21 @@ export class Preferences {
   setShowAdditionalNavigation(value: boolean) {
     this.showAdditionalNavigation.set(value);
     this.persist('lq-show-additional-nav', String(value));
+  }
+  applyAccountNavigation(userId: string, value: boolean | null | undefined) {
+    let fallback = this.showAdditionalNavigation();
+    if (this.navigationOwner && this.navigationOwner !== userId) fallback = false;
+    if (this.browser) {
+      try {
+        const owner = localStorage.getItem('lq-navigation-owner');
+        if (owner && owner !== userId) fallback = false;
+        localStorage.setItem('lq-navigation-owner', userId);
+      } catch {
+        // Storage may be unavailable; keep the in-memory preference for this session.
+      }
+    }
+    this.navigationOwner = userId;
+    this.setShowAdditionalNavigation(value ?? fallback);
   }
   setReducedMotion(value: boolean) {
     this.document.documentElement.classList.toggle('reduce-motion', value);

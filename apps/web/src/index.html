@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="utf-8" />
-    <title>مِرحال | حياتك، رحلتك</title>
+    <title>MIRHAL</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0e7165" />
@@ -19,15 +19,47 @@
         /* Theme preference is optional; the application applies a safe default. */
       }
     </script>
-    <meta
-      name="description"
-      content="مِرحال يساعدك على اختيار خطوتك التالية، ومتابعة تقدمك، والنمو وفق وتيرتك."
-    />
     <meta name="robots" content="noindex,nofollow" />
     <link rel="icon" type="image/svg+xml" href="mirhal-mark.svg" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <style>
+      .initial-loading {
+        min-height: 100vh;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 1rem;
+        background: #f7faf8;
+        color: #24534b;
+        font:
+          14px system-ui,
+          sans-serif;
+      }
+      .dark .initial-loading {
+        background: #14211e;
+        color: #d8eee8;
+      }
+      .initial-loading img {
+        width: 64px;
+        height: 64px;
+        animation: initial-settle 2.4s ease-in-out infinite;
+      }
+      @keyframes initial-settle {
+        50% {
+          transform: scale(1.035);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .initial-loading img {
+          animation: none;
+        }
+      }
+    </style>
   </head>
   <body>
-    <lq-root></lq-root>
+    <lq-root
+      ><div class="initial-loading" role="status" aria-busy="true">
+        <img src="mirhal-mark.svg" alt="MIRHAL" /></div
+    ></lq-root>
   </body>
 </html>

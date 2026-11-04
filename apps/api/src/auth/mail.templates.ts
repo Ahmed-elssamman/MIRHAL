@@ -1,7 +1,7 @@
 import type { TokenPurpose } from '@prisma/client';
 
 export type EmailLanguage = 'ar' | 'en';
-export type EmailPurpose = TokenPurpose | 'PASSWORD_CHANGED' | 'FRIEND_INVITE';
+export type EmailPurpose = TokenPurpose | 'PASSWORD_CHANGED' | 'FRIEND_INVITE' | 'FRIEND_REQUEST';
 
 export interface AuthEmailOptions {
   appUrl: string;
@@ -31,70 +31,87 @@ export function renderAuthEmail(
   const verification = purpose === 'VERIFY_EMAIL';
   const passwordChanged = purpose === 'PASSWORD_CHANGED';
   const friendInvite = purpose === 'FRIEND_INVITE';
+  const friendRequest = purpose === 'FRIEND_REQUEST';
   const dir = arabic ? 'rtl' : 'ltr';
   const align = arabic ? 'right' : 'left';
   const brand = arabic ? 'مِرحال' : 'MIRHAL';
   const subject = arabic
     ? verification
       ? 'تأكيد بريدك الإلكتروني في مِرحال'
-      : friendInvite
-        ? 'دعوة للانضمام إلى مِرحال'
-        : passwordChanged
-          ? 'تم تغيير كلمة المرور في مِرحال'
-          : 'إعادة تعيين كلمة المرور في مِرحال'
+      : friendRequest
+        ? 'طلب صداقة جديد في مِرحال'
+        : friendInvite
+          ? 'دعوة للانضمام إلى مِرحال'
+          : passwordChanged
+            ? 'تم تغيير كلمة المرور في مِرحال'
+            : 'إعادة تعيين كلمة المرور في مِرحال'
     : verification
       ? 'Confirm your MIRHAL email'
-      : friendInvite
-        ? 'A friend invited you to MIRHAL'
-        : passwordChanged
-          ? 'Your MIRHAL password was reset'
-          : 'Reset your MIRHAL password';
+      : friendRequest
+        ? 'A new friend request on MIRHAL'
+        : friendInvite
+          ? 'A friend invited you to MIRHAL'
+          : passwordChanged
+            ? 'Your MIRHAL password was reset'
+            : 'Reset your MIRHAL password';
   const title = arabic
     ? verification
       ? 'أكد بريدك الإلكتروني'
-      : friendInvite
-        ? 'هناك مكان لك في الرحلة'
-        : passwordChanged
-          ? 'تمت إعادة تعيين كلمة المرور'
-          : 'إعادة تعيين كلمة المرور'
+      : friendRequest
+        ? 'طلب صداقة جديد'
+        : friendInvite
+          ? 'هناك مكان لك في الرحلة'
+          : passwordChanged
+            ? 'تمت إعادة تعيين كلمة المرور'
+            : 'إعادة تعيين كلمة المرور'
     : verification
       ? 'Confirm your email address'
-      : friendInvite
-        ? 'A friend saved you a place'
-        : passwordChanged
-          ? 'Your password was reset'
-          : 'Reset your password';
+      : friendRequest
+        ? 'A new friend request'
+        : friendInvite
+          ? 'A friend saved you a place'
+          : passwordChanged
+            ? 'Your password was reset'
+            : 'Reset your password';
   const greeting = arabic ? 'مرحباً بك في مِرحال،' : 'Hello from MIRHAL,';
   const intro = arabic
     ? verification
       ? 'أكد بريدك الإلكتروني لمتابعة رحلتك في مِرحال.'
-      : friendInvite
-        ? `دعاك ${options.inviterName || 'صديقك'} للانضمام إلى مِرحال ومواصلة الرحلة معاً.`
-        : passwordChanged
-          ? 'أُعيد تعيين كلمة مرور حسابك في مِرحال بنجاح.'
-          : 'تلقينا طلباً لإعادة تعيين كلمة مرور حسابك. استخدم الرابط الآمن أدناه.'
+      : friendRequest
+        ? `أرسل إليك ${options.inviterName || 'صديقك'} طلب صداقة في مِرحال.`
+        : friendInvite
+          ? `دعاك ${options.inviterName || 'صديقك'} للانضمام إلى مِرحال ومواصلة الرحلة معاً.`
+          : passwordChanged
+            ? 'أُعيد تعيين كلمة مرور حسابك في مِرحال بنجاح.'
+            : 'تلقينا طلباً لإعادة تعيين كلمة مرور حسابك. استخدم الرابط الآمن أدناه.'
     : verification
       ? 'Confirm your email address to continue your journey with MIRHAL.'
-      : friendInvite
-        ? `${options.inviterName || 'A friend'} invited you to join MIRHAL and share the journey.`
-        : passwordChanged
-          ? 'Your MIRHAL account password was reset successfully.'
-          : 'We received a request to reset your account password. Use the secure link below.';
+      : friendRequest
+        ? `${options.inviterName || 'A friend'} sent you a friend request on MIRHAL.`
+        : friendInvite
+          ? `${options.inviterName || 'A friend'} invited you to join MIRHAL and share the journey.`
+          : passwordChanged
+            ? 'Your MIRHAL account password was reset successfully.'
+            : 'We received a request to reset your account password. Use the secure link below.';
   const action = arabic
     ? verification
       ? 'تأكيد البريد الإلكتروني'
-      : friendInvite
-        ? 'انضم إلى مِرحال'
-        : passwordChanged
-          ? 'افتح مِرحال'
-          : 'إعادة تعيين كلمة المرور'
+      : friendRequest
+        ? 'عرض طلب الصداقة'
+        : friendInvite
+          ? 'انضم إلى مِرحال'
+          : passwordChanged
+            ? 'افتح مِرحال'
+            : 'إعادة تعيين كلمة المرور'
     : verification
       ? 'Confirm email address'
-      : friendInvite
-        ? 'Join MIRHAL'
-        : passwordChanged
-          ? 'Open MIRHAL'
-          : 'Reset password';
+      : friendRequest
+        ? 'View friend request'
+        : friendInvite
+          ? 'Join MIRHAL'
+          : passwordChanged
+            ? 'Open MIRHAL'
+            : 'Reset password';
   const expiry = passwordChanged
     ? ''
     : friendInvite
@@ -111,18 +128,22 @@ export function renderAuthEmail(
   const ignore = arabic
     ? verification
       ? 'إذا لم تنشئ حساباً في مِرحال، يمكنك تجاهل هذه الرسالة.'
-      : friendInvite
-        ? 'إذا لم تكن تتوقع هذه الدعوة، يمكنك تجاهل الرسالة.'
-        : passwordChanged
-          ? 'إذا لم تطلب تغيير كلمة المرور، أمّن حسابك فوراً وتواصل مع الدعم.'
-          : 'إذا لم تطلب إعادة تعيين كلمة المرور، فتجاهل الرسالة. تظل كلمة مرورك كما هي.'
+      : friendRequest
+        ? 'يمكنك مراجعة الطلب أو تجاهله في حسابك.'
+        : friendInvite
+          ? 'إذا لم تكن تتوقع هذه الدعوة، يمكنك تجاهل الرسالة.'
+          : passwordChanged
+            ? 'إذا لم تطلب تغيير كلمة المرور، أمّن حسابك فوراً وتواصل مع الدعم.'
+            : 'إذا لم تطلب إعادة تعيين كلمة المرور، فتجاهل الرسالة. تظل كلمة مرورك كما هي.'
     : verification
       ? 'If you did not create a MIRHAL account, you can ignore this email.'
-      : friendInvite
-        ? 'If you were not expecting this invitation, you can ignore this email.'
-        : passwordChanged
-          ? 'If you did not reset your password, secure your account and contact support immediately.'
-          : 'If you did not request a password reset, ignore this email. Your password remains unchanged.';
+      : friendRequest
+        ? 'You can review or ignore this request in your account.'
+        : friendInvite
+          ? 'If you were not expecting this invitation, you can ignore this email.'
+          : passwordChanged
+            ? 'If you did not reset your password, secure your account and contact support immediately.'
+            : 'If you did not request a password reset, ignore this email. Your password remains unchanged.';
   const supportLabel = arabic ? 'تحتاج إلى مساعدة؟' : 'Need a hand?';
   const supportText = options.supportEmail
     ? escapeHtml(options.supportEmail)

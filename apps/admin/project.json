@@ -3,6 +3,7 @@
   "projectType": "application",
   "sourceRoot": "apps/admin/src",
   "prefix": "lq",
+  "tags": ["scope:admin", "type:app"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
@@ -65,6 +66,15 @@
         }
       },
       "defaultConfiguration": "development"
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "tsConfig": "apps/admin/tsconfig.spec.json",
+        "buildTarget": "admin:build:development",
+        "runner": "vitest",
+        "watch": false
+      }
     }
   }
 }

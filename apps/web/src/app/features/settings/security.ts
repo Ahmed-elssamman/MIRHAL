@@ -1,15 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, errorMessage, Toasts } from '@lifequest/data-access';
+import { Api, Toasts } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
 import { Icon } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-security-settings',
-  imports: [LocalizedDatePipe, ReactiveFormsModule, DialogModule, Icon, FormField],
+  imports: [
+    TranslatePipe,LocalizedDatePipe, ReactiveFormsModule, DialogModule, Icon, FormField],
   templateUrl: './security.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -96,7 +98,7 @@ export class SecuritySettings {
       await this.router.navigate(['/']);
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.busy.set(false);
     }

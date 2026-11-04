@@ -35,13 +35,16 @@ export const sessionInterceptor: HttpInterceptorFn = (request, next) => {
         return from(auth.refresh()).pipe(
           switchMap((refreshed) => {
             if (refreshed) {
-              return next(request);
+              return next(request).pipe(
+                catchError((retryError: unknown) => {
+                  if (retryError instanceof HttpErrorResponse && retryError.status === 401) {
+                    auth.clearSession();
+                    void router.navigate(['/auth/login']);
+                  }
+                  return throwError(() => retryError);
+                }),
+              );
             }
-            auth.clearSession();
-            void router.navigate(['/auth/login']);
-            return throwError(() => error);
-          }),
-          catchError(() => {
             auth.clearSession();
             void router.navigate(['/auth/login']);
             return throwError(() => error);

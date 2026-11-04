@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/cor
 import { DOCUMENT } from '@angular/common';
 import { Preferences } from '@lifequest/utilities';
 import { Celebrations, LoadingService } from '@lifequest/data-access';
-import { LevelCelebration } from '../../../../libs/ui/src/level-celebration';
+import { LevelCelebration } from '@lifequest/ui/level-celebration';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -12,9 +12,11 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlays } from '../../../../libs/ui/src/overlays';
 import { GlobalLoader } from '../../../../libs/ui/src/loader';
+import { PwaUpdates } from './pwa/updates';
 @Component({
   selector: 'lq-root',
   imports: [RouterOutlet, Overlays, LevelCelebration, GlobalLoader],
@@ -34,10 +36,13 @@ export class App {
   readonly celebrations = inject(Celebrations);
   readonly preferences = inject(Preferences);
   readonly loading = inject(LoadingService);
+  readonly updates = inject(PwaUpdates);
   private readonly document = inject(DOCUMENT);
   private readonly router = inject(Router);
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
+  private readonly translations = inject(TranslateService);
+  private navigationId = 0;
   constructor() {
     effect(() => {
       const english = this.preferences.language() === 'en';
@@ -60,22 +65,12 @@ export class App {
   private updateMetadata(english: boolean) {
     const path = (this.router.url.split(/[?#]/, 1)[0] ?? '').replace(/\/$/, '') || '/';
     const publicPage = path === '/' || path === '/help';
-    const title =
-      path === '/help'
-        ? english
-          ? 'How MIRHAL Works | Personal Growth, One Step at a Time'
-          : 'كيف يعمل مِرحال | نمو شخصي خطوة بخطوة'
-        : english
-          ? 'MIRHAL | Your Life. Your Journey.'
-          : 'مِرحال | حياتك، رحلتك';
-    const description =
-      path === '/help'
-        ? english
-          ? 'Learn how MIRHAL brings goals, projects, habits, and daily reflection together to support steady personal growth.'
-          : 'تعرّف على كيفية جمع مِرحال بين الأهداف والمشروعات والعادات والتأمل اليومي لدعم نموك خطوة بخطوة.'
-        : english
-          ? 'MIRHAL helps you bring goals, habits, and everyday progress together, and grow at your own pace.'
-          : 'مِرحال يساعدك على جمع أهدافك وعاداتك وتقدمك اليومي، والنمو وفق وتيرتك.';
+    const title = this.translations.instant(
+      path === '/help' ? 'metadata.helpTitle' : 'metadata.title',
+    );
+    const description = this.translations.instant(
+      path === '/help' ? 'metadata.helpDescription' : 'metadata.description',
+    );
 
     this.title.setTitle(title);
     this.meta.updateTag({ name: 'description', content: description });

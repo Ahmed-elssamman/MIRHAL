@@ -4,26 +4,22 @@
       ><lq-icon name="sun" [size]="23"
     /></span>
     <div>
-      <p class="eyebrow mb-1">{{ i18n.t('A MOMENT FOR YOU', 'لحظة لك') }}</p>
-      <h2 class="text-lg font-semibold">{{ i18n.t('How are you, really?', 'كيف حالك حقاً؟') }}</h2>
+      <p class="eyebrow mb-1">{{ ('web.features.today.copy.a_moment_for_you_dbc1d6f4' | translate) }}</p>
+      <h2 class="text-lg font-semibold">{{ ('web.features.today.copy.how_are_you_really_8d6345f4' | translate) }}</h2>
     </div>
     <span class="ms-auto hidden text-[10px] text-muted sm:block">{{
-      i18n.t('1–2 minutes', '١–٢ دقيقة')
+      ('web.features.today.copy.1_2_minutes_d91808fc' | translate)
     }}</span>
   </div>
   @if (success() || done()) {
     <div role="status" class="rounded-xl bg-mint p-5 text-mint-ink">
       <lq-icon name="circle-check" [size]="26" />
       <h3 class="mt-3 font-semibold">
-        {{ i18n.t('You made space for yourself.', 'خصصت مساحة لنفسك.') }}
+        {{ ('web.features.today.copy.you_made_space_for_yourself_57221999' | translate) }}
       </h3>
       <p class="mt-2 text-xs leading-6">
         {{
-          i18n.t(
-            'Your day doesn’t have to be perfect to be worth reflecting on. See you
-      tomorrow.',
-            'لا يحتاج يومك لأن يكون مثالياً ليكون جديراً بالتأمل. نراك غداً.'
-          )
+          ('web.features.today.copy.your_day_doesn_t_have_to_be_perfect_to_be_worth_reflecting_on_see_you_tomorrow_6af796a7' | translate)
         }}
       </p>
     </div>
@@ -31,7 +27,7 @@
     <form [formGroup]="form" (ngSubmit)="save()">
       <fieldset class="mb-6">
         <legend class="field-label">
-          {{ i18n.t('How did today feel?', 'كيف كان شعورك اليوم؟') }}
+          {{ ('web.features.today.copy.how_did_today_feel_74053764' | translate) }}
         </legend>
         <div class="grid grid-cols-5 gap-1.5 sm:gap-3">
           @for (mood of moods; track mood.value) {
@@ -47,12 +43,12 @@
               (click)="form.controls.mood.setValue(mood.value)"
             >
               <span class="text-2xl" aria-hidden="true">{{ mood.face }}</span
-              ><span class="text-[9px] sm:text-[11px]">{{ i18n.t(mood.en, mood.ar) }}</span>
+              ><span class="text-[9px] sm:text-[11px]">{{ mood.key | translate }}</span>
             </button>
           }
         </div>
       </fieldset>
-      <lq-field id="checkin-energy" [label]="i18n.t('Your energy', 'طاقتك')"
+      <lq-field id="checkin-energy" [label]="('web.features.today.copy.your_energy_697d6516' | translate)"
         ><input
           id="checkin-energy"
           class="w-full accent-brand"
@@ -62,27 +58,27 @@
           formControlName="energy"
         />
         <div class="mt-1 flex justify-between text-[10px] text-muted">
-          <span>{{ i18n.t('Need rest', 'أحتاج راحة') }}</span
-          ><span>{{ i18n.t('Full of life', 'مليء بالحياة') }}</span>
+          <span>{{ ('web.features.today.copy.need_rest_73dab1e9' | translate) }}</span
+          ><span>{{ ('web.features.today.copy.full_of_life_e3d7fb75' | translate) }}</span>
         </div></lq-field
-      ><lq-field id="checkin-win" [label]="i18n.t('One little win', 'انتصار صغير')"
+      ><lq-field id="checkin-win" [label]="('web.features.today.copy.one_little_win_d748fd0b' | translate)"
         ><input
           id="checkin-win"
           class="field"
           formControlName="majorWin"
           [placeholder]="
-            i18n.t('Something you’re glad you did…', 'شيء يسعدك أنك فعلته…')
+            ('web.features.today.copy.something_you_re_glad_you_did_b869f2f4' | translate)
           " /></lq-field
       ><lq-field
         id="checkin-reflection"
-        [label]="i18n.t('What’s on your mind? (optional)', 'ما الذي يشغل بالك؟ (اختياري)')"
+        [label]="('web.features.today.copy.what_s_on_your_mind_optional_b8687b51' | translate)"
       >
         <textarea
           id="checkin-reflection"
           class="field"
           rows="2"
           formControlName="reflection"
-          [placeholder]="i18n.t('A thought worth keeping…', 'فكرة تستحق الاحتفاظ بها…')"
+          [placeholder]="('web.features.today.copy.a_thought_worth_keeping_622fcd34' | translate)"
         ></textarea></lq-field
       ><button
         type="button"
@@ -91,36 +87,28 @@
         [attr.aria-expanded]="expanded()"
       >
         <lq-icon name="leaf" [size]="15" />{{
-          i18n.t(
-            'Today was difficult. Let’s make tomorrow
-      easier.',
-            'كان اليوم صعباً. لنجعل الغد أسهل.'
-          )
+          ('web.features.today.copy.today_was_difficult_let_s_make_tomorrow_easier_ada3ed77' | translate)
         }}
       </button>
       @if (expanded()) {
-        <lq-field id="checkin-difficulty" [label]="i18n.t('What got in the way?', 'ما الذي أعاقك؟')"
+        <lq-field id="checkin-difficulty" [label]="('common.copy.what_got_in_the_way_5ac58329' | translate)"
           ><input id="checkin-difficulty" class="field" formControlName="difficulty" /></lq-field
         ><lq-field
           id="checkin-recovery"
-          [label]="i18n.t('One small intention for tomorrow', 'نية صغيرة للغد')"
+          [label]="('web.features.today.copy.one_small_intention_for_tomorrow_ba112d9a' | translate)"
           ><input id="checkin-recovery" class="field" formControlName="recoveryIntention"
         /></lq-field>
       }
       <p class="mb-4 flex items-center gap-2 text-[10px] text-muted">
         <lq-icon name="lock" [size]="13" />{{
-          i18n.t(
-            'Just for you. Your reflections are always
-      private.',
-            'لك وحدك. تأملاتك دائماً خاصة.'
-          )
+          ('web.features.today.copy.just_for_you_your_reflections_are_always_private_559e3313' | translate)
         }}
       </p>
       @if (error()) {
         <p role="alert" class="mb-3 text-sm text-rose-600">{{ error() }}</p>
       }
       <button class="btn btn-primary w-full" type="submit" [disabled]="busy()">
-        {{ busy() ? i18n.t('Saving…', 'جارٍ الحفظ…') : i18n.t('Save my check-in', 'حفظ تأملي')
+        {{ busy() ? ('common.copy.saving_74119e7f' | translate) : ('web.features.today.copy.save_my_check_in_43a76bd2' | translate)
         }}<lq-icon name="check" [size]="17" />
       </button>
     </form>

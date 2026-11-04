@@ -3,24 +3,12 @@
     <a routerLink="/" class="w-fit"><lq-logo /></a>
     <div class="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-16">
       <p class="eyebrow mb-4 text-brand">
-        {{
-          i18n.t(
-            isAdmin ? 'MIRHAL ADMINISTRATION' : 'YOUR SPACE TO GROW',
-            isAdmin
-              ? 'إدارة رحلة
-        التوازن'
-              : 'مساحتك للنمو'
-          )
-        }}
+        {{ (isAdmin ? 'auth.brandAdmin' : 'auth.brandWeb') | translate }}
       </p>
       <h1 class="text-3xl font-semibold leading-tight tracking-tight">{{ title() }}</h1>
       <p class="mb-8 mt-3 text-sm leading-relaxed text-muted">
         {{
-          i18n.t(
-            'A little intention. A little progress. A life that feels more like you.',
-            'قليل
-        من النية. قليل من التقدم. وحياة تشبهك أكثر.'
-          )
+          ('shared.auth-page.copy.a_little_intention_a_little_progress_a_life_that_feels_more_like_you_1fb06174' | translate)
         }}
       </p>
       @if (mode() === 'register' && invitationBanner(); as banner) {
@@ -42,45 +30,39 @@
         ) {
           <p role="status" class="mb-4 rounded-xl bg-brand-soft p-4 text-sm leading-6 text-muted">
             {{
-              i18n.t(
-                'Email verification and password recovery are currently unavailable. Keep your password safe.',
-                'تأكيد البريد واستعادة كلمة المرور غير متاحين حالياً. احتفظ بكلمة مرورك بأمان.'
-              )
+              ('shared.auth-page.copy.email_verification_and_password_recovery_are_currently_unavailable_keep_your_password_safe_c2f4fb47' | translate)
             }}
           </p>
         }
         @if (mode() === 'register') {
-          <lq-field id="displayName" [label]="i18n.t('Your name', 'اسمك')"
+          <lq-field id="displayName" [label]="('shared.auth-page.copy.your_name_3a0663bd' | translate)"
             ><input
               class="field"
               id="displayName"
               formControlName="displayName"
               autocomplete="name"
-              [placeholder]="i18n.t('How should we call you?', 'بماذا نناديك؟')"
+              [placeholder]="('shared.auth-page.copy.how_should_we_call_you_901774e0' | translate)"
           /></lq-field>
         }
         @if (mode() === 'login' || mode() === 'register' || mode() === 'forgot-password') {
-          <lq-field id="email" [label]="i18n.t('Email address', 'البريد الإلكتروني')"
+          <lq-field id="email" [label]="('shared.auth-page.copy.email_address_ae595053' | translate)"
             ><input
               class="field"
               id="email"
               type="email"
               formControlName="email"
               autocomplete="email"
-              placeholder="you@example.com"
+              [placeholder]="'auth.placeholders.email' | translate"
               dir="ltr"
           /></lq-field>
         }
         @if (mode() === 'login' || mode() === 'register' || mode() === 'reset-password') {
           <lq-field
             id="password"
-            [label]="i18n.t('Password', 'كلمة المرور')"
+            [label]="('shared.auth-page.copy.password_2cc30838' | translate)"
             [hint]="
               mode() === 'register'
-                ? i18n.t(
-                    'At least 12 characters. Make it uniquely yours.',
-                    '12 حرفاً على الأقل. اجعلها خاصة بك.'
-                  )
+                ? ('shared.auth-page.copy.at_least_12_characters_make_it_uniquely_yours_91f0837f' | translate)
                 : ''
             "
             ><input
@@ -94,7 +76,7 @@
         @if (mode() === 'login') {
           <div class="pb-4 text-end">
             <a routerLink="/auth/forgot-password" class="text-xs font-medium text-brand">{{
-              i18n.t('Forgot password?', 'نسيت كلمة المرور؟')
+              ('shared.auth-page.copy.forgot_password_e2619568' | translate)
             }}</a>
           </div>
         }
@@ -106,7 +88,7 @@
             {{ success() }}
           </p>
           <a routerLink="/auth/login" class="btn btn-secondary w-full">{{
-            i18n.t('Back to sign in', 'العودة لتسجيل الدخول')
+            ('shared.auth-page.copy.back_to_sign_in_5b7ba2af' | translate)
           }}</a>
         } @else {
           <button
@@ -119,24 +101,16 @@
           >
             {{
               busy()
-                ? i18n.t('One moment…', 'لحظة من فضلك…')
+                ? ('shared.auth-page.copy.one_moment_cf936b69' | translate)
                 : mode() === 'register'
-                  ? i18n.t(
-                      'Begin
-          my journey',
-                      'ابدأ رحلتي'
-                    )
+                  ? ('shared.auth-page.copy.begin_my_journey_1765f593' | translate)
                   : mode() === 'forgot-password'
-                    ? i18n.t('Send recovery link', 'أرسل رابط الاستعادة')
+                    ? ('shared.auth-page.copy.send_recovery_link_2e662ed2' | translate)
                     : mode() === 'verify-email'
-                      ? i18n.t(
-                          'Verify my email',
-                          'تأكيد
-          بريدي'
-                        )
+                      ? ('shared.auth-page.copy.verify_my_email_02b0c6a6' | translate)
                       : mode() === 'reset-password'
-                        ? i18n.t('Save new password', 'حفظ كلمة المرور')
-                        : i18n.t('Step back in', 'تابع رحلتك')
+                        ? ('shared.auth-page.copy.save_new_password_971e82ef' | translate)
+                        : ('shared.auth-page.copy.step_back_in_75af1801' | translate)
             }}<lq-icon name="arrow-right" [size]="17" />
           </button>
         }
@@ -145,27 +119,24 @@
         <p class="mt-7 text-center text-xs text-muted">
           {{
             mode() === 'register'
-              ? i18n.t('Already on the journey?', 'بدأت الرحلة بالفعل؟')
-              : i18n.t('New here?', 'جديد هنا؟')
+              ? ('shared.auth-page.copy.already_on_the_journey_5ab11888' | translate)
+              : ('shared.auth-page.copy.new_here_a09f7366' | translate)
           }}
           <a
             [routerLink]="mode() === 'register' ? '/auth/login' : '/auth/register'"
+            [queryParams]="inviteToken() ? { inviteToken: inviteToken() } : {}"
             class="font-semibold text-brand"
             >{{
               mode() === 'register'
-                ? i18n.t('Sign in', 'تسجيل الدخول')
-                : i18n.t(
-                    'Create your
-          account',
-                    'أنشئ حسابك'
-                  )
+                ? ('common.copy.sign_in_744be623' | translate)
+                : ('shared.auth-page.copy.create_your_account_17c5bf8e' | translate)
             }}</a
           >
         </p>
       }
     </div>
     <p class="text-center text-[11px] text-muted">
-      {{ i18n.t('Progress beats perfection. Always.', 'التقدم أهم من الكمال. دائماً.') }}
+      {{ ('shared.auth-page.copy.progress_beats_perfection_always_06d268b3' | translate) }}
     </p>
   </div>
   <aside
@@ -177,20 +148,16 @@
     <div class="relative mx-auto max-w-sm">
       <span
         class="mb-8 inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs text-violet-200"
-        >مِرحال</span
+        >{{ 'common.productName' | translate }}</span
       >
       <h2 class="text-5xl font-medium leading-[1.15] tracking-tight">
-        {{ i18n.t('Build a life.', 'ابنِ حياة.') }}<br /><span class="text-[#bfb1fa]">{{
-          i18n.t('Not just a streak.', 'بخطوات تشبهك.')
+        {{ ('shared.auth-page.copy.build_a_life_37bf80ac' | translate) }}<br /><span class="text-[#bfb1fa]">{{
+          ('shared.auth-page.copy.not_just_a_streak_2b4f4a67' | translate)
         }}</span>
       </h2>
       <p class="mt-6 text-sm leading-7 text-white/60">
         {{
-          i18n.t(
-            'Your goals, habits, and little everyday wins. Finally, in one place that sees the
-        whole you.',
-            'أهدافك وعاداتك وانتصاراتك اليومية الصغيرة. أخيراً، في مكان واحد يهتم بك ككل.'
-          )
+          ('shared.auth-page.copy.your_goals_habits_and_little_everyday_wins_finally_in_one_place_that_sees_the_whole_you_9b7818b4' | translate)
         }}
       </p>
       <div class="mt-12 rounded-2xl border border-white/10 bg-white/5 p-5">
@@ -200,15 +167,11 @@
           /></span>
           <div>
             <p class="text-sm font-medium">
-              {{ i18n.t('Small is a perfectly good start.', 'البداية الصغيرة بداية رائعة.') }}
+              {{ ('shared.auth-page.copy.small_is_a_perfectly_good_start_4ba001b4' | translate) }}
             </p>
             <p class="mt-1 text-xs text-white/50">
               {{
-                i18n.t(
-                  'Two minutes count. Showing up counts.',
-                  'دقيقتان تُحسبان. والمحاولة
-              تُحسب.'
-                )
+                ('shared.auth-page.copy.two_minutes_count_showing_up_counts_e28e2443' | translate)
               }}
             </p>
           </div>

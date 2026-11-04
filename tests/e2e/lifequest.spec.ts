@@ -43,7 +43,7 @@ test('register, onboard, create linked work, build a habit, reflect, earn and re
   await page.locator('button[type=submit]').click();
   await expect(page).toHaveURL(/onboarding$/);
   await expect(
-    page.getByText('Verification email could not be sent. You can resend it from Settings.'),
+    page.getByText('The email provider did not accept the verification request. You can retry from Settings.'),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Growth', exact: true }).click();
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
@@ -51,7 +51,7 @@ test('register, onboard, create linked work, build a habit, reflect, earn and re
   await page.getByRole('button', { name: 'Begin my journey' }).click();
   await expect(page).toHaveURL(/today$/);
   await expect(
-    page.getByText('Verification email could not be sent. You can resend it from Settings.'),
+    page.getByText('The email provider did not accept the verification request. You can retry from Settings.'),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Dismiss' }).click();
   await page.goto('/goals');
@@ -136,8 +136,8 @@ test('register, onboard, create linked work, build a habit, reflect, earn and re
   await conversation.locator('input[type=file]').setInputFiles('apps/web/public/icon-192.png');
   await expect(conversation.getByRole('link', { name: 'icon-192.png', exact: true })).toBeVisible();
   await page.goto('/profile');
-  await page.getByRole('radio', { name: 'dawn', exact: true }).focus();
-  await page.getByRole('radio', { name: 'dawn', exact: true }).press('Space');
+  await page.getByRole('radio', { name: 'Dawn', exact: true }).focus();
+  await page.getByRole('radio', { name: 'Dawn', exact: true }).press('Space');
   await page.getByRole('button', { name: 'Save profile', exact: true }).click();
   await expect(page.getByText('Your profile is up to date.', { exact: true })).toBeVisible();
   await page.goto('/journey');

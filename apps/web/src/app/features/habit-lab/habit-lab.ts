@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, errorMessage, Habit, Page, Toasts } from '@lifequest/data-access';
+import { Api, Habit, Page, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import {
   EmptyState,
@@ -23,6 +24,7 @@ import {
 @Component({
   selector: 'lq-habit-lab',
   imports: [
+    TranslatePipe,
     RouterLink,
     ReactiveFormsModule,
     DialogModule,
@@ -47,6 +49,11 @@ export class HabitLabPage {
   readonly discard = inject(DiscardChanges);
   readonly open = signal(false);
   readonly i18n = inject(Preferences);
+  readonly guidance = [
+    { icon: 'search', titleKey: 'web.habitLab.guidance.notice.title', textKey: 'web.habitLab.guidance.notice.text' },
+    { icon: 'flask', titleKey: 'web.habitLab.guidance.experiment.title', textKey: 'web.habitLab.guidance.experiment.text' },
+    { icon: 'sprout', titleKey: 'web.habitLab.guidance.keep.title', textKey: 'web.habitLab.guidance.keep.text' },
+  ];
   readonly resource = this.api.resource<Page<Habit>>('habits');
   readonly selected = signal<Habit | null>(null);
   readonly saving = signal(false);
@@ -107,7 +114,7 @@ export class HabitLabPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

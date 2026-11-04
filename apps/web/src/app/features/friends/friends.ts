@@ -1,15 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmationService } from 'primeng/api';
-import { Api, Page, errorMessage, Friend, Toasts } from '@lifequest/data-access';
+import { Api, Page, Friend, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-friends',
   imports: [
+    TranslatePipe,
     Pagination,
     RouterLink,
     ReactiveFormsModule,
@@ -46,7 +48,7 @@ export class FriendsPage {
     this.saving.set(true);
     this.error.set('');
     try {
-      const result = await this.api.post<{ channel: 'email' | 'friendship' }>(
+      const result = await this.api.post<{ channel: 'email' | 'friendship'; emailStatus?: 'accepted' | 'unavailable' | 'disabled' }>(
         'friends',
         this.form.getRawValue(),
       );
@@ -59,6 +61,10 @@ export class FriendsPage {
             'قبل مزود البريد الدعوة. يمكن لصديقك التحقق من الوارد والبريد غير المرغوب فيه.',
           ),
         );
+      else if (result.emailStatus === 'unavailable')
+        this.toasts.success(
+          this.i18n.t('Friend request sent. The email could not be sent.', 'أُرسل طلب الصداقة، لكن تعذر إرسال البريد الإلكتروني.'),
+        );
       else
         this.toasts.success(
           this.i18n.t('A little company is on its way.', 'رفقة صغيرة في طريقها إليك.'),
@@ -66,7 +72,7 @@ export class FriendsPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

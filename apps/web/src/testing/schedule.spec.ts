@@ -2,13 +2,22 @@ import { TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
 import { HabitScheduleFields } from '@lifequest/forms';
-import { Preferences } from '@lifequest/utilities';
+import {
+  provideTranslateLoader,
+  provideTranslateService,
+  TranslateService,
+} from '@ngx-translate/core';
+import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { firstValueFrom } from 'rxjs';
 
 describe('Reusable habit schedule fields', () => {
   it('lets a keyboard button choose days and marks unsaved work dirty', async () => {
     TestBed.configureTestingModule({
-      providers: [{ provide: Preferences, useValue: { t: (english: string) => english } }],
+      providers: [
+        provideTranslateService({ loader: provideTranslateLoader(MirhalTranslationLoader) }),
+      ],
     });
+    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
     const fixture = TestBed.createComponent(HabitScheduleFields);
     const frequency = new FormControl('DAILY', { nonNullable: true });
     const days = new FormControl<number[]>([], { nonNullable: true });

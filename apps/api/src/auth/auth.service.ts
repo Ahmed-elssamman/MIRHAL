@@ -39,20 +39,35 @@ export class AuthService {
       timeCost: 2,
       parallelism: 1,
     });
-    const user = await this.db.user.create({
-      data: {
-        email: input.email,
-        passwordHash,
-        profile: {
-          create: {
-            displayName: input.displayName,
-            timezone: input.timezone,
-            language: input.language,
+    const user = await this.db.$transaction(async (tx) => {
+      const created = await tx.user.create({
+        data: {
+          email: input.email,
+          passwordHash,
+          profile: {
+            create: {
+              displayName: input.displayName,
+              timezone: input.timezone,
+              language: input.language,
+            },
           },
+          events: { create: { name: 'signup' } },
         },
-        events: { create: { name: 'signup' } },
-      },
-      select: safeUser,
+        select: safeUser,
+      });
+      if (input.inviteToken) {
+        await tx.invitation.updateMany({
+          where: {
+            tokenHash: hashToken(input.inviteToken),
+            email: input.email,
+            status: 'PENDING',
+            expiresAt: { gt: new Date() },
+            recipientId: null,
+          },
+          data: { recipientId: created.id },
+        });
+      }
+      return created;
     });
     const session = await this.createSession(user.id);
     let verificationEmail: 'accepted' | 'disabled' | 'unavailable' = 'disabled';
@@ -65,68 +80,6 @@ export class AuthService {
         if (!(error instanceof ServiceUnavailableException)) throw error;
         // The account already exists. Keep it usable and offer verification retry.
         verificationEmail = 'unavailable';
-      }
-    }
-    if (input.inviteToken && this.db.invitation) {
-      try {
-        const tokenHash = hashToken(input.inviteToken);
-        const invitation = await this.db.invitation.findUnique({
-          where: { tokenHash },
-          include: { sender: { select: { id: true, profile: { select: { displayName: true } } } } },
-        });
-        if (
-          invitation &&
-          invitation.status === 'PENDING' &&
-          invitation.expiresAt > new Date() &&
-          invitation.email.toLowerCase() === input.email.toLowerCase()
-        ) {
-          const pairKey = [invitation.senderId, user.id].sort().join(':');
-          await this.db.atomic(user.id, async (tx) => {
-            await tx.invitation.update({
-              where: { id: invitation.id },
-              data: { status: 'ACCEPTED', acceptedAt: new Date() },
-            });
-            const existing = await tx.friendship.findUnique({ where: { pairKey } });
-            if (!existing) {
-              await tx.friendship.create({
-                data: {
-                  senderId: invitation.senderId,
-                  receiverId: user.id,
-                  pairKey,
-                  status: 'PENDING',
-                },
-              });
-              await notify(tx, {
-                data: {
-                  userId: user.id,
-                  type: 'FRIEND_REQUEST',
-                  title: 'A little company on your journey',
-                  body: `${invitation.sender.profile?.displayName ?? 'Someone'} sent you a friend request.`,
-                  arabic: {
-                    title: 'رفيق جديد في رحلتك',
-                    body: `أرسل ${invitation.sender.profile?.displayName ?? 'أحد المستخدمين'} إليك طلب صداقة.`,
-                  },
-                  href: '/friends',
-                },
-              });
-              await notify(tx, {
-                data: {
-                  userId: invitation.senderId,
-                  type: 'FRIEND_ACCEPT',
-                  title: 'Your friend joined MIRHAL',
-                  body: `${input.displayName} joined MIRHAL from your invitation!`,
-                  arabic: {
-                    title: 'انضم صديقك إلى مِرحال',
-                    body: `انضم ${input.displayName} إلى مِرحال بدعوتك!`,
-                  },
-                  href: '/friends',
-                },
-              });
-            }
-          });
-        }
-      } catch {
-        // Invitation linking failure does not invalidate successful account registration.
       }
     }
     return { user, ...session, verificationEmail };
@@ -249,10 +202,13 @@ export class AuthService {
               select: { email: true, profile: { select: { language: true } } },
             })
           : undefined;
-      await tx.user.update({
+      const verifiedUser = await tx.user.update({
         where: { id: record.userId },
         data: purpose === 'VERIFY_EMAIL' ? { emailVerifiedAt: new Date() } : { passwordHash },
+        select: { email: true },
       });
+      if (purpose === 'VERIFY_EMAIL')
+        await this.resolveRegisteredInvitation(tx, record.userId, verifiedUser.email);
       if (purpose === 'RESET_PASSWORD') {
         await tx.session.deleteMany({ where: { userId: record.userId } });
         await tx.authToken.updateMany({
@@ -283,5 +239,48 @@ export class AuthService {
       }
     }
     return { success: true };
+  }
+
+  private async resolveRegisteredInvitation(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    email: string,
+  ) {
+    const invitation = await tx.invitation.findFirst({
+      where: { recipientId: userId, email, status: 'PENDING', expiresAt: { gt: new Date() } },
+      include: { sender: { select: { profile: { select: { displayName: true } } } } },
+    });
+    if (!invitation || invitation.senderId === userId) return;
+    const pairKey = [invitation.senderId, userId].sort().join(':');
+    const existing = await tx.friendship.findUnique({ where: { pairKey } });
+    if (existing?.status === 'BLOCKED') return;
+    const claimed = await tx.invitation.updateMany({
+      where: {
+        id: invitation.id,
+        recipientId: userId,
+        status: 'PENDING',
+        expiresAt: { gt: new Date() },
+      },
+      data: { status: 'ACCEPTED', acceptedAt: new Date() },
+    });
+    if (claimed.count !== 1) return;
+    if (existing) return;
+    await tx.friendship.create({
+      data: { senderId: invitation.senderId, receiverId: userId, pairKey, status: 'PENDING' },
+    });
+    const senderName = invitation.sender.profile?.displayName;
+    await notify(tx, {
+      data: {
+        userId,
+        type: 'FRIEND_REQUEST',
+        title: 'A little company on your journey',
+        body: `${senderName ?? 'Someone'} sent you a friend request.`,
+        arabic: {
+          title: 'رفيق جديد في رحلتك',
+          body: `أرسل ${senderName ?? 'أحد المستخدمين'} إليك طلب صداقة.`,
+        },
+        href: '/friends',
+      },
+    });
   }
 }

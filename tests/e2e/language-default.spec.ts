@@ -14,7 +14,7 @@ test('a visitor without a preference starts in Arabic', async ({ page }) => {
   await expect(page).toHaveTitle('MIRHAL | Your Life. Your Journey.');
   await expect(page.locator('meta[name=description]')).toHaveAttribute(
     'content',
-    /find your next step/,
+    /goals, habits, and everyday progress/,
   );
 });
 

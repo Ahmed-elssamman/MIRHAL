@@ -3,11 +3,11 @@
     <a routerLink="/"><lq-logo /></a>
     <nav class="flex items-center gap-2 sm:gap-7">
       <a routerLink="/help" class="hidden text-sm text-muted sm:block">{{
-        i18n.t('How it works', 'كيف تعمل')
+        ('web.features.landing.copy.how_it_works_d03ba450' | translate)
       }}</a
       ><button class="icon-button text-sm" (click)="i18n.setLanguage(i18n.rtl() ? 'en' : 'ar')">
-        {{ i18n.t('العربية', 'English') }}</button
-      ><a routerLink="/auth/login" class="btn btn-secondary">{{ i18n.t('Sign in', 'دخول') }}</a>
+        {{ ('web.features.landing.copy.copy_a76ce029' | translate) }}</button
+      ><a routerLink="/auth/login" class="btn btn-secondary">{{ ('common.copy.sign_in_744be623' | translate) }}</a>
     </nav>
   </header>
   <main>
@@ -17,38 +17,29 @@
       <div class="animate-enter">
         <span class="badge mb-6 rounded-full bg-brand-soft px-4 py-2 text-brand"
           ><lq-icon name="sparkles" [size]="14" />{{
-            i18n.t('Your Life. Your Journey.', 'حياتك. رحلتك.')
+            ('web.features.landing.copy.your_life_your_journey_ee4d500d' | translate)
           }}</span
         >
         <h1 class="max-w-xl text-4xl font-semibold leading-[1.13] tracking-[-1.8px] sm:text-6xl">
-          {{ i18n.t('Make room for a life', 'اصنع مساحة لحياة') }}
-          <span class="text-brand">{{ i18n.t('that feels like you.', 'تشبهك.') }}</span>
+          {{ ('web.features.landing.copy.make_room_for_a_life_46a19bd4' | translate) }}
+          <span class="text-brand">{{ ('web.features.landing.copy.that_feels_like_you_2e03079f' | translate) }}</span>
         </h1>
         <p class="mt-6 max-w-md text-base leading-8 text-muted">
           {{
-            i18n.t(
-              'Bring your goals, habits, and everyday wins together. Find your balance, one
-          small, meaningful step at a time.',
-              'اجمع أهدافك وعاداتك وانتصاراتك اليومية. اعثر على
-          توازنك، خطوة صغيرة وذات معنى في كل مرة.'
-            )
+            ('web.features.landing.copy.bring_your_goals_habits_and_everyday_wins_together_find_your_balance_one_small_meaningful_step_at_a_time_cc9e9097' | translate)
           }}
         </p>
         <div class="mt-8 flex flex-wrap items-center gap-4">
           <a routerLink="/auth/register" class="btn btn-primary px-6"
-            >{{ i18n.t('Begin your journey', 'ابدأ رحلتك')
+            >{{ ('web.features.landing.copy.begin_your_journey_55d0b609' | translate)
             }}<lq-icon name="arrow-right" [size]="18" /></a
           ><a routerLink="/help" class="btn btn-quiet"
-            >{{ i18n.t('Take a look around', 'اكتشف الرحلة') }}<lq-icon name="compass" [size]="18"
+            >{{ ('web.features.landing.copy.take_a_look_around_a9fa7551' | translate) }}<lq-icon name="compass" [size]="18"
           /></a>
         </div>
         <p class="mt-5 flex items-center gap-2 text-xs text-muted">
           <lq-icon name="shield" [size]="14" />{{
-            i18n.t(
-              'Your pace. Your privacy. Your kind of
-          progress.',
-              'إيقاعك. خصوصيتك. وتقدم يشبهك.'
-            )
+            ('web.features.landing.copy.your_pace_your_privacy_your_kind_of_progress_15e07050' | translate)
           }}
         </p>
       </div>
@@ -58,19 +49,19 @@
         >
           <div class="mb-6 flex items-center justify-between">
             <span class="text-sm font-semibold">{{
-              i18n.t('Your life. In balance.', 'حياتك. بتوازن.')
+              ('web.features.landing.copy.your_life_in_balance_f2680fa1' | translate)
             }}</span
             ><span class="badge bg-mint text-mint-ink"
-              ><lq-icon name="leaf" [size]="13" />{{ i18n.t('Growing', 'تنمو') }}</span
+              ><lq-icon name="leaf" [size]="13" />{{ ('web.features.landing.copy.growing_5eb1c946' | translate) }}</span
             >
           </div>
           <div class="rounded-2xl bg-[#302845] p-6 text-white">
             <p class="text-[10px] uppercase tracking-widest text-white/50">
-              {{ i18n.t('TODAY IS A GOOD DAY TO BEGIN', 'اليوم يوم جيد للبداية') }}
+              {{ ('web.features.landing.copy.today_is_a_good_day_to_begin_2ebd10a0' | translate) }}
             </p>
             <p class="mt-3 text-2xl font-medium">
-              {{ i18n.t('Small steps.', 'خطوات صغيرة.') }}<br /><span class="text-[#c4b8f7]">{{
-                i18n.t('Meaningful change.', 'تغيير ذو معنى.')
+              {{ ('common.copy.small_steps_b15b84e3' | translate) }}<br /><span class="text-[#c4b8f7]">{{
+                ('web.features.landing.copy.meaningful_change_13411411' | translate)
               }}</span>
             </p>
             <div class="mt-5 flex gap-2">
@@ -83,32 +74,26 @@
             @for (
               item of [
                 {
-                  name: 'Move a little',
-                  ar: 'تحرك
-            قليلاً',
+                  nameKey: 'web.landing.sampleItems.move',
                   icon: 'heart',
                   done: true,
                 },
                 {
-                  name: 'Learn something new',
-                  ar: 'تعلم شيئاً
-            جديداً',
+                  nameKey: 'web.landing.sampleItems.learn',
                   icon: 'book-open',
                   done: true,
                 },
                 {
-                  name: 'Take a moment for yourself',
-                  ar: 'خذ لحظة
-            لنفسك',
+                  nameKey: 'web.landing.sampleItems.timeForYourself',
                   icon: 'sun',
                   done: false,
                 },
               ];
-              track item.name
+              track item.nameKey
             ) {
               <div class="flex items-center gap-3 rounded-xl border border-line p-3.5">
                 <span class="text-brand"><lq-icon [name]="item.icon" [size]="18" /></span
-                ><span class="flex-1 text-xs font-medium">{{ i18n.t(item.name, item.ar) }}</span
+                ><span class="flex-1 text-xs font-medium">{{ item.nameKey | translate }}</span
                 ><span
                   class="flex size-6 items-center justify-center rounded-full"
                   [class]="item.done ? 'bg-mint text-mint-ink' : 'border border-line'"
@@ -121,7 +106,7 @@
             }
           </div>
           <p class="mt-5 text-center text-[10px] text-muted">
-            {{ i18n.t('An example of your everyday journey', 'مثال على رحلتك اليومية') }}
+            {{ ('web.features.landing.copy.an_example_of_your_everyday_journey_2710920f' | translate) }}
           </p>
         </div>
         <div
@@ -133,10 +118,10 @@
           /></span>
           <div>
             <p class="text-xs font-semibold">
-              {{ i18n.t('Progress beats perfection.', 'التقدم أهم من الكمال.') }}
+              {{ ('web.features.landing.copy.progress_beats_perfection_90155be6' | translate) }}
             </p>
             <p class="mt-1 text-[10px] text-muted">
-              {{ i18n.t('Every small action counts.', 'كل خطوة صغيرة تُحسب.') }}
+              {{ ('common.copy.every_small_action_counts_7691fadd' | translate) }}
             </p>
           </div>
         </div>
@@ -145,27 +130,23 @@
     <section class="border-y border-line bg-canvas px-5 py-16 sm:px-10">
       <div class="mx-auto max-w-6xl">
         <div class="mb-10 text-center">
-          <p class="eyebrow text-brand">مِرحال</p>
+          <p class="eyebrow text-brand">{{ 'common.productName' | translate }}</p>
           <h2 class="mt-3 text-3xl font-semibold tracking-tight">
             {{
-              i18n.t(
-                'More than a habit tracker. A little more you.',
-                'أكثر من متتبع عادات. أقرب
-            إلى نفسك.'
-              )
+              ('web.features.landing.copy.more_than_a_habit_tracker_a_little_more_you_f12ed311' | translate)
             }}
           </h2>
         </div>
         <div class="grid gap-8 md:grid-cols-3">
-          @for (pillar of pillars; track pillar.title) {
+          @for (pillar of pillars; track pillar.titleKey) {
             <div class="card p-7">
               <span
                 class="mb-5 flex size-12 items-center justify-center rounded-xl bg-brand-soft text-brand"
                 ><lq-icon [name]="pillar.icon" [size]="24"
               /></span>
-              <h3 class="text-base font-semibold">{{ i18n.t(pillar.title, pillar.ar) }}</h3>
+              <h3 class="text-base font-semibold">{{ pillar.titleKey | translate }}</h3>
               <p class="mt-3 text-sm leading-7 text-muted">
-                {{ i18n.t(pillar.text, pillar.textAr) }}
+                {{ pillar.textKey | translate }}
               </p>
             </div>
           }
@@ -178,20 +159,15 @@
         ><lq-icon name="sprout" [size]="26"
       /></span>
       <h2 class="text-3xl font-semibold tracking-tight">
-        {{ i18n.t('You don’t need a perfect plan.', 'لا تحتاج لخطة مثالية.') }}
+        {{ ('web.features.landing.copy.you_don_t_need_a_perfect_plan_529f4b59' | translate) }}
       </h2>
       <p class="mx-auto mb-7 mt-4 max-w-lg text-sm leading-7 text-muted">
         {{
-          i18n.t(
-            'Just one thing that matters to you, and a small step you can take today. We’ll
-        help you find the next one.',
-            'فقط شيء واحد يهمك، وخطوة صغيرة تستطيع اتخاذها اليوم. سنساعدك
-        في العثور على الخطوة التالية.'
-          )
+          ('web.features.landing.copy.just_one_thing_that_matters_to_you_and_a_small_step_you_can_take_today_we_ll_help_you_find_the_next_one_d48bfd25' | translate)
         }}
       </p>
       <a routerLink="/auth/register" class="btn btn-primary px-7"
-        >{{ i18n.t('Find my first step', 'اعثر على خطوتي الأولى')
+        >{{ ('web.features.landing.copy.find_my_first_step_4aafd428' | translate)
         }}<lq-icon name="arrow-right" [size]="17"
       /></a>
     </section>
@@ -199,7 +175,7 @@
   <footer
     class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-5 border-t border-line px-5 py-8 text-xs text-muted sm:px-10"
   >
-    <lq-logo /><span>{{ i18n.t('Made for a life in balance.', 'صُممت لحياة متوازنة.') }}</span
-    ><a routerLink="/help">{{ i18n.t('Help & philosophy', 'المساعدة والفلسفة') }}</a>
+    <lq-logo /><span>{{ ('web.features.landing.copy.made_for_a_life_in_balance_3023def9' | translate) }}</span
+    ><a routerLink="/help">{{ ('web.features.landing.copy.help_philosophy_1ed7a2bb' | translate) }}</a>
   </footer>
 </div>

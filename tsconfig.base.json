@@ -19,10 +19,16 @@
       "@lifequest/domain": ["libs/domain/src/index.ts"],
       "@lifequest/contracts": ["libs/contracts/src/index.ts"],
       "@lifequest/ui": ["libs/ui/src/index.ts"],
+      "@lifequest/ui/loader": ["libs/ui/src/loader.ts"],
+      "@lifequest/ui/overlays": ["libs/ui/src/overlays.ts"],
+      "@lifequest/ui/level-celebration": ["libs/ui/src/level-celebration.ts"],
       "@lifequest/data-access": ["libs/data-access/src/index.ts"],
       "@lifequest/auth": ["libs/auth/src/index.ts"],
       "@lifequest/utilities": ["libs/utilities/src/index.ts"],
-      "@lifequest/forms": ["libs/forms/src/index.ts"]
+      "@lifequest/forms": ["libs/forms/src/index.ts"],
+      "@lifequest/i18n": ["libs/i18n/src/index.ts"],
+      "@lifequest/config": ["libs/config/src/index.ts"],
+      "@lifequest/auth-page": ["libs/auth-page/src/index.ts"]
     }
   }
 }

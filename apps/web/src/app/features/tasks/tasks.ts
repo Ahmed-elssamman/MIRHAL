@@ -1,14 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TimeoutError } from 'rxjs';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, errorMessage, Goal, Page, Project, Task, Toasts } from '@lifequest/data-access';
+import { Api, Goal, Page, Project, Task, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
 import { EmptyState, ErrorState, Icon, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
 import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
 @Component({
   selector: 'lq-tasks',
   imports: [
+    TranslatePipe,
     LocalizedDatePipe,
     FormsModule,
     ReactiveFormsModule,
@@ -45,6 +49,11 @@ export class TasksPage {
   readonly pendingTaskIds = signal<Set<string>>(new Set());
   readonly error = signal('');
   readonly filter = signal('ALL');
+  readonly filterTabs = [
+    { id: 'ALL', key: 'web.tasks.filters.all' },
+    { id: 'OPEN', key: 'web.tasks.filters.open' },
+    { id: 'DONE', key: 'web.tasks.filters.done' },
+  ];
   readonly search = signal('');
   readonly visible = computed(() => this.resource.data()?.items ?? []);
   readonly form = this.fb.nonNullable.group({
@@ -120,7 +129,7 @@ export class TasksPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }
@@ -128,10 +137,9 @@ export class TasksPage {
   async toggle(task: Task) {
     if (this.pendingTaskIds().has(task.id)) return;
     this.pendingTaskIds.update((set) => new Set(set).add(task.id));
-    const previous = this.resource.data();
     const nextStatus = task.status === 'COMPLETED' ? 'ACTIVE' : 'COMPLETED';
 
-    // Optimistically update status in local signal immediately (< 50ms acknowledgment)
+    // Update the local status while the request is pending.
     this.resource.data.update((current) => {
       if (!current) return current;
       return {
@@ -146,6 +154,18 @@ export class TasksPage {
       const result = await this.api.patch<{ awarded: number }>(`tasks/${task.id}`, {
         status: nextStatus,
       });
+      this.resource.data.update((current) => {
+        if (!current) return current;
+        const remove = (this.filter() === 'OPEN' && nextStatus === 'COMPLETED') ||
+          (this.filter() === 'DONE' && nextStatus !== 'COMPLETED');
+        const present = current.items.some((item) => item.id === task.id);
+        return {
+          ...current,
+          items: remove ? current.items.filter((item) => item.id !== task.id) : current.items.map((item) => item.id === task.id ? { ...item, status: nextStatus } : item),
+          total: remove && present ? Math.max(0, current.total - 1) : current.total,
+        };
+      });
+      this.resource.refreshIfLoading();
       if (result.awarded) {
         this.toasts.success(
           this.i18n.t('One step forward.', 'خطوة للأمام.'),
@@ -153,9 +173,21 @@ export class TasksPage {
         );
       }
     } catch (error) {
-      // Rollback on failure
-      this.resource.data.set(previous);
+      // Restore only this task so concurrent mutations keep their results.
+      this.resource.data.update(
+        (current) =>
+          current && {
+            ...current,
+            items: current.items.map((item) =>
+              item.id === task.id && item.status === nextStatus
+                ? { ...item, status: task.status }
+                : item,
+            ),
+          },
+      );
       this.toasts.error(error);
+      if (error instanceof TimeoutError || (error instanceof HttpErrorResponse && error.status === 0))
+        void this.resource.load();
     } finally {
       this.pendingTaskIds.update((set) => {
         const next = new Set(set);

@@ -1,6 +1,6 @@
 # Operator setup for the MIRHAL production cutover
 
-The GitHub branch `feat/mirhal-migration` contains the tested deployment code. The owner confirmed the existing `lifequest-web` and `lifequest-admin` Vercel projects and the Neon production database. Neon migrations are already applied; do not rerun seed or reset. The remaining account-owned work is Render, Resend, DNS, and final Vercel routing.
+Review this runbook against the intended release branch before use. Public checks on 2026-10-30 found the previously documented `lifequest-web-cyan.vercel.app` and `lifequest-admin.vercel.app` aliases returning 404. `mirhal-web.vercel.app` returned 200 with MIRHAL content, but its `/api/auth/capabilities` reported `emailDelivery: false`; `mirhal-admin.vercel.app` returned 404. Confirm the current Vercel projects and exact production origins in their dashboards before setting CORS, packaging, or deploying. Existing production migrations may predate the two additive migrations in this audit; review migration status without resetting or reseeding.
 
 ## 1. Verify a Resend sending domain
 
@@ -34,7 +34,7 @@ Render's [Blueprint specification](https://render.com/docs/blueprint-spec) confi
 
 ## 3. Route the confirmed Vercel projects to Render
 
-1. In a trusted packaging shell or ignored local `.env`, set `VERCEL_WEB_ORIGIN=https://lifequest-web-cyan.vercel.app`, `VERCEL_ADMIN_ORIGIN=https://lifequest-admin.vercel.app`, and `VERCEL_API_ORIGIN=<actual Render HTTPS origin>`. Do not include trailing slashes. These are public routing values, not browser secrets.
+1. After confirming the actual Vercel projects and public aliases, set `VERCEL_WEB_ORIGIN`, `VERCEL_ADMIN_ORIGIN`, and `VERCEL_API_ORIGIN` to their exact current HTTPS origins in a trusted packaging shell or ignored local `.env`. Do not include trailing slashes. These are public routing values, not browser secrets.
 2. Run `npm run vercel:package:render`. Inspect `.local/vercel/web/.vercel/output/config.json`: customer `/api/*` must route to Render, admin `/api/*` through the customer origin, and there must be no customer API function or cron. A Vercel preview can check static assets and route behavior before the production deploy commands in the [deployment guide](README.md). The preview origin is not in Render's production CORS allowlist, so authenticate and test cookies on the confirmed production aliases after cutover.
 3. After both production frontends and the Render API pass the [live smoke test](smoke.md), remove legacy `DATABASE_URL`, `BLOB_READ_WRITE_TOKEN`, and `CRON_SECRET` from the **customer Vercel project's** environment. Do not remove these variables while the old Vercel API is still serving users.
 

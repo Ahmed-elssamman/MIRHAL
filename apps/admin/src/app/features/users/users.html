@@ -1,11 +1,8 @@
 <lq-page-header
-  [eyebrow]="i18n.t('PEOPLE, NOT JUST ACCOUNTS', 'أشخاص، وليس مجرد حسابات')"
-  [title]="i18n.t('The MIRHAL community.', 'مجتمع مِرحال.')"
+  [eyebrow]="('admin.features.users.copy.people_not_just_accounts_54d4913d' | translate)"
+  [title]="('admin.features.users.copy.the_mirhal_community_ac9ad9de' | translate)"
   [description]="
-    i18n.t(
-      'Manage access and understand activity while respecting everyone’s private journey.',
-      'أدر الوصول وافهم النشاط مع احترام الرحلة الخاصة لكل شخص.'
-    )
+    ('admin.features.users.copy.manage_access_and_understand_activity_while_respecting_everyone_s_private_journey_0e3ea497' | translate)
   "
 />
 <form class="mb-6 flex flex-wrap gap-3" (ngSubmit)="find()">
@@ -15,10 +12,10 @@
       name="search"
       [ngModel]="search()"
       (ngModelChange)="search.set($event)"
-      [placeholder]="i18n.t('Search name or email…', 'ابحث بالاسم أو البريد…')"
-      [attr.aria-label]="i18n.t('Search users', 'البحث عن المستخدمين')"
+      [placeholder]="('admin.features.users.copy.search_name_or_email_057edb79' | translate)"
+      [attr.aria-label]="('admin.features.users.copy.search_users_427b7b61' | translate)"
     /><button type="submit" class="btn btn-primary">
-      <lq-icon name="search" [size]="17" />{{ i18n.t('Search', 'بحث') }}
+      <lq-icon name="search" [size]="17" />{{ ('common.copy.search_c646a2c9' | translate) }}
     </button>
   </div>
   <select
@@ -26,12 +23,12 @@
     name="status"
     [ngModel]="status()"
     (ngModelChange)="status.set($event); find()"
-    [attr.aria-label]="i18n.t('Account status', 'حالة الحساب')"
+    [attr.aria-label]="('admin.features.users.copy.account_status_fbdd3afe' | translate)"
   >
-    <option value="">{{ i18n.t('All statuses', 'كل الحالات') }}</option>
-    <option value="ACTIVE">{{ i18n.t('Active', 'نشط') }}</option>
-    <option value="SUSPENDED">{{ i18n.t('Suspended', 'معلق') }}</option>
-    <option value="DELETED">{{ i18n.t('Deleted', 'محذوف') }}</option>
+    <option value="">{{ ('admin.features.users.copy.all_statuses_6c4b8a4e' | translate) }}</option>
+    <option value="ACTIVE">{{ ('common.copy.active_1f89134f' | translate) }}</option>
+    <option value="SUSPENDED">{{ ('admin.features.users.copy.suspended_33478642' | translate) }}</option>
+    <option value="DELETED">{{ ('admin.features.users.copy.deleted_f225740a' | translate) }}</option>
   </select>
 </form>
 @if (resource.loading() && !resource.data()) {
@@ -41,17 +38,17 @@
 } @else if (resource.data(); as data) {
   <div class="card overflow-hidden">
     <p-table
-      [lqTableLabel]="i18n.t('Scrollable records', 'سجلات قابلة للتمرير')"
+      [lqTableLabel]="('common.copy.scrollable_records_222ef37e' | translate)"
       [value]="data.items"
       [tableStyle]="{ 'min-width': '42rem' }"
       [scrollable]="true"
       ><ng-template #header
         ><tr>
-          <th>{{ i18n.t('Person', 'الشخص') }}</th>
-          <th>{{ i18n.t('Access', 'الوصول') }}</th>
-          <th>{{ i18n.t('Status', 'الحالة') }}</th>
-          <th>{{ i18n.t('Joined', 'انضم') }}</th>
-          <th>{{ i18n.t('Activity', 'النشاط') }}</th>
+          <th>{{ ('admin.features.users.copy.person_c36eeba0' | translate) }}</th>
+          <th>{{ ('admin.features.users.copy.access_59b4ae0b' | translate) }}</th>
+          <th>{{ ('common.copy.status_005ef20f' | translate) }}</th>
+          <th>{{ ('admin.features.users.copy.joined_f8f2b670' | translate) }}</th>
+          <th>{{ ('admin.features.users.copy.activity_9e75940c' | translate) }}</th>
         </tr></ng-template
       ><ng-template #body let-user
         ><tr>
@@ -80,19 +77,15 @@
           </td>
           <td class="text-xs text-muted">{{ user.createdAt | date: 'MMM d, y' }}</td>
           <td class="text-xs text-muted">
-            {{ user._count.habits }} {{ i18n.t('habits', 'عادات') }} · {{ user._count.goals }}
-            {{ i18n.t('goals', 'أهداف') }}
+            {{ user._count.habits }} {{ ('admin.features.users.copy.habits_e74d789a' | translate) }} · {{ user._count.goals }}
+            {{ ('admin.features.users.copy.goals_5660bfdf' | translate) }}
           </td>
         </tr></ng-template
       ><ng-template #emptymessage
         ><tr>
           <td colspan="5" class="!p-10 text-center text-sm text-muted">
             {{
-              i18n.t(
-                'No one matches this search. Try a different name or filter.',
-                'لا توجد نتائج.
-          جرّب اسماً أو مرشحاً آخر.'
-              )
+              ('admin.features.users.copy.no_one_matches_this_search_try_a_different_name_or_filter_1f67c05c' | translate)
             }}
           </td>
         </tr></ng-template

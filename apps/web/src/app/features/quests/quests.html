@@ -1,20 +1,17 @@
 <lq-page-header
-  [eyebrow]="i18n.t('A LITTLE FOCUS GOES A LONG WAY', 'قليل من التركيز يصنع فرقاً')"
-  [title]="i18n.t('Give your week a mission.', 'امنح أسبوعك مهمة.')"
+  [eyebrow]="('web.features.quests.copy.a_little_focus_goes_a_long_way_38a0ea86' | translate)"
+  [title]="('web.features.quests.copy.give_your_week_a_mission_6ec0cfea' | translate)"
   [description]="
-    i18n.t(
-      'One meaningful focus. A handful of actions. A reason to celebrate.',
-      'تركيز واحد ذو معنى. خطوات محدودة. وسبب للاحتفال.'
-    )
+    ('web.features.quests.copy.create_weekly_quests_choose_their_steps_and_track_each_completed_action_c302efd3' | translate)
   "
   ><button class="btn btn-primary" (click)="create()">
-    <lq-icon name="plus" [size]="17" />{{ i18n.t('New quest', 'مهمة أسبوعية جديدة') }}
+    <lq-icon name="plus" [size]="17" />{{ ('web.features.quests.copy.new_quest_216e7c03' | translate) }}
   </button></lq-page-header
 >
 @if (visibleTemplates().length) {
   <details class="card mb-6 p-5">
     <summary class="min-h-10 cursor-pointer text-sm font-semibold">
-      {{ i18n.t('A little inspiration for this week', 'قليل من الإلهام لهذا الأسبوع') }}
+      {{ ('web.features.quests.copy.a_little_inspiration_for_this_week_73eb339f' | translate) }}
     </summary>
     <div class="mt-3 grid gap-3 sm:grid-cols-2">
       @for (template of visibleTemplates(); track template.id) {
@@ -52,13 +49,9 @@
               [class]="quest.completedAt ? 'bg-mint text-mint-ink' : 'bg-surface text-brand'"
               >{{
                 quest.completedAt
-                  ? i18n.t('Completed', 'مكتملة')
+                  ? ('common.copy.completed_ec88aab2' | translate)
                   : expired(quest)
-                    ? i18n.t(
-                        'Time to
-          reflect',
-                        'وقت التأمل'
-                      )
+                    ? ('web.features.quests.copy.time_to_reflect_b11425fb' | translate)
                     : '+' + quest.xpReward + ' XP'
               }}</span
             >
@@ -68,7 +61,7 @@
         </div>
         <div class="p-6">
           <div class="mb-2 flex justify-between text-xs">
-            <span class="text-muted">{{ i18n.t('Your progress', 'تقدمك') }}</span
+            <span class="text-muted">{{ ('web.features.quests.copy.your_progress_679c4311' | translate) }}</span
             ><span class="font-semibold text-brand">{{ quest.progress.toFixed(0) }}%</span>
           </div>
           <lq-progress [value]="quest.progress" />
@@ -105,15 +98,12 @@
       <div class="col-span-full">
         <lq-empty
           icon="flag"
-          [title]="i18n.t('What would make this a good week?', 'ما الذي يجعل هذا أسبوعاً جيداً؟')"
+          [title]="('web.features.quests.copy.what_would_make_this_a_good_week_611c68fd' | translate)"
           [description]="
-            i18n.t(
-              'Choose a small mission with a few clear steps. Keep it meaningful and achievable.',
-              'اختر مهمة صغيرة بخطوات واضحة. اجعلها ذات معنى وقابلة للتحقيق.'
-            )
+            ('web.features.quests.copy.choose_a_small_mission_with_a_few_clear_steps_keep_it_meaningful_and_achievable_70b96d24' | translate)
           "
           ><button class="btn btn-primary" (click)="create()">
-            {{ i18n.t('Create my first quest', 'إنشاء مهمتي الأسبوعية الأولى') }}
+            {{ ('web.features.quests.copy.create_my_first_quest_0cb4ef09' | translate) }}
           </button></lq-empty
         >
       </div>
@@ -129,16 +119,16 @@
   />
 }
 <p-dialog
-  [closeAriaLabel]="i18n.t('Close', 'إغلاق')"
-  [header]="i18n.t('Your next weekly mission', 'مهمتك الأسبوعية القادمة')"
+  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
+  [header]="('web.features.quests.copy.your_next_weekly_mission_cf0c5848' | translate)"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '36rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
-    <lq-field id="quest-title" [label]="i18n.t('Quest title', 'عنوان المهمة')"
+    <lq-field id="quest-title" [label]="('web.features.quests.copy.quest_title_c56ff7cf' | translate)"
       ><input id="quest-title" class="field" formControlName="title" /></lq-field
-    ><lq-field id="quest-description" [label]="i18n.t('Why this week?', 'لماذا هذا الأسبوع؟')">
+    ><lq-field id="quest-description" [label]="('web.features.quests.copy.why_this_week_53780ac2' | translate)">
       <textarea
         id="quest-description"
         class="field"
@@ -147,24 +137,21 @@
       ></textarea>
     </lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="quest-area" [label]="i18n.t('Life area', 'مجال الحياة')"
+      <lq-field id="quest-area" [label]="('common.copy.life_area_9e7a62cc' | translate)"
         ><select id="quest-area" class="field" formControlName="areaId">
           @for (area of areas.data(); track area.id) {
             <option [value]="area.id">{{ i18n.t(area.name, area.nameAr) }}</option>
           }
         </select></lq-field
-      ><lq-field id="quest-date" [label]="i18n.t('Finish by', 'أنهيها قبل')"
+      ><lq-field id="quest-date" [label]="('web.features.quests.copy.finish_by_62f0623f' | translate)"
         ><input id="quest-date" type="date" class="field" formControlName="deadline"
       /></lq-field>
     </div>
     <lq-field
       id="quest-items"
-      [label]="i18n.t('Your steps — one per line', 'خطواتك — واحدة في كل سطر')"
+      [label]="('web.features.quests.copy.your_steps_one_per_line_9e92dc64' | translate)"
       [hint]="
-        i18n.t(
-          'Between 1 and 12 clear, achievable actions.',
-          'بين خطوة و12 خطوة واضحة وقابلة للتحقيق.'
-        )
+        ('web.features.quests.copy.between_1_and_12_clear_achievable_actions_e1c84d4c' | translate)
       "
     >
       <textarea
@@ -173,18 +160,18 @@
         rows="4"
         formControlName="items"
       ></textarea></lq-field
-    ><lq-field id="quest-effort" [label]="i18n.t('Effort', 'الجهد')"
+    ><lq-field id="quest-effort" [label]="('common.copy.effort_d56430cf' | translate)"
       ><select id="quest-effort" class="field" formControlName="difficulty">
-        <option value="EASY">{{ i18n.t('Gentle · 60 XP', 'بسيط · 60 نقطة') }}</option>
-        <option value="MEDIUM">{{ i18n.t('Steady · 100 XP', 'متوسط · 100 نقطة') }}</option>
-        <option value="HARD">{{ i18n.t('Stretch · 150 XP', 'تحدٍ · 150 نقطة') }}</option>
+        <option value="EASY">{{ ('web.features.quests.copy.gentle_60_xp_c01ca74b' | translate) }}</option>
+        <option value="MEDIUM">{{ ('web.features.quests.copy.steady_100_xp_f8cfe0df' | translate) }}</option>
+        <option value="HARD">{{ ('web.features.quests.copy.stretch_150_xp_4e8d6577' | translate) }}</option>
       </select></lq-field
     >
     @if (error()) {
       <p role="alert" class="mb-4 text-sm text-rose-600">{{ error() }}</p>
     }
     <button type="submit" class="btn btn-primary w-full" [disabled]="saving() || form.invalid">
-      {{ i18n.t('Start my quest', 'ابدأ مهمتي') }}
+      {{ ('web.features.quests.copy.start_my_quest_b71ad749' | translate) }}
     </button>
   </form></p-dialog
 >

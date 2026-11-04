@@ -1,6 +1,6 @@
 # MIRHAL deployment: Vercel + Render + Neon
 
-Start with the [operator setup runbook](operator-setup.md) for the remaining Render, Resend, DNS, and Vercel steps. The [environment checklist](environment.md) lists every variable and its placement.
+Start with the [operator setup runbook](operator-setup.md) for the remaining Render, Resend, DNS, and Vercel steps. The [environment checklist](environment.md) lists every variable and its placement. Read-only checks on 2026-10-30 found the reachable `https://mirhal-web.vercel.app/api/auth/capabilities` reporting `emailDelivery: false`; production email is not currently available through that route.
 
 ## Local
 
@@ -33,14 +33,14 @@ Production rate limiting is decoupled from the database and runs on Redis. Set `
 
 ### Background Worker & Transactional Outbox
 
-Asynchronous tasks (such as transactional emails and notification dispatches) are persisted to the database via the `OutboxJob` table and processed asynchronously.
+The repository contains an `OutboxJob` scheduler and worker, but the current authentication, invitation, and in-app notification flows call their providers directly and do not schedule jobs through this outbox. Do not assume transactional email retries or crash recovery are provided by the worker. A worker interruption can also leave a claimed job in `PROCESSING`; inspect such jobs before manually retrying because an email provider may already have accepted a send.
 
 - **Dedicated Worker Service**: On Render or any container host, launch `npm run worker` as a background worker process.
 - **Scheduled / Serverless Batch**: Run `npm run worker -- --once` or invoke the authenticated `/api/internal/maintenance` endpoint on a periodic schedule (e.g. Render Cron or external cron).
 
 ## Vercel customer and admin
 
-The browser keeps calling relative `/api`, preserving host scoped HttpOnly cookies. The owner confirmed the existing `lifequest-web` and `lifequest-admin` projects as the targets; their Ready production aliases are `https://lifequest-web-cyan.vercel.app` and `https://lifequest-admin.vercel.app`. Set `VERCEL_WEB_ORIGIN`, `VERCEL_ADMIN_ORIGIN`, and `VERCEL_API_ORIGIN` to exact HTTPS origins without trailing slashes in the trusted packaging shell, then run `npm run vercel:package:render`. This command requires all three origins and will not build the older Vercel API function if the Render origin is missing. The web artifact routes `/api/*` to the Render API; admin routes through the customer origin. Public pages are prerendered; other customer routes use the client shell. The ignored `.local/vercel/web` and `.local/vercel/admin` folders are linked to the confirmed projects. Deploy the generated prebuilt output with:
+The browser keeps calling relative `/api`, preserving host scoped HttpOnly cookies. The older documented aliases `https://lifequest-web-cyan.vercel.app` and `https://lifequest-admin.vercel.app` returned 404 on 2026-10-30; `https://mirhal-web.vercel.app` returned 200 and `https://mirhal-admin.vercel.app` returned 404. Confirm the intended projects and current aliases in Vercel before packaging. Set `VERCEL_WEB_ORIGIN`, `VERCEL_ADMIN_ORIGIN`, and `VERCEL_API_ORIGIN` to those verified exact HTTPS origins without trailing slashes in the trusted packaging shell, then run `npm run vercel:package:render`. This command requires all three origins and will not build the older Vercel API function if the Render origin is missing. The web artifact routes `/api/*` to the Render API; admin routes through the customer origin. Public pages are prerendered; other customer routes use the client shell. Check the ignored `.local/vercel/web` and `.local/vercel/admin` project links before any deployment. After owner review, deploy the generated prebuilt output with:
 
 ```bash
 vercel deploy --prebuilt --prod --yes --cwd .local/vercel/web

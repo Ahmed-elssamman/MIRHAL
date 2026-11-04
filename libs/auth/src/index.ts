@@ -1,9 +1,9 @@
 import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, catchError, exhaustMap, filter, from, timer } from 'rxjs';
-import { Injectable, inject, signal, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { Injectable, inject, signal, PLATFORM_ID, DestroyRef, Injector } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
-import { Api, User, Celebrations, errorMessage } from '@lifequest/data-access';
+import { Api, User, Celebrations, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 
 export type AuthStatus = 'initializing' | 'authenticated' | 'unauthenticated';
@@ -88,6 +88,7 @@ export class AuthStore {
     this.preferences.setLanguage(user.profile.language);
     this.preferences.setTheme(user.profile.theme);
     this.preferences.setReducedMotion(user.profile.reducedMotion);
+    this.preferences.applyAccountNavigation(user.id, user.profile.showAdditionalNavigation);
   }
 
   async changeLanguage() {
@@ -102,7 +103,7 @@ export class AuthStore {
       );
       this.preferences.setLanguage(language);
     } catch (error) {
-      this.languageError.set(errorMessage(error));
+      this.languageError.set(this.api.errorMessage(error));
     } finally {
       this.languageSaving.set(false);
     }
@@ -170,11 +171,31 @@ export const adminGuard: CanActivateFn = async () => {
 export const unauthGuard: CanActivateFn = async (route: ActivatedRouteSnapshot) => {
   const auth = inject(AuthStore);
   const router = inject(Router);
+  const injector = inject(Injector);
   const user = await auth.load();
   if (!user) return true;
   const mode = route.paramMap.get('mode') ?? 'login';
   if (mode === 'login' || mode === 'register') {
     const isAdmin = route.data['admin'] === true;
+    const invitation = route.queryParamMap.get('inviteToken');
+    if (!isAdmin && invitation) {
+      const api = injector.get(Api);
+      const toasts = injector.get(Toasts);
+      const preferences = injector.get(Preferences);
+      try {
+        const result = await api.post<{ status: 'pending' | 'already_friends' | 'awaiting_verification' }>(
+          'friends/invitations/accept', { token: invitation },
+        );
+        toasts.success(result.status === 'awaiting_verification'
+          ? preferences.t('Verify your email to receive the friend request.', 'أكد بريدك الإلكتروني لاستلام طلب الصداقة.')
+          : result.status === 'already_friends'
+            ? preferences.t('You are already friends.', 'أنتما صديقان بالفعل.')
+            : preferences.t('Your friend request is ready to review.', 'طلب الصداقة جاهز للمراجعة.'));
+      } catch (error) {
+        toasts.error(error);
+      }
+      return router.createUrlTree([user.profile.onboardingCompletedAt ? '/friends' : '/onboarding']);
+    }
     return router.createUrlTree([
       isAdmin && user.role !== 'USER'
         ? '/overview'
@@ -185,3 +206,5 @@ export const unauthGuard: CanActivateFn = async (route: ActivatedRouteSnapshot) 
   }
   return true;
 };
+
+export { sessionInterceptor } from './session-interceptor';

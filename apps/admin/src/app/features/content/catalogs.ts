@@ -1,56 +1,56 @@
+export interface CatalogOption {
+  value: string;
+  labelKey: string;
+}
+
 export interface CatalogField {
   key: string;
-  label: string;
-  ar: string;
+  labelKey: string;
   kind: 'text' | 'textarea' | 'number' | 'checkbox' | 'select';
   value: string | number | boolean;
   required?: boolean;
-  options?: { value: string; label: string; ar: string }[];
+  options?: CatalogOption[];
 }
+
 export interface CatalogDefinition {
-  title: string;
-  ar: string;
-  description: string;
-  arDescription: string;
+  titleKey: string;
+  descriptionKey: string;
   icon: string;
   fields: CatalogField[];
 }
+
 const title: CatalogField = {
   key: 'title',
-  label: 'Title',
-  ar: 'العنوان',
+  labelKey: 'admin.features.content.fields.title',
   kind: 'text',
   value: '',
   required: true,
 };
+
 const description: CatalogField = {
   key: 'description',
-  label: 'Description',
-  ar: 'الوصف',
+  labelKey: 'admin.features.content.fields.description',
   kind: 'textarea',
   value: '',
 };
+
 const active: CatalogField = {
   key: 'active',
-  label: 'Active',
-  ar: 'نشط',
+  labelKey: 'admin.features.content.fields.active',
   kind: 'checkbox',
   value: true,
 };
+
 export const catalogs: Record<string, CatalogDefinition> = {
   rewards: {
-    title: 'Rewards worth looking forward to.',
-    ar: 'مكافآت تستحق الانتظار.',
-    description:
-      'Manage the shared reward catalog. Existing redemptions retain their original cost.',
-    arDescription: 'أدر كتالوج المكافآت المشترك. تحتفظ المعاملات السابقة بتكلفتها الأصلية.',
+    titleKey: 'admin.features.content.catalogs.rewardsTitle',
+    descriptionKey: 'admin.features.content.catalogs.rewardsDescription',
     icon: 'gift',
     fields: [
       title,
       {
         key: 'titleAr',
-        label: 'Arabic title',
-        ar: 'العنوان بالعربية',
+        labelKey: 'admin.features.content.fields.arabicTitle',
         kind: 'text',
         value: '',
         required: true,
@@ -58,40 +58,41 @@ export const catalogs: Record<string, CatalogDefinition> = {
       description,
       {
         key: 'descriptionAr',
-        label: 'Arabic description',
-        ar: 'الوصف بالعربية',
+        labelKey: 'admin.features.content.fields.arabicDescription',
         kind: 'textarea',
         value: '',
         required: true,
       },
       {
         key: 'cost',
-        label: 'XP cost',
-        ar: 'تكلفة الخبرة',
+        labelKey: 'admin.features.content.fields.xpCost',
         kind: 'number',
         value: 150,
         required: true,
       },
       {
         key: 'icon',
-        label: 'Icon',
-        ar: 'الأيقونة',
+        labelKey: 'admin.features.content.fields.icon',
         kind: 'select',
         value: 'gift',
         options: [
-          { value: 'gift', label: 'Gift', ar: 'هدية' },
-          { value: 'coffee', label: 'Coffee', ar: 'قهوة' },
-          { value: 'book-open', label: 'Book', ar: 'كتاب' },
-          { value: 'clapperboard', label: 'Film', ar: 'فيلم' },
-          { value: 'sun', label: 'Sun', ar: 'شمس' },
-          { value: 'heart', label: 'Heart', ar: 'قلب' },
+          { value: 'gift', labelKey: 'admin.features.content.options.gift' },
+          { value: 'coffee', labelKey: 'admin.features.content.options.coffee' },
+          { value: 'book-open', labelKey: 'admin.features.content.options.book' },
+          { value: 'clapperboard', labelKey: 'admin.features.content.options.film' },
+          { value: 'sun', labelKey: 'admin.features.content.options.sun' },
+          { value: 'heart', labelKey: 'admin.features.content.options.heart' },
         ],
       },
-      { key: 'category', label: 'Category', ar: 'الفئة', kind: 'text', value: 'personal' },
+      {
+        key: 'category',
+        labelKey: 'admin.features.content.fields.category',
+        kind: 'text',
+        value: 'personal',
+      },
       {
         key: 'categoryAr',
-        label: 'Arabic category',
-        ar: 'الفئة بالعربية',
+        labelKey: 'admin.features.content.fields.arabicCategory',
         kind: 'text',
         value: '',
         required: true,
@@ -99,25 +100,21 @@ export const catalogs: Record<string, CatalogDefinition> = {
     ],
   },
   achievements: {
-    title: 'Milestones that mean something.',
-    ar: 'محطات ذات معنى.',
-    description: 'Server-evaluated achievements. Changes never erase existing unlocks.',
-    arDescription: 'إنجازات يقيّمها الخادم. التعديلات لا تمحو الإنجازات السابقة.',
+    titleKey: 'admin.features.content.catalogs.achievementsTitle',
+    descriptionKey: 'admin.features.content.catalogs.achievementsDescription',
     icon: 'award',
     fields: [
       title,
       {
         key: 'titleAr',
-        label: 'Arabic title',
-        ar: 'العنوان العربي',
+        labelKey: 'admin.features.content.fields.arabicTitle',
         kind: 'text',
         value: '',
         required: true,
       },
       {
         key: 'slug',
-        label: 'Unique identifier',
-        ar: 'معرّف فريد',
+        labelKey: 'admin.features.content.fields.uniqueIdentifier',
         kind: 'text',
         value: '',
         required: true,
@@ -125,60 +122,57 @@ export const catalogs: Record<string, CatalogDefinition> = {
       description,
       {
         key: 'descriptionAr',
-        label: 'Arabic description',
-        ar: 'الوصف بالعربية',
+        labelKey: 'admin.features.content.fields.arabicDescription',
         kind: 'textarea',
         value: '',
         required: true,
       },
       {
         key: 'icon',
-        label: 'Icon',
-        ar: 'الأيقونة',
+        labelKey: 'admin.features.content.fields.icon',
         kind: 'select',
         value: 'award',
         options: [
-          { value: 'award', label: 'Award', ar: 'جائزة' },
-          { value: 'flame', label: 'Flame', ar: 'شعلة' },
-          { value: 'sprout', label: 'Sprout', ar: 'نبتة' },
-          { value: 'sun', label: 'Sun', ar: 'شمس' },
-          { value: 'users', label: 'People', ar: 'أشخاص' },
-          { value: 'flag', label: 'Flag', ar: 'علم' },
+          { value: 'award', labelKey: 'admin.features.content.options.award' },
+          { value: 'flame', labelKey: 'admin.features.content.options.flame' },
+          { value: 'sprout', labelKey: 'admin.features.content.options.sprout' },
+          { value: 'sun', labelKey: 'admin.features.content.options.sun' },
+          { value: 'users', labelKey: 'admin.features.content.options.people' },
+          { value: 'flag', labelKey: 'admin.features.content.options.flag' },
         ],
       },
       {
         key: 'condition',
-        label: 'Unlock condition',
-        ar: 'شرط الاكتساب',
+        labelKey: 'admin.features.content.fields.unlockCondition',
         kind: 'select',
         value: 'HABIT_COUNT',
         options: [
-          { value: 'HABIT_COUNT', label: 'Completed habits', ar: 'العادات المكتملة' },
-          { value: 'CHECK_IN_COUNT', label: 'Recorded check-ins', ar: 'المراجعات اليومية المسجلة' },
-          { value: 'QUEST_COUNT', label: 'Completed quests', ar: 'المهام الأسبوعية المكتملة' },
-          { value: 'CHALLENGE_COUNT', label: 'Completed challenges', ar: 'التحديات المكتملة' },
+          { value: 'HABIT_COUNT', labelKey: 'admin.features.content.options.completedHabits' },
+          { value: 'CHECK_IN_COUNT', labelKey: 'admin.features.content.options.recordedCheckIns' },
+          { value: 'QUEST_COUNT', labelKey: 'admin.features.content.options.completedQuests' },
+          {
+            value: 'CHALLENGE_COUNT',
+            labelKey: 'admin.features.content.options.completedChallenges',
+          },
         ],
       },
       {
         key: 'threshold',
-        label: 'Required count',
-        ar: 'العدد المطلوب',
+        labelKey: 'admin.features.content.fields.requiredCount',
         kind: 'number',
         value: 10,
         required: true,
       },
       {
         key: 'xpReward',
-        label: 'XP reward',
-        ar: 'مكافأة الخبرة',
+        labelKey: 'admin.features.content.fields.xpReward',
         kind: 'number',
         value: 50,
         required: true,
       },
       {
         key: 'hidden',
-        label: 'Hidden until unlocked',
-        ar: 'مخفي حتى الاكتساب',
+        labelKey: 'admin.features.content.fields.hiddenUntilUnlocked',
         kind: 'checkbox',
         value: false,
       },
@@ -186,76 +180,70 @@ export const catalogs: Record<string, CatalogDefinition> = {
     ],
   },
   help: {
-    title: 'A clearer path for every explorer.',
-    ar: 'طريق أوضح لكل مستكشف.',
-    description: 'Maintain helpful, bilingual guidance. Content is displayed as safe text.',
-    arDescription: 'حافظ على إرشادات مفيدة بلغتين. يُعرض المحتوى كنص آمن.',
+    titleKey: 'admin.features.content.catalogs.helpTitle',
+    descriptionKey: 'admin.features.content.catalogs.helpDescription',
     icon: 'help',
     fields: [
       title,
       {
         key: 'titleAr',
-        label: 'Arabic title',
-        ar: 'العنوان العربي',
+        labelKey: 'admin.features.content.fields.arabicTitle',
         kind: 'text',
         value: '',
         required: true,
       },
       {
         key: 'slug',
-        label: 'Article identifier',
-        ar: 'معرّف المقال',
+        labelKey: 'admin.features.content.fields.articleIdentifier',
         kind: 'text',
         value: '',
         required: true,
       },
       {
         key: 'body',
-        label: 'English content',
-        ar: 'المحتوى الإنجليزي',
+        labelKey: 'admin.features.content.fields.englishContent',
         kind: 'textarea',
         value: '',
         required: true,
       },
       {
         key: 'bodyAr',
-        label: 'Arabic content',
-        ar: 'المحتوى العربي',
+        labelKey: 'admin.features.content.fields.arabicContent',
         kind: 'textarea',
         value: '',
         required: true,
       },
-      { key: 'published', label: 'Published', ar: 'منشور', kind: 'checkbox', value: true },
+      {
+        key: 'published',
+        labelKey: 'admin.features.content.fields.published',
+        kind: 'checkbox',
+        value: true,
+      },
     ],
   },
   announcements: {
-    title: 'A little news from MIRHAL.',
-    ar: 'قليل من أخبار مِرحال.',
-    description: 'Share product updates and thoughtful announcements.',
-    arDescription: 'شارك تحديثات المنتج والإعلانات المدروسة.',
+    titleKey: 'admin.features.content.catalogs.announcementsTitle',
+    descriptionKey: 'admin.features.content.catalogs.announcementsDescription',
     icon: 'bell',
     fields: [
       title,
       {
         key: 'titleAr',
-        label: 'Arabic title',
-        ar: 'العنوان بالعربية',
+        labelKey: 'admin.features.content.fields.arabicTitle',
         kind: 'text',
         value: '',
         required: true,
       },
       {
         key: 'body',
-        label: 'Announcement',
-        ar: 'الإعلان',
+        labelKey: 'admin.features.content.fields.announcement',
         kind: 'textarea',
         value: '',
         required: true,
       },
       {
         key: 'bodyAr',
-        label: 'Arabic announcement',
-        ar: 'الإعلان بالعربية',
+        labelKey: 'admin.features.content.fields.arabicAnnouncement',
         kind: 'textarea',
         value: '',
         required: true,

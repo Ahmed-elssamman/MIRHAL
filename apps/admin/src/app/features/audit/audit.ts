@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { TableModule } from 'primeng/table';
 import { Api, Page } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
@@ -42,6 +43,7 @@ const entityLabels: Record<string, [string, string]> = {
 @Component({
   selector: 'lq-admin-audit',
   imports: [
+    TranslatePipe,
     LocalizedDatePipe,
     TableModule,
     AccessibleTable,
@@ -51,13 +53,10 @@ const entityLabels: Record<string, [string, string]> = {
     Pagination,
   ],
   template: `<lq-page-header
-      [eyebrow]="i18n.t('ACCOUNTABILITY BY DESIGN', 'المساءلة أساس التصميم')"
-      [title]="i18n.t('A history that stays honest.', 'سجل يحافظ على الأمانة.')"
+      [eyebrow]="('admin.features.audit.copy.accountability_by_design_e4fa10ff' | translate)"
+      [title]="('admin.features.audit.copy.a_history_that_stays_honest_7b051174' | translate)"
       [description]="
-        i18n.t(
-          'Sensitive actions are recorded here permanently. This history cannot be silently edited.',
-          'تُسجل الإجراءات الحساسة هنا بشكل دائم. لا يمكن تعديل هذا التاريخ بصمت.'
-        )
+        ('admin.features.audit.copy.sensitive_actions_are_recorded_here_permanently_this_history_cannot_be_silently_edited_fb00d6da' | translate)
       "
     />
     @if (resource.loading() && !resource.data()) {
@@ -67,16 +66,16 @@ const entityLabels: Record<string, [string, string]> = {
     } @else if (resource.data(); as data) {
       <div class="card overflow-hidden">
         <p-table
-          [lqTableLabel]="i18n.t('Scrollable records', 'سجلات قابلة للتمرير')"
+          [lqTableLabel]="('common.copy.scrollable_records_222ef37e' | translate)"
           [value]="data.items"
           [scrollable]="true"
           [tableStyle]="{ 'min-width': '42rem' }"
           ><ng-template #header
             ><tr>
-              <th>{{ i18n.t('When', 'التوقيت') }}</th>
-              <th>{{ i18n.t('Action', 'الإجراء') }}</th>
-              <th>{{ i18n.t('Record', 'السجل') }}</th>
-              <th>{{ i18n.t('Actor', 'المنفذ') }}</th>
+              <th>{{ ('admin.features.audit.copy.when_021e3a39' | translate) }}</th>
+              <th>{{ ('admin.features.audit.copy.action_0a77a91f' | translate) }}</th>
+              <th>{{ ('admin.features.audit.copy.record_9f4565ec' | translate) }}</th>
+              <th>{{ ('admin.features.audit.copy.actor_b449dc5a' | translate) }}</th>
             </tr></ng-template
           ><ng-template #body let-item
             ><tr>
@@ -91,17 +90,14 @@ const entityLabels: Record<string, [string, string]> = {
                 }}</span>
               </td>
               <td class="max-w-40 truncate text-[10px] text-muted">
-                {{ item.actorId || i18n.t('System', 'النظام') }}
+                {{ item.actorId || ('admin.features.audit.copy.system_8f3184bc' | translate) }}
               </td>
             </tr></ng-template
           ><ng-template #emptymessage
             ><tr>
               <td colspan="4" class="!p-10 text-center text-sm text-muted">
                 {{
-                  i18n.t(
-                    'Sensitive actions will appear here as the product is managed.',
-                    'ستظهر الإجراءات الحساسة هنا مع إدارة المنتج.'
-                  )
+                  ('admin.features.audit.copy.sensitive_actions_will_appear_here_as_the_product_is_managed_efbd40f6' | translate)
                 }}
               </td>
             </tr></ng-template

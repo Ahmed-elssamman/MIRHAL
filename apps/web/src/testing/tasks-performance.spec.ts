@@ -6,6 +6,9 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { TodayPage } from '../app/features/today/today';
 import { TasksPage } from '../app/features/tasks/tasks';
 import { Task } from '@lifequest/data-access';
+import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
+import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { firstValueFrom } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 const createTask = (
@@ -32,7 +35,7 @@ const createTask = (
 describe('Task Performance & Optimistic UI Updates', () => {
   let http: HttpTestingController;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -40,12 +43,14 @@ describe('Task Performance & Optimistic UI Updates', () => {
         provideRouter([]),
         MessageService,
         ConfirmationService,
+        provideTranslateService({ loader: provideTranslateLoader(MirhalTranslationLoader) }),
       ],
     });
+    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('TodayPage: immediately removes completed task optimistically (<50ms) and reconciles on success without refetching', async () => {
+  it('TodayPage: immediately shows a pending task and removes it after success without refetching', async () => {
     const fixture = TestBed.createComponent(TodayPage);
     const component = fixture.componentInstance;
 
@@ -67,10 +72,11 @@ describe('Task Performance & Optimistic UI Updates', () => {
     // Act: Mark t-1 as complete
     const promise = component.completeTask('t-1');
 
-    // Assert: Immediate visual feedback (< 50ms)
-    expect(component.todayTasks().length).toBe(1);
-    expect(component.todayTasks()[0]!.id).toBe('t-2');
+    // The task remains visible until persistence is confirmed.
+    expect(component.todayTasks().length).toBe(2);
     expect(component.pendingTaskIds().has('t-1')).toBe(true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toMatch(/Saving|الحفظ/);
 
     // Duplicate submission prevention: Second click on same task is a no-op
     void component.completeTask('t-1');
@@ -91,7 +97,7 @@ describe('Task Performance & Optimistic UI Updates', () => {
     http.verify();
   });
 
-  it('TodayPage: rolls back optimistic completion when API fails', async () => {
+  it('TodayPage: clears the pending state and retains the task when API fails', async () => {
     const fixture = TestBed.createComponent(TodayPage);
     const component = fixture.componentInstance;
 
@@ -112,8 +118,8 @@ describe('Task Performance & Optimistic UI Updates', () => {
     // Complete task
     const promise = component.completeTask('t-1');
 
-    // Immediately removed optimistically
-    expect(component.todayTasks().length).toBe(0);
+    expect(component.todayTasks().length).toBe(1);
+    expect(component.pendingTaskIds().has('t-1')).toBe(true);
 
     // Simulate API error (500)
     const req = http.expectOne('/api/tasks/t-1');
@@ -150,9 +156,8 @@ describe('Task Performance & Optimistic UI Updates', () => {
     const p1 = component.completeTask('t-1');
     const p2 = component.completeTask('t-2');
 
-    // Both should be optimistically removed immediately
-    expect(component.todayTasks().length).toBe(1);
-    expect(component.todayTasks()[0]!.id).toBe('t-3');
+    // Both remain visible as pending until confirmed.
+    expect(component.todayTasks().length).toBe(3);
     expect(component.pendingTaskIds().has('t-1')).toBe(true);
     expect(component.pendingTaskIds().has('t-2')).toBe(true);
 
@@ -166,6 +171,109 @@ describe('Task Performance & Optimistic UI Updates', () => {
 
     expect(component.todayTasks().length).toBe(1);
     expect(component.pendingTaskIds().size).toBe(0);
+  });
+
+  it('TodayPage: a failed completion does not undo a concurrent successful completion', async () => {
+    const fixture = TestBed.createComponent(TodayPage);
+    const component = fixture.componentInstance;
+    http
+      .expectOne('/api/habits?today=true&limit=10')
+      .flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
+    http
+      .expectOne('/api/tasks?today=true&limit=8')
+      .flush({ items: [createTask('a', 'A'), createTask('b', 'B')], total: 2, page: 1, limit: 8 });
+    http.expectOne('/api/check-ins').flush([]);
+    await fixture.whenStable();
+    const a = component.completeTask('a');
+    const b = component.completeTask('b');
+    http.expectOne('/api/tasks/b').flush({ awarded: 10 });
+    await b;
+    http.expectOne('/api/tasks/a').flush({}, { status: 500, statusText: 'Error' });
+    await a;
+    expect(component.todayTasks().map((task) => task.id)).toEqual(['a']);
+    expect(component.tasks.data()?.total).toBe(1);
+    http.verify();
+  });
+
+  it('TodayPage: a list request started before completion cannot restore a completed task', async () => {
+    const fixture = TestBed.createComponent(TodayPage);
+    const component = fixture.componentInstance;
+    http.expectOne('/api/habits?today=true&limit=10').flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
+    http.expectOne('/api/tasks?today=true&limit=8').flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 8 });
+    http.expectOne('/api/check-ins').flush([]);
+    await fixture.whenStable();
+    const completion = component.completeTask('a');
+    const staleLoad = component.tasks.load();
+    const stale = http.expectOne('/api/tasks?today=true&limit=8');
+    http.expectOne('/api/tasks/a').flush({ awarded: 10 });
+    await completion;
+    const fresh = http.expectOne('/api/tasks?today=true&limit=8');
+    fresh.flush({ items: [], total: 0, page: 1, limit: 8 });
+    stale.flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 8 });
+    await staleLoad;
+    await fixture.whenStable();
+    expect(component.todayTasks()).toEqual([]);
+    for (const request of http.match('/api/quests?limit=10'))
+      request.flush({ items: [], total: 0, page: 1, limit: 10 });
+    http.verify();
+  });
+
+  it('TodayPage: a network failure checks the server state because completion may have committed', async () => {
+    const fixture = TestBed.createComponent(TodayPage);
+    const component = fixture.componentInstance;
+    http.expectOne('/api/habits?today=true&limit=10').flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
+    http.expectOne('/api/tasks?today=true&limit=8').flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 8 });
+    http.expectOne('/api/check-ins').flush([]);
+    await fixture.whenStable();
+    const pending = component.completeTask('a');
+    http.expectOne('/api/tasks/a').error(new ProgressEvent('error'));
+    await pending;
+    expect(component.pendingTaskIds().has('a')).toBe(false);
+    http.expectOne('/api/tasks?today=true&limit=8').flush({ items: [], total: 0, page: 1, limit: 8 });
+    await fixture.whenStable();
+    expect(component.todayTasks()).toEqual([]);
+    for (const request of http.match('/api/quests?limit=10')) request.flush({ items: [], total: 0, page: 1, limit: 10 });
+    http.verify();
+  });
+
+  it('TasksPage: a stale list response cannot undo a confirmed toggle', async () => {
+    const fixture = TestBed.createComponent(TasksPage);
+    const component = fixture.componentInstance;
+    http.expectOne('/api/tasks').flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 20 });
+    http.expectOne('/api/goals?limit=100').flush({ items: [] });
+    http.expectOne('/api/projects?limit=100').flush({ items: [] });
+    await fixture.whenStable();
+    const completion = component.toggle(component.visible()[0]!);
+    const staleLoad = component.resource.load();
+    const stale = http.expectOne('/api/tasks');
+    http.expectOne('/api/tasks/a').flush({ awarded: 10 });
+    await completion;
+    const fresh = http.expectOne('/api/tasks');
+    fresh.flush({ items: [createTask('a', 'A', 'COMPLETED')], total: 1, page: 1, limit: 20 });
+    stale.flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 20 });
+    await staleLoad;
+    await fixture.whenStable();
+    expect(component.visible()[0]?.status).toBe('COMPLETED');
+    http.verify();
+  });
+
+  it('TasksPage: a failed toggle preserves a concurrent successful toggle', async () => {
+    const fixture = TestBed.createComponent(TasksPage);
+    const component = fixture.componentInstance;
+    http
+      .expectOne('/api/tasks')
+      .flush({ items: [createTask('a', 'A'), createTask('b', 'B')], total: 2, page: 1, limit: 20 });
+    http.expectOne('/api/goals?limit=100').flush({ items: [] });
+    http.expectOne('/api/projects?limit=100').flush({ items: [] });
+    await fixture.whenStable();
+    const a = component.toggle(component.visible()[0]!);
+    const b = component.toggle(component.visible()[1]!);
+    http.expectOne('/api/tasks/b').flush({ awarded: 10 });
+    await b;
+    http.expectOne('/api/tasks/a').flush({}, { status: 500, statusText: 'Error' });
+    await a;
+    expect(component.visible().map((task) => task.status)).toEqual(['ACTIVE', 'COMPLETED']);
+    http.verify();
   });
 
   it('TasksPage: optimistically toggles task status, supports undo, and rolls back on error', async () => {

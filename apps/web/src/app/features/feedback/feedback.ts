@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Api, Page, errorMessage, Feedback, Toasts } from '@lifequest/data-access';
+import { Api, Page, Feedback, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
 import { Pagination, ErrorState, Icon, PageHeader, SectionTitle, Skeleton } from '@lifequest/ui';
 import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-feedback',
   imports: [
+    TranslatePipe,
     UnsavedForm,
     Pagination,
     LocalizedDatePipe,
@@ -39,13 +41,13 @@ export class FeedbackPage {
     anonymous: [false],
   });
   readonly categories = [
-    { id: 'BUG', en: 'Something is broken', ar: 'شيء لا يعمل' },
-    { id: 'SUGGESTION', en: 'A little suggestion', ar: 'اقتراح صغير' },
-    { id: 'UX', en: 'Make it easier to use', ar: 'اجعل الاستخدام أسهل' },
-    { id: 'FEATURE', en: 'A feature I would love', ar: 'ميزة أود إضافتها' },
-    { id: 'CONTENT', en: 'Content feedback', ar: 'ملاحظات على المحتوى' },
-    { id: 'COMPLAINT', en: 'A concern to raise', ar: 'شكوى أو قلق' },
-    { id: 'OTHER', en: 'Something else', ar: 'شيء آخر' },
+    { id: 'BUG', key: 'web.feedback.categories.bug' },
+    { id: 'SUGGESTION', key: 'web.feedback.categories.suggestion' },
+    { id: 'UX', key: 'web.feedback.categories.usability' },
+    { id: 'FEATURE', key: 'web.feedback.categories.feature' },
+    { id: 'CONTENT', key: 'web.feedback.categories.content' },
+    { id: 'COMPLAINT', key: 'web.feedback.categories.complaint' },
+    { id: 'OTHER', key: 'web.feedback.categories.other' },
   ];
   page(page: number) {
     void this.resource.load(`feedback?page=${page}`);
@@ -78,7 +80,7 @@ export class FeedbackPage {
       await this.resource.load();
     } catch (error) {
       applyServerValidation(this.form, error);
-      this.error.set(errorMessage(error));
+      this.error.set(this.api.errorMessage(error));
     } finally {
       this.saving.set(false);
     }

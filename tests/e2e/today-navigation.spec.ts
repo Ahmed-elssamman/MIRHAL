@@ -14,15 +14,18 @@ test('Today shows one next step and keeps advanced planning reachable on mobile'
   await expect(nextStep.getByRole('button', { name: 'Mark done' })).toBeVisible();
 
   const quick = page.getByRole('navigation', { name: 'Quick navigation' });
-  await expect(quick.getByRole('link')).toHaveCount(5);
-  for (const name of ['Home', 'Today', 'Journey', 'Rewards', 'Challenges']) {
+  await expect(quick.getByRole('link')).toHaveCount(4);
+  for (const name of ['Today', 'Habits', 'Tasks', 'Journey']) {
     await expect(quick.getByRole('link', { name, exact: true })).toBeVisible();
   }
 
   await page.getByRole('button', { name: 'Open navigation' }).click();
-  await page.getByRole('button', { name: 'More' }).click();
-  await page.getByRole('link', { name: 'Habits', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'More', exact: true })).toHaveCount(0);
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Habits', exact: true }).click();
   await expect(page).toHaveURL(/\/habits$/);
+  await expect(page.locator('h1')).toBeVisible();
+  await page.goto('/goals');
+  await expect(page).toHaveURL(/\/goals$/);
   await expect(page.locator('h1')).toBeVisible();
 
   await page.setViewportSize({ width: 812, height: 375 });

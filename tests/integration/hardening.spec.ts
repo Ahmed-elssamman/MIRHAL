@@ -123,6 +123,16 @@ describe('Security boundaries under malformed requests and concurrent account ch
       await storage.remove(key);
     }
   });
+  it('erases explicitly requested attachments even when their retry is scheduled later', async () => {
+    const storage = app.get(AttachmentStorage);
+    const key = await storage.put(Buffer.from(`erase-now-${randomUUID()}`));
+    await db.attachmentDeletion.create({
+      data: { storageKey: key, retryAt: new Date(Date.now() + 60_000) },
+    });
+    await app.get(AttachmentCleanup).drain([key]);
+    await expect(storage.read(key)).rejects.toThrow('Attachment not found');
+    expect(await db.attachmentDeletion.count({ where: { storageKey: key } })).toBe(0);
+  });
   it.each(['Pacific/Honolulu', 'Africa/Cairo'])(
     'preserves UTC limits, calendar streaks and monthly XP in database timezone %s',
     async (timezone) => {
@@ -332,7 +342,8 @@ describe('Security boundaries under malformed requests and concurrent account ch
           title: 'Frozen points',
           mode: 'SCORE',
           friendIds: [friend.id],
-          startDate: new Date().toISOString(),
+          // Give the challenge a stable active window before recording evidence.
+          startDate: new Date(Date.now() - 5_000).toISOString(),
           endDate: new Date(Date.now() + 86_400_000).toISOString(),
           target: 100,
         }),

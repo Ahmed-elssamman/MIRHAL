@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Api } from '@lifequest/data-access';
 import { ErrorState, Progress, Skeleton } from '@lifequest/ui';
 import { Preferences } from '@lifequest/utilities';
@@ -17,7 +18,8 @@ interface Insights {
 }
 @Component({
   selector: 'lq-planning-insights',
-  imports: [ErrorState, Progress, Skeleton],
+  imports: [
+    TranslatePipe,ErrorState, Progress, Skeleton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `@if (resource.loading() && !resource.data()) {
       <lq-skeleton />
@@ -26,23 +28,20 @@ interface Insights {
     } @else if (resource.data(); as data) {
       <section class="card mt-6 p-6">
         <h2 class="text-lg font-semibold">
-          {{ i18n.t('Small actions, healthier routines', 'خطوات صغيرة وروتين أفضل') }}
+          {{ ('admin.features.analytics.copy.small_actions_healthier_routines_8504e504' | translate) }}
         </h2>
         <p class="my-4 text-xs leading-6 text-muted">
           {{
-            i18n.t(
-              'Completion across current active schedules in the last 30 days. A pause is a useful adjustment, not a failure.',
-              'الإنجاز وفق الجداول النشطة الحالية خلال 30 يوماً. التوقف تعديل مفيد وليس فشلاً.'
-            )
+            ('admin.features.analytics.copy.completion_across_current_active_schedules_in_the_last_30_days_a_pause_is_a_useful_adjustment_not_a_failure_b3cf2830' | translate)
           }}
         </p>
         <div class="mb-3 flex justify-between text-sm">
-          <span>{{ i18n.t('Scheduled habit adherence', 'الالتزام بالعادات المجدولة') }}</span
+          <span>{{ ('admin.features.analytics.copy.scheduled_habit_adherence_8af8cde5' | translate) }}</span
           ><strong>{{ data.habitCompletionRate }}%</strong>
         </div>
         <lq-progress
           [value]="data.habitCompletionRate"
-          [label]="i18n.t('Habit adherence', 'الالتزام بالعادات')"
+          [label]="('admin.features.analytics.copy.habit_adherence_3a12f796' | translate)"
         />
         <div class="mt-5 flex flex-wrap gap-3">
           @for (item of data.habits; track item.status) {
@@ -54,16 +53,13 @@ interface Insights {
         <p class="mt-5 text-xs text-muted">
           {{ data.experiments }}
           {{
-            i18n.t(
-              'Habit Lab experiments in the last 30 days',
-              'تجربة في مختبر العادات خلال 30 يوماً'
-            )
+            ('admin.features.analytics.copy.habit_lab_experiments_in_the_last_30_days_89d5bb64' | translate)
           }}
         </p>
       </section>
       <section class="mt-6">
         <h2 class="mb-4 text-lg font-semibold">
-          {{ i18n.t('From intentions to outcomes', 'من النوايا إلى النتائج') }}
+          {{ ('admin.features.analytics.copy.from_intentions_to_outcomes_793b1004' | translate) }}
         </h2>
         <div class="grid gap-4 md:grid-cols-3">
           @for (group of data.planning; track group.kind) {
@@ -87,7 +83,7 @@ interface Insights {
                 </div>
               } @empty {
                 <p class="text-xs leading-6 text-muted">
-                  {{ i18n.t('New intentions will appear here.', 'ستظهر النوايا الجديدة هنا.') }}
+                  {{ ('admin.features.analytics.copy.new_intentions_will_appear_here_babb72fb' | translate) }}
                 </p>
               }
             </article>

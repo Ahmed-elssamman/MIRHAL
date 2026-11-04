@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { Api, Dashboard, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
@@ -16,6 +17,7 @@ import {
 @Component({
   selector: 'lq-dashboard',
   imports: [
+    TranslatePipe,
     RouterLink,
     PageHeader,
     LocalizedDatePipe,

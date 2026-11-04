@@ -1,49 +1,60 @@
 import { expect, test } from '@playwright/test';
 
-test('the complete learning journey supports keyboard selection, simple mode and reduced motion in RTL', async ({
+test('the Help journey and feedback form work on a narrow viewport in both directions', async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto('/help');
-  const navigation = page.getByRole('navigation', { name: 'Explore the journey' });
-  await expect(navigation.getByRole('button')).toHaveCount(4);
-  const steps = [
-    ['Goal', 'Choose a meaningful goal'],
-    ['Project', 'Give it a project'],
-    ['Task', 'Find the next clear action'],
-    ['Habit', 'Build your daily rhythm'],
-    ['Daily check-in', 'Check in with yourself'],
-    ['Quest', 'Take on a weekly quest'],
-    ['XP', 'Let progress add up'],
-    ['Level', 'Reach a new level'],
-    ['Achievement', 'Celebrate meaningful achievements'],
-    ['Reward', 'Make room for enjoyment'],
-    ['Challenge', 'Grow a little, together'],
-    ['Monthly review', 'See the season you are building'],
-  ];
-  for (const [label, heading] of steps) {
-    const button = page.getByRole('button', { name: label, exact: true });
-    await button.focus();
-    await button.press('Enter');
-    await expect(button).toBeFocused();
-    await expect(button).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator('article').getByRole('heading', { name: heading })).toBeVisible();
+
+  const carousel = page.locator('[aria-roledescription="carousel"]');
+  await expect(carousel).toBeVisible();
+  await expect(
+    carousel.getByRole('heading', { name: 'Start with a small intention' }),
+  ).toBeVisible();
+  await carousel.focus();
+  await carousel.press('ArrowRight');
+  await expect(
+    carousel.getByRole('heading', { name: 'Give your intention a clear goal' }),
+  ).toBeVisible();
+  await expect(carousel.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '2');
+  for (let step = 0; step < 4; step++) {
+    await page.getByRole('button', { name: 'Next' }).click();
   }
-  await expect(navigation.getByRole('button')).toHaveCount(15);
-  for (const title of ['Make rewards more personal', 'Keep your journey yours']) {
-    const button = navigation.getByRole('button', { name: title });
-    await button.click();
-    await expect(button).toHaveAttribute('aria-current', 'step');
-    await expect(page.locator('article h2')).toHaveText(title);
-  }
-  await page.getByRole('button', { name: /The whole journey/ }).click();
-  await expect(navigation.getByRole('button')).toHaveCount(4);
-  await expect(page.locator('article h2')).toHaveText('Choose a meaningful goal');
+  await expect(
+    carousel.getByRole('heading', { name: 'Keep going at a sustainable pace' }),
+  ).toBeVisible();
+  await expect(carousel.getByRole('link', { name: 'Ready to begin?' })).toHaveAttribute(
+    'href',
+    '/auth/register',
+  );
+
   await page.getByRole('button', { name: 'ع', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-  await page.getByRole('button', { name: 'مستوى', exact: true }).press('Space');
-  await expect(page.locator('article h2')).toHaveText('صل إلى مستوى جديد');
+  await expect(carousel.getByRole('heading', { name: 'استمر بإيقاع يناسبك' })).toBeVisible();
+  await carousel.focus();
+  await carousel.press('ArrowRight');
+  await expect(carousel.getByRole('heading', { name: 'لاحظ التقدم اللي بتعمله' })).toBeVisible();
+  await carousel.evaluate((element) => {
+    const start = new Touch({ identifier: 1, target: element, clientX: 280, clientY: 80 });
+    const end = new Touch({ identifier: 1, target: element, clientX: 40, clientY: 80 });
+    element.dispatchEvent(
+      new TouchEvent('touchstart', { bubbles: true, touches: [start], changedTouches: [start] }),
+    );
+    element.dispatchEvent(
+      new TouchEvent('touchend', { bubbles: true, touches: [], changedTouches: [end] }),
+    );
+  });
+  await expect(carousel.getByRole('heading', { name: 'استمر بإيقاع يناسبك' })).toBeVisible();
+
+  const feedback = page.locator('#share-feedback');
+  await expect(feedback.getByRole('radio')).toHaveCount(5);
+  await expect(feedback.getByText('نفسي يكون فيه طريقة أسهل لمراجعة تقدمي.')).toBeVisible();
+  await expect(feedback.getByRole('button', { name: 'شاركنا فكرتك' })).toBeDisabled();
+  await feedback.getByLabel('عنوان قصير').fill('ملاحظة بسيطة');
+  await feedback.getByLabel('احكيلنا أكتر').fill('أتمنى أراجع تقدمي الأسبوعي بطريقة أوضح.');
+  await expect(feedback.getByRole('button', { name: 'شاركنا فكرتك' })).toBeEnabled();
+
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
     true,
   );

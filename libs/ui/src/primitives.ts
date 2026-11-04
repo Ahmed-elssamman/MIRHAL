@@ -1,9 +1,11 @@
 import { Preferences } from '@lifequest/utilities';
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from './icon';
 @Component({
   selector: 'lq-logo',
+  imports: [TranslatePipe],
   template: `
     <span class="flex items-center gap-2.5">
       <img
@@ -15,10 +17,10 @@ import { Icon } from './icon';
         height="36"
       />
       @if (compact()) {
-        <span class="sr-only">{{ i18n.t('MIRHAL', 'مِرحال') }}</span>
+        <span class="sr-only">{{ ('shared.ui.copy.mirhal_5f33ddf4' | translate) }}</span>
       } @else {
         <span class="text-[22px] font-bold tracking-[-0.8px]"
-          >{{ i18n.t('MIRHAL', 'مِرحال') }}<span class="text-brand">.</span></span
+          >{{ ('shared.ui.copy.mirhal_5f33ddf4' | translate) }}<span class="text-brand">.</span></span
         >
       }
     </span>
@@ -42,7 +44,8 @@ export class PageHeader {
 }
 @Component({
   selector: 'lq-empty',
-  imports: [Icon],
+  imports: [
+    Icon],
   template:
     '<div class="card flex flex-col items-center px-6 py-14 text-center"><span class="mb-5 flex size-16 items-center justify-center rounded-2xl bg-brand-soft text-brand"><lq-icon [name]="icon()" [size]="28" /></span><h2 class="text-lg font-semibold">{{ title() }}</h2><p class="mt-2 max-w-sm text-sm leading-relaxed text-muted">{{ description() }}</p><div class="mt-5"><ng-content /></div></div>',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,9 +57,10 @@ export class EmptyState {
 }
 @Component({
   selector: 'lq-error',
-  imports: [Icon],
+  imports: [
+    TranslatePipe,Icon],
   template:
-    '<div role="alert" class="card flex flex-wrap items-center gap-4 border-rose-200 p-5"><lq-icon name="alert" /><div class="min-w-0 flex-1"><p class="font-semibold">{{ title() || i18n.t(\'A small detour\',\'عقبة صغيرة\') }}</p><p class="mt-1 text-sm text-muted">{{ message() }}</p></div><button type="button" class="btn btn-secondary" (click)="retry.emit()"><lq-icon name="refresh" [size]="16" />{{ retryLabel() || i18n.t(\'Try again\',\'حاول مجدداً\') }}</button></div>',
+    '<div role="alert" class="card flex flex-wrap items-center gap-4 border-rose-200 p-5"><lq-icon name="alert" /><div class="min-w-0 flex-1"><p class="font-semibold">{{ title() || (\'shared.ui.copy.a_small_detour_5ee0e344\' | translate) }}</p><p class="mt-1 text-sm text-muted">{{ message() }}</p></div><button type="button" class="btn btn-secondary" (click)="retry.emit()"><lq-icon name="refresh" [size]="16" />{{ retryLabel() || (\'shared.ui.copy.try_again_fb7db552\' | translate) }}</button></div>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ErrorState {
@@ -68,8 +72,9 @@ export class ErrorState {
 }
 @Component({
   selector: 'lq-skeleton',
+  imports: [TranslatePipe],
   template:
-    '<div aria-busy="true" [attr.aria-label]="i18n.t(\'Loading\',\'جارٍ التحميل\')" class="space-y-5"><div class="skeleton h-8 w-1/3"></div><div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">@for (item of [1,2,3]; track item) { <div class="card p-6"><div class="skeleton mb-5 size-11"></div><div class="skeleton mb-3 h-5 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div> }</div><div class="skeleton h-64 w-full"></div></div>',
+    '<div aria-busy="true" [attr.aria-label]="(\'shared.ui.copy.loading_c84b4a51\' | translate)" class="space-y-5"><div class="skeleton h-8 w-1/3"></div><div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">@for (item of [1,2,3]; track item) { <div class="card p-6"><div class="skeleton mb-5 size-11"></div><div class="skeleton mb-3 h-5 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div> }</div><div class="skeleton h-64 w-full"></div></div>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Skeleton {
@@ -77,8 +82,9 @@ export class Skeleton {
 }
 @Component({
   selector: 'lq-progress',
+  imports: [TranslatePipe],
   template:
-    '<div role="progressbar" [attr.aria-label]="label() || i18n.t(\'Progress\',\'التقدم\')" [attr.aria-valuenow]="rounded()" aria-valuemin="0" aria-valuemax="100" class="h-1.5 overflow-hidden rounded-full bg-line"><div class="h-full origin-left rtl:origin-right rounded-full" [class]="color()" [style.transform]="\'scaleX(\' + rounded()/100 + \')\'" style="transition: transform 450ms ease"></div></div>',
+    '<div role="progressbar" [attr.aria-label]="label() || (\'shared.ui.copy.progress_7dffce4e\' | translate)" [attr.aria-valuenow]="rounded()" aria-valuemin="0" aria-valuemax="100" class="h-1.5 overflow-hidden rounded-full bg-line"><div class="h-full origin-left rtl:origin-right rounded-full" [class]="color()" [style.transform]="\'scaleX(\' + rounded()/100 + \')\'" style="transition: transform 450ms ease"></div></div>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Progress {
@@ -116,9 +122,10 @@ export class StatCard {
 }
 @Component({
   selector: 'lq-section-title',
-  imports: [RouterLink, Icon],
+  imports: [
+    TranslatePipe,RouterLink, Icon],
   template:
-    '<div class="mb-4 flex items-center justify-between gap-3"><h2 class="text-base font-semibold tracking-tight">{{ title() }}</h2>@if (link()) { <a [routerLink]="link()" class="inline-flex min-h-10 items-center gap-1 text-xs font-medium text-brand">{{ linkLabel() || i18n.t(\'View all\',\'عرض الكل\') }}<lq-icon name="arrow-right" [size]="14" /></a> }<ng-content /></div>',
+    '<div class="mb-4 flex items-center justify-between gap-3"><h2 class="text-base font-semibold tracking-tight">{{ title() }}</h2>@if (link()) { <a [routerLink]="link()" class="inline-flex min-h-10 items-center gap-1 text-xs font-medium text-brand">{{ linkLabel() || (\'shared.ui.copy.view_all_92edc7b5\' | translate) }}<lq-icon name="arrow-right" [size]="14" /></a> }<ng-content /></div>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SectionTitle {

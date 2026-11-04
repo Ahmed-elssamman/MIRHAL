@@ -50,6 +50,7 @@ test('short onboarding supports skipped answers, validation and an unfinished re
   await page.goto('/today');
   await expect(page).toHaveURL(/\/onboarding$/);
 
+  await page.request.post('/api/auth/logout', { headers: { Origin: 'http://localhost:4300' } });
   await page.goto('/auth/login');
   await page.locator('#email').fill(email);
   await page.locator('#password').fill(password);
@@ -70,6 +71,7 @@ test('short onboarding supports skipped answers, validation and an unfinished re
     profile: { preferredRoutine: 'evening', profileVisibility: 'PRIVATE' },
   });
 
+  await page.request.post('/api/auth/logout', { headers: { Origin: 'http://localhost:4300' } });
   await page.goto('/auth/login');
   await page.locator('#email').fill(email);
   await page.locator('#password').fill(password);
