@@ -584,128 +584,6 @@
         }
       }
     },
-    "help": {
-      "steps": {
-        "step01": {
-          "title": "Choose a meaningful goal",
-          "text": "Start with an outcome that matters to you. A goal is your direction, not another item on a list.",
-          "example": "“Feel stronger and more energetic.”",
-          "label": "THE DIRECTION"
-        },
-        "step02": {
-          "title": "Give it a project",
-          "text": "A project is a body of work that moves a goal forward. Break an ambitious outcome into something you can actually build.",
-          "example": "“Build a simple home workout routine.”",
-          "label": "THE PLAN"
-        },
-        "step03": {
-          "title": "Find the next clear action",
-          "text": "Tasks are individual pieces of work. Keep them specific enough that you know exactly what to do next.",
-          "example": "“Choose three exercises and clear a little space.”",
-          "label": "THE NEXT STEP"
-        },
-        "step04": {
-          "title": "Build your daily rhythm",
-          "text": "Habits are repeated behaviors. Choose a schedule, a target, and a tiny minimum action for busy days.",
-          "example": "“Move for 20 minutes. On busy days, just five.”",
-          "label": "THE RHYTHM"
-        },
-        "step05": {
-          "title": "Check in with yourself",
-          "text": "A daily check-in captures the person behind the progress. Notice your energy, one win, and what might help tomorrow.",
-          "example": "“The walk helped my mood. Tomorrow, go before lunch.”",
-          "label": "THE REFLECTION"
-        },
-        "step06": {
-          "title": "Take on a weekly quest",
-          "text": "A quest gives your week one clear focus. Finish a handful of actions toward something worth doing.",
-          "example": "“A week of movement: plan, practice, and reflect.”",
-          "label": "THE MISSION"
-        },
-        "step07": {
-          "title": "Let progress add up",
-          "text": "Completed actions earn XP. It is recorded once, securely, and becomes a reminder of the work you have put in.",
-          "example": "“A full habit earns 20–40 XP. Tiny versions count, too.”",
-          "label": "THE PROGRESS"
-        },
-        "step08": {
-          "title": "Reach a new level",
-          "text": "Levels recognize all the XP you have earned. Spending XP on a reward never lowers your level.",
-          "example": "Earn 250 lifetime XP to reach “Finding rhythm”.",
-          "label": "THE MILESTONE"
-        },
-        "step09": {
-          "title": "Celebrate meaningful achievements",
-          "text": "Achievements recognize specific milestones, such as your first habit or a completed quest. Each achievement unlocks once and can award extra XP.",
-          "example": "“The first step” unlocks after your first habit action.",
-          "label": "THE ACHIEVEMENT"
-        },
-        "step10": {
-          "title": "Make room for enjoyment",
-          "text": "Spend available XP on personal rewards. Rest and enjoyment belong in a balanced life. Your level stays yours.",
-          "example": "“A slow coffee morning. A book. A day just for me.”",
-          "label": "THE REWARD"
-        },
-        "step11": {
-          "title": "Grow a little, together",
-          "text": "Invite friends to a private challenge. Agree on the rules first, then choose what you share. Cooperation counts.",
-          "example": "“Together, let’s show up for seven days.”",
-          "label": "THE CONNECTION"
-        },
-        "step12": {
-          "title": "See the season you are building",
-          "text": "Your monthly journey brings the bigger picture into focus. Review your strongest areas, learning, and next adjustments.",
-          "example": "“Consistency was my win. Next month, protect my evenings.”",
-          "label": "THE BIGGER PICTURE"
-        },
-        "step13": {
-          "title": "Turn a hard day into learning",
-          "text": "If a habit is not working, investigate kindly. Change the time, lower the target, try an experiment, or take a pause.",
-          "example": "“Too tired at night? Try ten minutes after breakfast.”",
-          "label": "THE FRESH START"
-        },
-        "step14": {
-          "title": "Make rewards more personal",
-          "text": "Choose favorites and share optional feedback after a reward. MIRHAL uses those choices to suggest other rewards you may enjoy.",
-          "example": "“I loved the coffee reward. Show me a few similar ideas.”",
-          "label": "YOUR TASTE"
-        },
-        "step15": {
-          "title": "Keep your journey yours",
-          "text": "Your reflections, mood, and exact behavior stay private. In challenges, you decide whether to share a score, progress, or streak.",
-          "example": "“Share my challenge score, but keep my journal private.”",
-          "label": "YOUR CHOICE"
-        }
-      },
-      "connections": {
-        "goal": "Goal",
-        "project": "Project",
-        "task": "Task",
-        "habit": "Habit",
-        "checkIn": "Daily check-in",
-        "quest": "Quest",
-        "xp": "XP",
-        "level": "Level",
-        "achievement": "Achievement",
-        "reward": "Reward",
-        "challenge": "Challenge",
-        "monthlyReview": "Monthly review"
-      },
-      "todayCards": {
-        "habit": {
-          "title": "Choose one tiny habit.",
-          "text": "The smallest version is enough."
-        },
-        "task": {
-          "title": "Do one meaningful task.",
-          "text": "A clear next step toward your goal."
-        },
-        "reflection": {
-          "title": "Take a minute to reflect.",
-          "text": "Notice a win. Make tomorrow easier."
-        }
-      }
-    },
     "checkIn": {
       "moods": {
         "heavy": "Heavy",
@@ -1074,22 +952,145 @@
         }
       },
       "help": {
-        "copy": {
-          "my_space_c0444cd9": "My space",
-          "a_field_guide_to_your_better_everyday_80f16a16": "A FIELD GUIDE TO YOUR BETTER\r\n        EVERYDAY",
-          "one_small_step_at_a_time_4c533589": "One small step at a time.",
-          "mirhal_brings_the_pieces_of_your_life_together_here_s_how_to_make_it_yours_without_trying_to_do_everything_at_once_2486c300": "MIRHAL brings the pieces of your life together. Here’s how to make it yours,\r\n        without trying to do everything at once.",
-          "beginner_mode_show_the_whole_journey_18108bab": "Beginner\r\n        mode · Show the whole journey",
-          "the_whole_journey_keep_it_simple_a18a9b2d": "The whole journey ·\r\n        Keep it simple",
-          "explore_the_journey_f2205fd3": "Explore the journey",
-          "try_this_step_da34f0dc": "Try this step",
-          "the_connections_make_the_difference_bf54bcb5": "THE CONNECTIONS MAKE THE DIFFERENCE",
-          "from_a_little_intention_to_real_change_ce03bb73": "From a little intention to real change.",
-          "what_should_i_do_today_0d7eca38": "What should I do today?",
-          "take_me_to_today_44afacdc": "Take me to Today",
-          "a_few_things_you_might_be_wondering_2dd90541": "A few things you might be wondering.",
-          "still_finding_your_way_we_re_here_cf63582f": "Still finding your way? We’re here.",
-          "share_your_thoughts_d609be5f": "Share your thoughts"
+        "redesign": {
+          "home": "MIRHAL home",
+          "getStarted": "Get started",
+          "eyebrow": "A practical guide to your next step",
+          "welcome": "A little intention,",
+          "welcomeAccent": "a meaningful change.",
+          "intro": "MIRHAL helps you turn the things that matter into goals, manageable tasks, daily habits, and time to reflect. Start where you are; your journey can grow one step at a time.",
+          "journeyEyebrow": "YOUR JOURNEY",
+          "journeyTitle": "From a small intention to real change.",
+          "journeyIntro": "Six practical steps to help you begin, keep going, and notice what is changing.",
+          "slideLabel": "ONE STEP AT A TIME",
+          "step": "Step",
+          "smallSteps": "Small steps add up",
+          "tryThis": "TRY THIS",
+          "progress": "Journey progress",
+          "previous": "Previous",
+          "next": "Next",
+          "chooseStep": "Choose a journey step",
+          "goToStep": "Go to step",
+          "startJourney": "Ready to begin?",
+          "slides": {
+            "1": {
+              "title": "Start with a small intention",
+              "message": "You do not need to change everything today. Choose one part of life you would like to make a little better.",
+              "action": "Name one area that matters to you. When you are ready, create a goal in MIRHAL to give it direction."
+            },
+            "2": {
+              "title": "Give your intention a clear goal",
+              "message": "A clear, realistic outcome makes it easier to choose what deserves your time.",
+              "action": "Write down what you hope will be different. Add it as a goal in MIRHAL and keep the wording meaningful to you."
+            },
+            "3": {
+              "title": "Break the goal into small steps",
+              "message": "Big outcomes become less daunting when you can see the next piece of work.",
+              "action": "Choose one specific next action and add it as a task. Projects can help organize a larger body of work around a goal."
+            },
+            "4": {
+              "title": "Begin with what you can do today",
+              "message": "The perfect time rarely arrives. A small action you can do now is a real beginning.",
+              "action": "Open Today to see your daily habits and tasks, then choose one action that fits the time and energy you have."
+            },
+            "5": {
+              "title": "Notice the progress you are making",
+              "message": "Each completed action is evidence of the effort you have put in, even when progress feels quiet.",
+              "action": "Check off completed tasks and habits. Use Analytics to review your activity over time and see what is working."
+            },
+            "6": {
+              "title": "Keep going at a sustainable pace",
+              "message": "Lasting change grows from a rhythm you can return to, including after a difficult day.",
+              "action": "Choose a habit schedule and a manageable minimum in Habits. Adjust it when life changes, then take the next small step."
+            }
+          },
+          "toolsEyebrow": "TOOLS FOR THE JOURNEY",
+          "toolsTitle": "A clear place for each kind of progress.",
+          "toolsIntro": "MIRHAL connects direction with everyday action. Use the tools that help you today; you do not need to set everything up at once.",
+          "tools": {
+            "goal": {
+              "title": "Goals set your direction",
+              "description": "Name an outcome that matters and connect your effort to the bigger picture."
+            },
+            "task": {
+              "title": "Tasks make the next step clear",
+              "description": "Capture a specific piece of work so you know what to do next."
+            },
+            "habit": {
+              "title": "Habits build a steady rhythm",
+              "description": "Set a repeatable behavior with a schedule and a small minimum for busy days."
+            },
+            "today": {
+              "title": "Today brings it together",
+              "description": "See your day’s habits and tasks, and check in with yourself as you go."
+            }
+          },
+          "openFeature": "Explore",
+          "feedbackTitle": "Your feedback can make MIRHAL better.",
+          "feedbackIntro": "We are building MIRHAL to be a useful companion on your journey. Share an idea, suggestion, problem, or something you enjoyed. Your feedback helps us understand what people need and improve the experience.",
+          "feedbackEncouragement": "Your idea does not need to be big or fully formed. Even a small observation can point us toward an important improvement.",
+          "feedbackPrivacy": "We use feedback to understand needs and improve MIRHAL. It is sent to our support team and is not shown to other users. Please do not include passwords or sensitive personal details.",
+          "examples": {
+            "1": "I wish it were easier to review my progress.",
+            "2": "I had trouble finding a page.",
+            "3": "The updated design made the app easier to use.",
+            "4": "I have an idea that could make MIRHAL simpler."
+          },
+          "feedbackSuccess": "Thank you for sharing. Your feedback helps us improve MIRHAL one step at a time.",
+          "feedbackError": "We could not send your feedback. Please check your connection and try again. Sign in is required to share feedback.",
+          "signInToShare": "Sign in to share feedback",
+          "feedbackCategory": "What would you like to share?",
+          "categories": {
+            "idea": {
+              "title": "A new idea",
+              "description": "A feature or capability to consider"
+            },
+            "usability": {
+              "title": "Using MIRHAL",
+              "description": "Navigation, design, or accessibility"
+            },
+            "problem": {
+              "title": "Something went wrong",
+              "description": "An error or unexpected behavior"
+            },
+            "general": {
+              "title": "A general suggestion",
+              "description": "Any thought about MIRHAL"
+            },
+            "positive": {
+              "title": "Something I liked",
+              "description": "A feature or moment that helped"
+            }
+          },
+          "titleLabel": "A short title",
+          "titlePlaceholder": "What is your feedback about?",
+          "titleValidation": "Enter a title between 2 and 100 characters.",
+          "messageLabel": "Tell us a little more",
+          "messagePlaceholder": "What happened, or what would make the experience better?",
+          "messageHint": "Please share at least 10 characters. Avoid passwords or sensitive personal details.",
+          "messageValidation": "Enter a message between 10 and 2,000 characters.",
+          "sending": "Sending…",
+          "submitFeedback": "Share your idea",
+          "feedbackTogether": "Let’s build a better experience together.",
+          "faqTitle": "A few things you might be wondering.",
+          "faqs": {
+            "tracker": {
+              "question": "Is this just a habit tracker?",
+              "answer": "MIRHAL connects outcomes, real work, repeated behavior, reflection, and recovery. Habits are one part of a complete personal operating system."
+            },
+            "missedDay": {
+              "question": "What happens if I miss a day?",
+              "answer": "Nothing is taken away. Notice what happened, use your minimum action, and try again. Your past progress is still yours."
+            },
+            "privacy": {
+              "question": "Can friends see my journal or habit counts?",
+              "answer": "No. Your journal, mood, exact behavioral counts, and private notes stay private. Challenge sharing is limited to the progress, score, or streak you choose."
+            },
+            "journeyScore": {
+              "question": "How is my journey score calculated?",
+              "answer": "Habits contribute 30%, quests 20%, goals 15%, check-ins 15%, projects 10%, and recovery 10%. Your Insights page shows every contribution."
+            }
+          }
         }
       },
       "journey": {

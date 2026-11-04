@@ -1,161 +1,386 @@
 <div class="min-h-screen bg-canvas">
-  <header class="mx-auto flex flex-wrap max-w-6xl items-center justify-between gap-4 px-5 py-7">
-    <a routerLink="/"><lq-logo /></a>
+  <header class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-6">
+    <a routerLink="/" [attr.aria-label]="'web.features.help.redesign.home' | translate"
+      ><lq-logo
+    /></a>
     <div class="flex items-center gap-2">
-      <button class="icon-button text-xs" (click)="i18n.setLanguage(i18n.rtl() ? 'en' : 'ar')">
-        {{ ('common.copy.copy_3c098db4' | translate) }}</button
-      ><a routerLink="/dashboard" class="btn btn-secondary text-xs"
-        >{{ ('web.features.help.copy.my_space_c0444cd9' | translate) }}<lq-icon name="arrow-up-right" [size]="15"
-      /></a>
+      <button
+        type="button"
+        class="icon-button text-xs"
+        (click)="i18n.setLanguage(i18n.rtl() ? 'en' : 'ar')"
+      >
+        {{ 'common.copy.copy_3c098db4' | translate }}
+      </button>
+      <a routerLink="/auth/register" class="btn btn-secondary text-xs">
+        {{ 'web.features.help.redesign.getStarted' | translate
+        }}<lq-icon name="arrow-up-right" [size]="15" />
+      </a>
     </div>
   </header>
+
   <main class="mx-auto max-w-6xl px-5 pb-20">
-    <section class="mx-auto max-w-2xl pb-10 pt-8 text-center">
-      <span class="badge !whitespace-normal bg-brand-soft px-4 py-2 text-brand"
-        ><lq-icon name="compass" [size]="14" />{{
-          ('web.features.help.copy.a_field_guide_to_your_better_everyday_80f16a16' | translate)
-        }}</span
-      >
-      <h1 class="mt-6 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-        {{ ('common.copy.how_mirhal_works_c85b9cc0' | translate) }}<br /><span class="text-brand">{{
-          ('web.features.help.copy.one_small_step_at_a_time_4c533589' | translate)
-        }}</span>
+    <section class="mx-auto max-w-3xl pb-12 pt-8 text-center sm:pt-12">
+      <span class="badge !whitespace-normal bg-brand-soft px-4 py-2 text-brand">
+        <lq-icon name="compass" [size]="14" />{{ 'web.features.help.redesign.eyebrow' | translate }}
+      </span>
+      <h1 class="mt-6 text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
+        {{ 'web.features.help.redesign.welcome' | translate }}<br />
+        <span class="text-brand">{{ 'web.features.help.redesign.welcomeAccent' | translate }}</span>
       </h1>
-      <p class="mt-5 text-sm leading-7 text-muted">
-        {{
-          ('web.features.help.copy.mirhal_brings_the_pieces_of_your_life_together_here_s_how_to_make_it_yours_without_trying_to_do_everything_at_once_2486c300' | translate)
-        }}
+      <p class="mx-auto mt-5 max-w-2xl text-sm leading-7 text-muted sm:text-base">
+        {{ 'web.features.help.redesign.intro' | translate }}
       </p>
     </section>
-    <div class="mb-6 flex justify-center">
-      <button
-        class="btn btn-secondary !whitespace-normal text-xs"
-        [attr.aria-pressed]="beginner()"
-        (click)="toggleBeginner()"
-      >
-        <lq-icon [name]="beginner() ? 'sprout' : 'map'" [size]="16" />{{
-          beginner()
-            ? ('web.features.help.copy.beginner_mode_show_the_whole_journey_18108bab' | translate)
-            : ('web.features.help.copy.the_whole_journey_keep_it_simple_a18a9b2d' | translate)
-        }}
-      </button>
-    </div>
-    <section class="grid grid-cols-1 gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
-      <nav
-        class="grid grid-cols-2 gap-2 lg:flex lg:flex-col"
-        [attr.aria-label]="('web.features.help.copy.explore_the_journey_f2205fd3' | translate)"
-      >
-        @for (step of visible(); track step.titleKey) {
-          <button
-            class="flex items-center gap-3 rounded-xl border p-4 text-start transition-colors"
-            [class]="
-              current() === step
-                ? 'border-brand/30 bg-brand-soft text-brand'
-                : 'border-line bg-surface text-muted hover:border-brand/30'
-            "
-            [attr.aria-current]="current() === step ? 'step' : null"
-            (click)="choose(step)"
-          >
-            <lq-icon [name]="step.icon" [size]="19" /><span class="text-xs font-medium leading-5">{{
-              step.titleKey | translate
-            }}</span>
-          </button>
-        }
-      </nav>
-      @for (step of [current()]; track step) {
-        <article class="card flex flex-col overflow-hidden" aria-live="polite">
-          <div
-            class="relative flex min-h-52 items-center justify-center overflow-hidden bg-[#302943] p-8"
-          >
-            <div class="absolute size-60 rounded-full border border-white/10"></div>
-            <div class="absolute size-40 rounded-full border border-dashed border-white/15"></div>
-            <span
-              class="relative flex size-24 animate-enter items-center justify-center rounded-[28px] border border-white/20 bg-white/10 text-[#d1c4ff]"
-              ><lq-icon [name]="current().icon" [size]="44" /></span
-            ><span
-              class="absolute bottom-5 start-6 text-[10px] font-medium uppercase tracking-widest text-white/70"
-              >{{ current().labelKey | translate }}</span
-            ><span class="absolute bottom-5 end-6 text-xs text-white/70"
-              >{{ selected() + 1 }} / {{ steps.length }}</span
-            >
-          </div>
-          <div class="flex flex-1 flex-col p-6 sm:p-9">
-            <h2 class="text-2xl font-semibold tracking-tight">
-              {{ current().titleKey | translate }}
-            </h2>
-            <p class="mt-4 text-sm leading-7 text-muted">
-              {{ current().textKey | translate }}
-            </p>
-            <div
-              class="my-6 rounded-xl border-s-4 border-brand bg-brand-soft p-5 text-sm leading-7"
-            >
-              {{ current().exampleKey | translate }}
-            </div>
-            <a
-              [routerLink]="current().link"
-              class="mt-auto inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-brand"
-              >{{ ('web.features.help.copy.try_this_step_da34f0dc' | translate)
-              }}<lq-icon name="arrow-right" [size]="15"
-            /></a>
-          </div>
-        </article>
-      }
-    </section>
-    <section class="mt-14">
-      <div class="mb-6 text-center">
+
+    <section aria-labelledby="journey-title" class="mb-16">
+      <div class="mb-7 text-center">
         <p class="eyebrow text-brand">
-          {{ ('web.features.help.copy.the_connections_make_the_difference_bf54bcb5' | translate) }}
+          {{ 'web.features.help.redesign.journeyEyebrow' | translate }}
         </p>
-        <h2 class="mt-3 text-2xl font-semibold">
-          {{ ('web.features.help.copy.from_a_little_intention_to_real_change_ce03bb73' | translate) }}
+        <h2 id="journey-title" class="mt-3 text-2xl font-semibold sm:text-3xl">
+          {{ 'web.features.help.redesign.journeyTitle' | translate }}
         </h2>
+        <p class="mt-3 text-sm leading-6 text-muted">
+          {{ 'web.features.help.redesign.journeyIntro' | translate }}
+        </p>
       </div>
-      <div
-        class="flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-line bg-surface p-6"
+
+      <article
+        (touchstart)="onTouchStart($event)"
+        (touchend)="onTouchEnd($event)"
+        (keydown)="onKeydown($event)"
+        role="region"
+        tabindex="0"
+        class="overflow-hidden rounded-3xl border border-line bg-surface shadow-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+        aria-roledescription="carousel"
+        [attr.aria-label]="'web.features.help.redesign.journeyTitle' | translate"
       >
-        @for (item of connections; track item.key; let last = $last) {
-          <button
-            type="button"
-            (click)="beginner.set(false); selected.set(item.step)"
-            [attr.aria-pressed]="selected() === item.step"
-            class="btn btn-secondary flex-col text-xs"
+        <div class="grid lg:grid-cols-[1.05fr_0.95fr]">
+          <div
+            class="journey-art relative flex min-h-64 items-center justify-center overflow-hidden p-8 sm:min-h-80"
+            [attr.data-scene]="currentSlide().visual"
+            aria-hidden="true"
           >
-            <lq-icon [name]="steps[item.step]!.icon" class="text-brand" [size]="22" />
-            {{ item.key | translate }}
-          </button>
-          @if (!last) {
-            <lq-icon
-              [name]="i18n.rtl() ? 'arrow-left' : 'arrow-right'"
-              class="text-muted"
-              [size]="17"
-            />
-          }
-        }
-      </div>
-    </section>
-    <section class="mt-10 rounded-2xl bg-mint p-6 text-mint-ink sm:p-9">
-      <div class="flex items-center gap-3">
-        <lq-icon name="sun" [size]="26" />
-        <h2 class="text-xl font-semibold">
-          {{ ('web.features.help.copy.what_should_i_do_today_0d7eca38' | translate) }}
-        </h2>
-      </div>
-      <div class="mt-6 grid gap-5 sm:grid-cols-3">
-        @for (item of todayCards; track item.number) {
-          <div>
-            <span class="text-[10px]">{{ item.number }}</span>
-            <h3 class="mt-2 text-sm font-semibold">{{ item.titleKey | translate }}</h3>
-            <p class="mt-2 text-xs">{{ item.textKey | translate }}</p>
+            <div class="journey-orbit journey-orbit-one"></div>
+            <div class="journey-orbit journey-orbit-two"></div>
+            <div class="journey-horizon"></div>
+            <div class="journey-sun"></div>
+            <div class="journey-card journey-card-left"><lq-icon name="check" [size]="17" /></div>
+            <div class="journey-card journey-card-right"><lq-icon name="target" [size]="18" /></div>
+            <div class="journey-symbol"><lq-icon [name]="currentSlide().icon" [size]="55" /></div>
+            <span
+              class="absolute bottom-5 start-5 rounded-full border border-white/20 bg-black/15 px-3 py-1.5 text-[10px] font-semibold tracking-wide text-white/90"
+            >
+              {{ 'web.features.help.redesign.slideLabel' | translate }} {{ activeSlide() + 1 }}
+            </span>
           </div>
+
+          <div class="flex flex-col p-6 sm:p-9">
+            <div class="flex items-center justify-between gap-4">
+              <span class="badge bg-brand-soft text-brand"
+                >{{ 'web.features.help.redesign.step' | translate }} {{ activeSlide() + 1 }} /
+                {{ slides.length }}</span
+              >
+              <span class="text-xs font-medium text-muted">{{
+                'web.features.help.redesign.smallSteps' | translate
+              }}</span>
+            </div>
+            <div class="mt-7" aria-live="polite" aria-atomic="true">
+              @for (index of [activeSlide()]; track index) {
+                <div class="animate-enter motion-reduce:animate-none">
+                  <h3 class="text-2xl font-semibold leading-snug tracking-tight sm:text-3xl">
+                    {{ 'web.features.help.redesign.slides.' + (index + 1) + '.title' | translate }}
+                  </h3>
+                  <p class="mt-4 text-sm leading-7 text-muted">
+                    {{
+                      'web.features.help.redesign.slides.' + (index + 1) + '.message' | translate
+                    }}
+                  </p>
+                  <div class="mt-6 rounded-2xl border border-brand/15 bg-brand-soft/60 p-4">
+                    <p class="text-[11px] font-semibold uppercase tracking-wide text-brand">
+                      {{ 'web.features.help.redesign.tryThis' | translate }}
+                    </p>
+                    <p class="mt-2 text-sm leading-6">
+                      {{
+                        'web.features.help.redesign.slides.' + (index + 1) + '.action' | translate
+                      }}
+                    </p>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="mt-auto pt-7">
+              <div
+                class="h-1.5 overflow-hidden rounded-full bg-canvas"
+                role="progressbar"
+                [attr.aria-valuenow]="activeSlide() + 1"
+                [attr.aria-valuemin]="1"
+                [attr.aria-valuemax]="slides.length"
+                [attr.aria-label]="'web.features.help.redesign.progress' | translate"
+              >
+                <span
+                  class="block h-full rounded-full bg-brand transition-[width] duration-300 motion-reduce:transition-none"
+                  [style.width]="progress()"
+                ></span>
+              </div>
+              <div class="mt-5 flex items-center justify-between gap-4">
+                <button
+                  type="button"
+                  class="btn btn-secondary min-h-11"
+                  (click)="previous()"
+                  [disabled]="activeSlide() === 0"
+                  [attr.aria-label]="'web.features.help.redesign.previous' | translate"
+                >
+                  <lq-icon name="arrow-left" [size]="17" />
+                  <span class="hidden sm:inline">{{
+                    'web.features.help.redesign.previous' | translate
+                  }}</span>
+                </button>
+                <div
+                  class="hidden items-center gap-0 sm:flex"
+                  role="group"
+                  [attr.aria-label]="'web.features.help.redesign.chooseStep' | translate"
+                >
+                  @for (slide of slides; track slide.visual; let index = $index) {
+                    <button
+                      type="button"
+                      class="grid size-11 shrink-0 place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
+                      (click)="select(index)"
+                      [attr.aria-label]="
+                        ('web.features.help.redesign.goToStep' | translate) + ' ' + (index + 1)
+                      "
+                      [attr.aria-current]="activeSlide() === index ? 'step' : null"
+                    >
+                      <span
+                        class="size-3 rounded-full transition-colors motion-reduce:transition-none"
+                        [class.bg-brand]="activeSlide() === index"
+                        [class.bg-line-strong]="activeSlide() !== index"
+                      ></span>
+                    </button>
+                  }
+                </div>
+                @if (activeSlide() < slides.length - 1) {
+                  <button
+                    type="button"
+                    class="btn btn-primary min-h-11"
+                    (click)="next()"
+                    [attr.aria-label]="'web.features.help.redesign.next' | translate"
+                  >
+                    <span class="hidden sm:inline">{{
+                      'web.features.help.redesign.next' | translate
+                    }}</span>
+                    <lq-icon name="arrow-right" [size]="17" />
+                  </button>
+                } @else {
+                  <a routerLink="/auth/register" class="btn btn-primary min-h-11">
+                    {{ 'web.features.help.redesign.startJourney' | translate }}
+                    <lq-icon name="arrow-right" [size]="17" />
+                  </a>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="mirhal-tools-title" class="mb-16">
+      <div class="mb-6">
+        <p class="eyebrow text-brand">
+          {{ 'web.features.help.redesign.toolsEyebrow' | translate }}
+        </p>
+        <h2 id="mirhal-tools-title" class="mt-2 text-2xl font-semibold">
+          {{ 'web.features.help.redesign.toolsTitle' | translate }}
+        </h2>
+        <p class="mt-2 max-w-2xl text-sm leading-6 text-muted">
+          {{ 'web.features.help.redesign.toolsIntro' | translate }}
+        </p>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        @for (tool of ['goal', 'task', 'habit', 'today']; track tool) {
+          <a
+            [routerLink]="
+              tool === 'today'
+                ? '/today'
+                : '/' + (tool === 'goal' ? 'goals' : tool === 'task' ? 'tasks' : 'habits')
+            "
+            class="group rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-brand/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand motion-reduce:transition-none"
+          >
+            <span
+              class="flex size-11 items-center justify-center rounded-xl bg-brand-soft text-brand"
+            >
+              <lq-icon
+                [name]="
+                  tool === 'goal'
+                    ? 'target'
+                    : tool === 'task'
+                      ? 'tasks'
+                      : tool === 'habit'
+                        ? 'sprout'
+                        : 'sun'
+                "
+                [size]="21"
+              />
+            </span>
+            <h3 class="mt-4 text-sm font-semibold">
+              {{ 'web.features.help.redesign.tools.' + tool + '.title' | translate }}
+            </h3>
+            <p class="mt-2 text-xs leading-6 text-muted">
+              {{ 'web.features.help.redesign.tools.' + tool + '.description' | translate }}
+            </p>
+            <span class="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-brand"
+              >{{ 'web.features.help.redesign.openFeature' | translate
+              }}<lq-icon name="arrow-right" [size]="14"
+            /></span>
+          </a>
         }
       </div>
-      <a routerLink="/today" class="btn mt-7 bg-mint-ink text-white"
-        >{{ ('web.features.help.copy.take_me_to_today_44afacdc' | translate) }}<lq-icon name="arrow-right" [size]="17"
-      /></a>
     </section>
-    <section class="mx-auto mt-14 max-w-3xl">
-      <h2 class="mb-6 text-center text-2xl font-semibold">
-        {{ ('web.features.help.copy.a_few_things_you_might_be_wondering_2dd90541' | translate) }}
+
+    <section
+      id="share-feedback"
+      aria-labelledby="feedback-title"
+      class="mb-16 rounded-3xl border border-line bg-surface p-6 sm:p-9"
+    >
+      <div class="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
+        <div>
+          <span
+            class="flex size-12 items-center justify-center rounded-2xl bg-brand-soft text-brand"
+            ><lq-icon name="message" [size]="23"
+          /></span>
+          <h2 id="feedback-title" class="mt-5 text-2xl font-semibold leading-tight sm:text-3xl">
+            {{ 'web.features.help.redesign.feedbackTitle' | translate }}
+          </h2>
+          <p class="mt-4 text-sm leading-7 text-muted">
+            {{ 'web.features.help.redesign.feedbackIntro' | translate }}
+          </p>
+          <p class="mt-4 rounded-2xl bg-canvas p-4 text-sm leading-6">
+            {{ 'web.features.help.redesign.feedbackEncouragement' | translate }}
+          </p>
+          <p class="mt-4 text-xs leading-6 text-muted">
+            {{ 'web.features.help.redesign.feedbackPrivacy' | translate }}
+          </p>
+          <div class="mt-5 flex flex-wrap gap-2">
+            @for (example of [1, 2, 3, 4]; track example) {
+              <span
+                class="rounded-full border border-line px-3 py-2 text-[11px] leading-4 text-muted"
+                >“{{ 'web.features.help.redesign.examples.' + example | translate }}”</span
+              >
+            }
+          </div>
+        </div>
+
+        <div>
+          @if (sent()) {
+            <p role="status" class="mb-5 rounded-2xl bg-mint p-4 text-sm leading-6 text-mint-ink">
+              {{ 'web.features.help.redesign.feedbackSuccess' | translate }}
+            </p>
+          }
+          @if (submitError()) {
+            <div
+              role="alert"
+              class="mb-5 rounded-2xl border border-danger/20 bg-danger-soft p-4 text-sm leading-6 text-danger"
+            >
+              <p>{{ 'web.features.help.redesign.feedbackError' | translate }}</p>
+              @if (needsSignIn()) {
+                <a
+                  routerLink="/auth/login"
+                  class="mt-2 inline-flex min-h-11 items-center gap-2 font-semibold underline"
+                  >{{ 'web.features.help.redesign.signInToShare' | translate
+                  }}<lq-icon name="arrow-up-right" [size]="14"
+                /></a>
+              }
+            </div>
+          }
+          <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()" novalidate>
+            <fieldset>
+              <legend class="mb-3 text-sm font-semibold">
+                {{ 'web.features.help.redesign.feedbackCategory' | translate }}
+              </legend>
+              <div class="grid gap-2 sm:grid-cols-2">
+                @for (category of categories; track category.id) {
+                  <label
+                    class="flex min-h-16 cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors hover:border-brand/40 has-[:checked]:border-brand has-[:checked]:bg-brand-soft motion-reduce:transition-none"
+                  >
+                    <input
+                      type="radio"
+                      class="size-4 accent-brand"
+                      formControlName="category"
+                      [value]="category.id"
+                    />
+                    <lq-icon [name]="category.icon" class="text-brand" [size]="18" />
+                    <span
+                      ><span class="block text-xs font-semibold">{{
+                        'web.features.help.redesign.categories.' + category.title | translate
+                      }}</span
+                      ><span class="mt-1 block text-[10px] leading-4 text-muted">{{
+                        'web.features.help.redesign.categories.' + category.description | translate
+                      }}</span></span
+                    >
+                  </label>
+                }
+              </div>
+            </fieldset>
+            <label class="mt-5 block text-xs font-semibold" for="help-feedback-title">{{
+              'web.features.help.redesign.titleLabel' | translate
+            }}</label>
+            <input
+              id="help-feedback-title"
+              class="field mt-2"
+              formControlName="title"
+              [placeholder]="'web.features.help.redesign.titlePlaceholder' | translate"
+              maxlength="100"
+            />
+            @if (feedbackForm.controls.title.touched && feedbackForm.controls.title.invalid) {
+              <p class="mt-1 text-xs text-danger">
+                {{ 'web.features.help.redesign.titleValidation' | translate }}
+              </p>
+            }
+            <label class="mt-4 block text-xs font-semibold" for="help-feedback-message">{{
+              'web.features.help.redesign.messageLabel' | translate
+            }}</label>
+            <textarea
+              id="help-feedback-message"
+              class="field mt-2"
+              formControlName="description"
+              rows="4"
+              maxlength="2000"
+              [placeholder]="'web.features.help.redesign.messagePlaceholder' | translate"
+            ></textarea>
+            <p class="mt-2 text-[11px] leading-5 text-muted">
+              {{ 'web.features.help.redesign.messageHint' | translate }}
+            </p>
+            @if (
+              feedbackForm.controls.description.touched && feedbackForm.controls.description.invalid
+            ) {
+              <p class="mt-1 text-xs text-danger">
+                {{ 'web.features.help.redesign.messageValidation' | translate }}
+              </p>
+            }
+            <button
+              class="btn btn-primary mt-5 min-h-12 w-full"
+              type="submit"
+              [disabled]="saving() || feedbackForm.invalid"
+            >
+              @if (saving()) {
+                {{ 'web.features.help.redesign.sending' | translate }}
+              } @else {
+                {{ 'web.features.help.redesign.submitFeedback' | translate }}
+              }
+              <lq-icon name="arrow-right" [size]="16" />
+            </button>
+            <p class="mt-3 text-center text-[11px] text-muted">
+              {{ 'web.features.help.redesign.feedbackTogether' | translate }}
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-3xl" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="mb-6 text-center text-2xl font-semibold">
+        {{ 'web.features.help.redesign.faqTitle' | translate }}
       </h2>
       <div class="space-y-3">
         @if (articles.loading() && !articles.data()) {
@@ -165,8 +390,8 @@
           <lq-error [message]="articles.error()" (retry)="articles.load()" />
         }
         @for (article of articles.data(); track article.id) {
-          <details class="card p-5">
-            <summary class="cursor-pointer text-sm font-semibold">
+          <details class="rounded-2xl border border-line bg-surface p-5">
+            <summary class="min-h-6 cursor-pointer text-sm font-semibold">
               {{ i18n.t(article.title, article.titleAr) }}
             </summary>
             <p class="mt-4 whitespace-pre-wrap text-sm leading-7 text-muted">
@@ -174,22 +399,16 @@
             </p>
           </details>
         }
-        @for (faq of faqs; track faq.q) {
-          <details class="card p-5">
-            <summary class="cursor-pointer text-sm font-semibold">
-              {{ i18n.t(faq.q, faq.qa) }}
+        @for (faq of faqs; track faq) {
+          <details class="rounded-2xl border border-line bg-surface p-5">
+            <summary class="min-h-6 cursor-pointer text-sm font-semibold">
+              {{ 'web.features.help.redesign.faqs.' + faq + '.question' | translate }}
             </summary>
-            <p class="mt-4 text-sm leading-7 text-muted">{{ i18n.t(faq.a, faq.aa) }}</p>
+            <p class="mt-4 text-sm leading-7 text-muted">
+              {{ 'web.features.help.redesign.faqs.' + faq + '.answer' | translate }}
+            </p>
           </details>
         }
-      </div>
-      <div class="mt-10 text-center">
-        <p class="text-sm text-muted">
-          {{ ('web.features.help.copy.still_finding_your_way_we_re_here_cf63582f' | translate) }}
-        </p>
-        <a routerLink="/feedback" class="btn btn-secondary mt-4"
-          >{{ ('web.features.help.copy.share_your_thoughts_d609be5f' | translate) }}<lq-icon name="message" [size]="16"
-        /></a>
       </div>
     </section>
   </main>

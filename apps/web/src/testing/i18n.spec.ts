@@ -52,8 +52,11 @@ describe('shared ngx-translate dictionaries', () => {
     expect(translations.instant('web.landing.pillars.direction.title')).toBe(
       'A direction that matters',
     );
-    expect(translations.instant('web.help.steps.step01.example')).toBe(
-      '“Feel stronger and more energetic.”',
+    expect(translations.instant('web.features.help.redesign.slides.1.title')).toBe(
+      'Start with a small intention',
+    );
+    expect(translations.instant('web.features.help.redesign.feedbackTitle')).toBe(
+      'Your feedback can make MIRHAL better.',
     );
     expect(translations.instant('web.checkIn.moods.bright')).toBe('Bright');
     expect(translations.instant('web.feedback.categories.usability')).toBe('Make it easier to use');
@@ -66,10 +69,6 @@ describe('shared ngx-translate dictionaries', () => {
     );
     expect(translations.instant('web.profile.avatars.dawn')).toBe('Dawn');
     expect(translations.instant('web.navigation.yourJourney')).toBe('YOUR JOURNEY');
-    expect(translations.instant('web.help.connections.monthlyReview')).toBe('Monthly review');
-    expect(translations.instant('web.help.todayCards.reflection.text')).toContain(
-      'Make tomorrow easier.',
-    );
 
     await firstValueFrom(translations.use('ar'));
     expect(translations.instant('settings.title')).toBe('اجعلها مساحتك المريحة.');
@@ -86,11 +85,12 @@ describe('shared ngx-translate dictionaries', () => {
     expect(translations.instant('web.habitLab.guidance.experiment.title')).toBe('جرّب تجربة أصغر');
     expect(translations.instant('web.profile.avatars.dawn')).toBe('الفجر');
     expect(translations.instant('web.navigation.yourJourney')).toBe('رحلتك');
-    expect(translations.instant('web.help.connections.monthlyReview')).toBe('مراجعة شهرية');
-    expect(translations.instant('web.help.todayCards.reflection.text')).toContain(
-      'اجعل الغد أسهل.',
+    expect(translations.instant('web.features.help.redesign.slides.1.title')).toBe(
+      'ابدأ بنية صغيرة',
     );
-    expect(translations.instant('web.help.steps.step01.label')).toBe('الاتجاه');
+    expect(translations.instant('web.features.help.redesign.feedbackTitle')).toBe(
+      'رأيك يقدر يخلّي مِرحال أفضل.',
+    );
     expect(translations.instant('web.features.landing.copy.begin_your_journey_55d0b609')).toBe(
       'ابدأ رحلتك',
     );

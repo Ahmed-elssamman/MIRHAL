@@ -119,8 +119,8 @@ if (process.argv.includes('--sync-fallbacks')) {
 }
 const keySet = new Set(flatten(english));
 const translatedKeys = [
-  ...[...source.matchAll(/['"]([\w.-]+)['"]\s*\|\s*translate/g)].map(([, key]) => key),
-  ...[...source.matchAll(/\\(['"])([\w.-]+)\\\1\s*\|\s*translate/g)].map(([, , key]) => key),
+  ...[...source.matchAll(/['"]([\w-][\w.-]*)['"]\s*\|\s*translate/g)].map(([, key]) => key),
+  ...[...source.matchAll(/\\(['"])([\w-][\w.-]*)\\\1\s*\|\s*translate/g)].map(([, , key]) => key),
 ];
 for (const key of translatedKeys) {
   if (!keySet.has(key)) failures.push(`TranslatePipe references missing key: ${key}.`);
@@ -155,6 +155,11 @@ const dynamicNamespaces = [
   'web.profile.avatars.',
   'web.features.analytics.factors.',
   'web.features.journey.factors.',
+  'web.features.help.redesign.slides.',
+  'web.features.help.redesign.tools.',
+  'web.features.help.redesign.examples.',
+  'web.features.help.redesign.categories.',
+  'web.features.help.redesign.faqs.',
 ];
 const unusedKeys = flatten(english).filter(
   (key) => !keyReferences.has(key) && !dynamicNamespaces.some((prefix) => key.startsWith(prefix)),
