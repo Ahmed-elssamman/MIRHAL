@@ -67,7 +67,7 @@ describe('friend email invitations workflow', () => {
     );
   });
 
-  it('blocks external invitations until the sender verifies their email', async () => {
+  it('allows external invitations even if the sender has not verified their email', async () => {
     const db = {
       user: {
         findUnique: vi
@@ -80,14 +80,18 @@ describe('friend email invitations workflow', () => {
           })
           .mockResolvedValueOnce(null),
       },
+      invitation: {
+        findFirst: vi.fn().mockResolvedValue(null),
+        create: vi.fn().mockResolvedValue({ id: 'inv-1' }),
+      },
+      atomic: vi.fn().mockImplementation((_, fn) => fn({ invitation: db.invitation })),
     };
-    const mail = { sendFriendInvite: vi.fn() };
+    const mail = { assertConfigured: vi.fn(), sendFriendInvite: vi.fn().mockResolvedValue(undefined) };
     const service = new FriendsService(db as unknown as Database, mail as unknown as MailAdapter);
 
-    await expect(service.request('sender-1', 'friend@example.test')).rejects.toThrow(
-      BadRequestException,
-    );
-    expect(mail.sendFriendInvite).not.toHaveBeenCalled();
+    const result = await service.request('sender-1', 'friend@example.test');
+    expect(result).toEqual({ channel: 'email', status: 'accepted' });
+    expect(mail.sendFriendInvite).toHaveBeenCalled();
   });
 
   it('uses a distinct provider idempotency key when a new invitation token is issued', async () => {

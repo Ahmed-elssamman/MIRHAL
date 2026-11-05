@@ -12,6 +12,7 @@
     "dev:web": "node tools/local-env.mjs web",
     "dev:admin": "node tools/local-env.mjs admin",
     "dev:api": "node tools/local-env.mjs api",
+    "dev:api:nodemon": "nodemon",
     "start:prod": "node dist/api/apps/api/src/main.js",
     "worker": "node dist/api/apps/api/src/worker.js",
     "worker:dev": "tsx --tsconfig apps/api/tsconfig.app.json apps/api/src/worker.ts",

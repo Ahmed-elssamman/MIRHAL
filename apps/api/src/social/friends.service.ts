@@ -84,8 +84,6 @@ export class FriendsService {
       },
     });
     if (!receiver) {
-      if (!sender.emailVerifiedAt)
-        throw new BadRequestException('Verify your email before inviting someone to MIRHAL.');
       this.mail.assertConfigured();
       const inviterName = sender.profile?.displayName ?? 'A MIRHAL friend';
       const language = sender.profile?.language === 'en' ? 'en' : 'ar';
