@@ -124,16 +124,23 @@ describe('Authentication state and navigation', () => {
     TestBed.inject(AuthStore).setUser({ ...user, role: 'ADMIN' });
     expect(await TestBed.runInInjectionContext(() => adminGuard(route, state))).toBe(true);
   });
-  it('retains an invitation opened by a signed-in user', async () => {
+  it('preserves an invitation opened by a signed-in user without accepting it automatically', async () => {
     const auth = TestBed.inject(AuthStore);
-    auth.setUser({ ...user, emailVerifiedAt: '2026-10-30', profile: { ...user.profile, onboardingCompletedAt: '2026-10-30' } });
-    const route = { paramMap: convertToParamMap({ mode: 'register' }), queryParamMap: convertToParamMap({ inviteToken: 'invitation-token' }), data: {} } as ActivatedRouteSnapshot;
-    const pending = TestBed.runInInjectionContext(() => unauthGuard(route, {} as RouterStateSnapshot));
-    await Promise.resolve();
-    const request = TestBed.inject(HttpTestingController).expectOne('/api/friends/invitations/accept');
-    expect(request.request.body).toEqual({ token: 'invitation-token' });
-    request.flush({ success: true, status: 'pending' });
-    expect(TestBed.inject(Router).serializeUrl((await pending) as ReturnType<Router['createUrlTree']>)).toBe('/friends');
+    auth.setUser({
+      ...user,
+      emailVerifiedAt: '2026-10-30',
+      profile: { ...user.profile, onboardingCompletedAt: '2026-10-30' },
+    });
+    const route = {
+      paramMap: convertToParamMap({ mode: 'register' }),
+      queryParamMap: convertToParamMap({ inviteToken: 'invitation-token' }),
+      data: {},
+    } as ActivatedRouteSnapshot;
+    const pending = TestBed.runInInjectionContext(() =>
+      unauthGuard(route, {} as RouterStateSnapshot),
+    );
+    const tree = (await pending) as ReturnType<Router['createUrlTree']>;
+    expect(TestBed.inject(Router).serializeUrl(tree)).toBe('/friends?inviteToken=invitation-token');
   });
   it('clears stale sessions when a protected request expires and refresh fails', async () => {
     const auth = TestBed.inject(AuthStore);
@@ -158,7 +165,9 @@ describe('Authentication state and navigation', () => {
     const auth = TestBed.inject(AuthStore);
     auth.setUser(user);
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    const pending = TestBed.inject(Api).get('goals').catch((error: unknown) => error);
+    const pending = TestBed.inject(Api)
+      .get('goals')
+      .catch((error: unknown) => error);
     const http = TestBed.inject(HttpTestingController);
     http.expectOne('/api/goals').flush({}, { status: 401, statusText: 'Unauthorized' });
     http.expectOne('/api/auth/refresh').flush({ success: true });

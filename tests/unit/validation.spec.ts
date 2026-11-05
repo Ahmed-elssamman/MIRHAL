@@ -32,7 +32,7 @@ describe('External input validation', () => {
   it('normalizes email and validates timezone', () => {
     expect(
       registerSchema.parse({
-        email: 'USER@example.com',
+        email: '  USER@example.com  ',
         password: 'a-strong-test-password',
         displayName: 'User',
       }).email,

@@ -34,8 +34,8 @@ export class SmtpProvider implements MailProvider, OnModuleInit, OnModuleDestroy
     this.transporter = nodemailer.createTransport({
       host,
       port,
-      secure,
-      requireTLS: !secure,
+      secure: true,
+      requireTLS: true,
       auth: user ? { user, pass } : undefined,
       connectionTimeout: 10000,
       socketTimeout: 15000,

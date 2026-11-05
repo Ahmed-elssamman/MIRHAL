@@ -47,22 +47,13 @@ describe('invitation sign-in', () => {
       ],
     });
   });
-  it('redeems the invitation after login and explains verification is required', async () => {
-    post.mockResolvedValue({ status: 'awaiting_verification' });
+  it("preserves invitation context after login without accepting on the recipient's behalf", async () => {
     const page = TestBed.runInInjectionContext(() => new AuthPage());
     page.form.patchValue({ email: 'user@example.test', password: 'long-password-test' });
     await page.submit();
-    expect(post).toHaveBeenCalledWith('friends/invitations/accept', { token: 'invitation-token' });
-    expect(success).toHaveBeenCalledWith('Verify your email to receive the friend request.');
-    expect(navigate).toHaveBeenCalledWith(['/today']);
-  });
-  it('reports redemption failure while preserving successful sign-in', async () => {
-    const failure = new Error('Invitation expired');
-    post.mockRejectedValue(failure);
-    const page = TestBed.runInInjectionContext(() => new AuthPage());
-    page.form.patchValue({ email: 'user@example.test', password: 'long-password-test' });
-    await page.submit();
-    expect(error).toHaveBeenCalledWith(failure);
-    expect(navigate).toHaveBeenCalledWith(['/today']);
+    expect(post).not.toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalledWith(['/friends'], {
+      queryParams: { inviteToken: 'invitation-token' },
+    });
   });
 });

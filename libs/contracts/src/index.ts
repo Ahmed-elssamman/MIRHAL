@@ -39,6 +39,8 @@ export const paginationSchema = z.object({
 export const registerSchema = z
   .object({
     email: z
+      .string()
+      .trim()
       .email()
       .max(254)
       .transform((value) => value.toLowerCase()),

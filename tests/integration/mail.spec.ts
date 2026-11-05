@@ -150,6 +150,9 @@ describe('auth email', () => {
       'Nour',
       'sender:friend:2026-10-29',
       'en',
+      'invitation-token',
+      false,
+      'request-id-for-test',
     );
 
     const options = fetchMock.mock.calls[0]?.[1];
@@ -160,6 +163,7 @@ describe('auth email', () => {
     expect(body.html).toContain('https://mirhal.example/auth/register');
     expect(body.html).toContain('Nour invited you to join MIRHAL');
     expect(JSON.stringify(vi.mocked(console.log).mock.calls)).toContain('email-123');
+    expect(JSON.stringify(vi.mocked(console.log).mock.calls)).toContain('request-id-for-test');
   });
 
   it('sends a password reset security notice with an event idempotency key and no token', async () => {
@@ -288,7 +292,7 @@ describe('auth email', () => {
     delete process.env['RESEND_API_KEY'];
     process.env['NODE_ENV'] = 'development';
     const devMail = new MailAdapter();
-    expect(devMail.configurationHealth().provider).toBe('file');
+    expect(devMail.configurationHealth().provider).toBe('smtp');
   });
 
   it('sends via mock SMTP transporter and handles success', async () => {
@@ -311,14 +315,22 @@ describe('auth email', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     const mail = new MailAdapter();
-    await mail.send('recipient@example.test', 'VERIFY_EMAIL', 'test-token', 'en');
+    await mail.send(
+      'recipient@example.test',
+      'VERIFY_EMAIL',
+      'test-token',
+      'en',
+      'invitation-token',
+    );
 
     expect(sendMailMock).toHaveBeenCalledOnce();
     const sentArgs = sendMailMock.mock.calls[0][0];
     expect(sentArgs.to).toBe('recipient@example.test');
     expect(sentArgs.from).toBe('MIRHAL <noreply@test.local>');
     expect(sentArgs.subject).toBe('Confirm your MIRHAL email');
-    expect(sentArgs.html).toContain('http://localhost:4200/auth/verify-email?token=test-token');
+    expect(sentArgs.html).toContain(
+      'http://localhost:4200/auth/verify-email?token=test-token&amp;inviteToken=invitation-token',
+    );
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('mock-msg-123'));
   });
 

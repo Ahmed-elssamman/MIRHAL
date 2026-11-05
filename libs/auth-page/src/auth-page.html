@@ -8,7 +8,8 @@
       <h1 class="text-3xl font-semibold leading-tight tracking-tight">{{ title() }}</h1>
       <p class="mb-8 mt-3 text-sm leading-relaxed text-muted">
         {{
-          ('shared.auth-page.copy.a_little_intention_a_little_progress_a_life_that_feels_more_like_you_1fb06174' | translate)
+          'shared.auth-page.copy.a_little_intention_a_little_progress_a_life_that_feels_more_like_you_1fb06174'
+            | translate
         }}
       </p>
       @if (mode() === 'register' && invitationBanner(); as banner) {
@@ -30,22 +31,25 @@
         ) {
           <p role="status" class="mb-4 rounded-xl bg-brand-soft p-4 text-sm leading-6 text-muted">
             {{
-              ('shared.auth-page.copy.email_verification_and_password_recovery_are_currently_unavailable_keep_your_password_safe_c2f4fb47' | translate)
+              'shared.auth-page.copy.email_verification_and_password_recovery_are_currently_unavailable_keep_your_password_safe_c2f4fb47'
+                | translate
             }}
           </p>
         }
         @if (mode() === 'register') {
-          <lq-field id="displayName" [label]="('shared.auth-page.copy.your_name_3a0663bd' | translate)"
+          <lq-field
+            id="displayName"
+            [label]="'shared.auth-page.copy.your_name_3a0663bd' | translate"
             ><input
               class="field"
               id="displayName"
               formControlName="displayName"
               autocomplete="name"
-              [placeholder]="('shared.auth-page.copy.how_should_we_call_you_901774e0' | translate)"
+              [placeholder]="'shared.auth-page.copy.how_should_we_call_you_901774e0' | translate"
           /></lq-field>
         }
         @if (mode() === 'login' || mode() === 'register' || mode() === 'forgot-password') {
-          <lq-field id="email" [label]="('shared.auth-page.copy.email_address_ae595053' | translate)"
+          <lq-field id="email" [label]="'shared.auth-page.copy.email_address_ae595053' | translate"
             ><input
               class="field"
               id="email"
@@ -59,10 +63,11 @@
         @if (mode() === 'login' || mode() === 'register' || mode() === 'reset-password') {
           <lq-field
             id="password"
-            [label]="('shared.auth-page.copy.password_2cc30838' | translate)"
+            [label]="'shared.auth-page.copy.password_2cc30838' | translate"
             [hint]="
               mode() === 'register'
-                ? ('shared.auth-page.copy.at_least_12_characters_make_it_uniquely_yours_91f0837f' | translate)
+                ? ('shared.auth-page.copy.at_least_12_characters_make_it_uniquely_yours_91f0837f'
+                  | translate)
                 : ''
             "
             ><input
@@ -76,7 +81,7 @@
         @if (mode() === 'login') {
           <div class="pb-4 text-end">
             <a routerLink="/auth/forgot-password" class="text-xs font-medium text-brand">{{
-              ('shared.auth-page.copy.forgot_password_e2619568' | translate)
+              'shared.auth-page.copy.forgot_password_e2619568' | translate
             }}</a>
           </div>
         }
@@ -88,7 +93,7 @@
             {{ success() }}
           </p>
           <a routerLink="/auth/login" class="btn btn-secondary w-full">{{
-            ('shared.auth-page.copy.back_to_sign_in_5b7ba2af' | translate)
+            'shared.auth-page.copy.back_to_sign_in_5b7ba2af' | translate
           }}</a>
         } @else {
           <button
@@ -124,7 +129,7 @@
           }}
           <a
             [routerLink]="mode() === 'register' ? '/auth/login' : '/auth/register'"
-            [queryParams]="inviteToken() ? { inviteToken: inviteToken() } : {}"
+            [queryParams]="continuationParams()"
             class="font-semibold text-brand"
             >{{
               mode() === 'register'
@@ -136,7 +141,7 @@
       }
     </div>
     <p class="text-center text-[11px] text-muted">
-      {{ ('shared.auth-page.copy.progress_beats_perfection_always_06d268b3' | translate) }}
+      {{ 'shared.auth-page.copy.progress_beats_perfection_always_06d268b3' | translate }}
     </p>
   </div>
   <aside
@@ -151,13 +156,15 @@
         >{{ 'common.productName' | translate }}</span
       >
       <h2 class="text-5xl font-medium leading-[1.15] tracking-tight">
-        {{ ('shared.auth-page.copy.build_a_life_37bf80ac' | translate) }}<br /><span class="text-[#bfb1fa]">{{
-          ('shared.auth-page.copy.not_just_a_streak_2b4f4a67' | translate)
-        }}</span>
+        {{ 'shared.auth-page.copy.build_a_life_37bf80ac' | translate }}<br /><span
+          class="text-[#bfb1fa]"
+          >{{ 'shared.auth-page.copy.not_just_a_streak_2b4f4a67' | translate }}</span
+        >
       </h2>
       <p class="mt-6 text-sm leading-7 text-white/60">
         {{
-          ('shared.auth-page.copy.your_goals_habits_and_little_everyday_wins_finally_in_one_place_that_sees_the_whole_you_9b7818b4' | translate)
+          'shared.auth-page.copy.your_goals_habits_and_little_everyday_wins_finally_in_one_place_that_sees_the_whole_you_9b7818b4'
+            | translate
         }}
       </p>
       <div class="mt-12 rounded-2xl border border-white/10 bg-white/5 p-5">
@@ -167,12 +174,10 @@
           /></span>
           <div>
             <p class="text-sm font-medium">
-              {{ ('shared.auth-page.copy.small_is_a_perfectly_good_start_4ba001b4' | translate) }}
+              {{ 'shared.auth-page.copy.small_is_a_perfectly_good_start_4ba001b4' | translate }}
             </p>
             <p class="mt-1 text-xs text-white/50">
-              {{
-                ('shared.auth-page.copy.two_minutes_count_showing_up_counts_e28e2443' | translate)
-              }}
+              {{ 'shared.auth-page.copy.two_minutes_count_showing_up_counts_e28e2443' | translate }}
             </p>
           </div>
         </div>

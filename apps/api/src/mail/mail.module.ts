@@ -20,7 +20,9 @@ import { MemoryMailProvider } from './providers/memory.provider';
       inject: [ConfigService, MailFactory],
       useFactory: (config: ConfigService, factory: MailFactory) => {
         const isProd = config.get<string>('NODE_ENV') === 'production';
-        const providerName = config.get<string>('EMAIL_PROVIDER') ?? (isProd ? 'resend' : 'file');
+        const providerName =
+          config.get<string>('EMAIL_PROVIDER') ??
+          (isProd ? 'resend' : process.env['NODE_ENV'] === 'test' ? 'file' : 'smtp');
         const apiKey = config.get<string>('RESEND_API_KEY');
         return factory.createProvider(providerName, apiKey);
       },

@@ -81,28 +81,33 @@ export function validateEnvironment(env: Record<string, unknown> = process.env):
       }
     }
 
-    if (config.MAIL_MODE !== 'disabled') {
-      const provider =
-        config.EMAIL_PROVIDER ??
-        (config.SMTP_HOST ? 'smtp' : config.RESEND_API_KEY ? 'resend' : undefined);
-      const fields: (keyof EnvConfig)[] =
-        provider === 'smtp'
-          ? ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASSWORD', 'SMTP_FROM']
-          : provider === 'resend'
-            ? ['RESEND_API_KEY', 'SMTP_FROM']
-            : [];
-      if (!fields.length || fields.some((name) => !config[name])) {
-        throw new StartupConfigurationError(
-          'Production email provider configuration is incomplete.',
-        );
-      }
-    }
-
     // Production rate limiting: Redis is strictly required for production
     if (!config.REDIS_URL) {
       throw new StartupConfigurationError(
         'Production rate limiting requires REDIS_URL to be configured.',
       );
+    }
+  }
+
+  // Development and production both use a real transport. File/memory delivery is
+  // reserved for automated tests and can never be an implicit fallback.
+  if (config.MAIL_MODE === 'disabled' && config.NODE_ENV !== 'test') {
+    throw new StartupConfigurationError('Email delivery cannot be disabled outside tests.');
+  }
+  if (config.MAIL_MODE !== 'disabled' || isProd) {
+    const provider = config.EMAIL_PROVIDER ?? (isProd ? 'resend' : 'smtp');
+    if ((provider === 'file' || provider === 'memory') && config.NODE_ENV !== 'test') {
+      throw new StartupConfigurationError('Email provider must use real delivery outside tests.');
+    }
+    if (provider === 'file' || provider === 'memory') return config;
+    const fields: (keyof EnvConfig)[] =
+      provider === 'smtp'
+        ? ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASSWORD', 'SMTP_FROM']
+        : provider === 'resend'
+          ? ['RESEND_API_KEY', 'SMTP_FROM']
+          : [];
+    if (!fields.length || fields.some((name) => !config[name])) {
+      throw new StartupConfigurationError('Email provider configuration is incomplete.');
     }
   }
 

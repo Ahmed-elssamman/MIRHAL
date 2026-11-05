@@ -86,7 +86,10 @@ describe('friend email invitations workflow', () => {
       },
       atomic: vi.fn().mockImplementation((_, fn) => fn({ invitation: db.invitation })),
     };
-    const mail = { assertConfigured: vi.fn(), sendFriendInvite: vi.fn().mockResolvedValue(undefined) };
+    const mail = {
+      assertConfigured: vi.fn(),
+      sendFriendInvite: vi.fn().mockResolvedValue(undefined),
+    };
     const service = new FriendsService(db as unknown as Database, mail as unknown as MailAdapter);
 
     const result = await service.request('sender-1', 'friend@example.test');
@@ -126,14 +129,18 @@ describe('friend email invitations workflow', () => {
     expect(second[2]).toBe(hashToken(second[4]));
   });
 
-  it('rejects an existing unexpired invitation without sending another email', async () => {
+  it('rotates and resends an existing invitation on an explicit retry', async () => {
     const sender = {
       id: 'sender',
       email: 'sender@example.test',
       emailVerifiedAt: new Date(),
       profile: null,
     };
-    const mail = { assertConfigured: vi.fn(), sendFriendInvite: vi.fn() };
+    const mail = {
+      assertConfigured: vi.fn(),
+      sendFriendInvite: vi.fn().mockResolvedValue(undefined),
+    };
+    const updateMany = vi.fn().mockResolvedValue({ count: 1 });
     const db = {
       user: {
         findUnique: vi
@@ -144,16 +151,21 @@ describe('friend email invitations workflow', () => {
         fn({
           invitation: {
             findFirst: vi.fn().mockResolvedValue({ id: 'pending' }),
-            create: vi.fn(),
+            updateMany,
           },
         }),
       ),
     };
     const service = new FriendsService(db as unknown as Database, mail as unknown as MailAdapter);
-    await expect(service.request('sender', 'recipient@example.test')).rejects.toThrow(
-      ConflictException,
-    );
-    expect(mail.sendFriendInvite).not.toHaveBeenCalled();
+    await expect(service.request('sender', 'recipient@example.test')).resolves.toEqual({
+      channel: 'email',
+      status: 'accepted',
+    });
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: 'pending', status: 'PENDING', expiresAt: { gt: expect.any(Date) } },
+      data: { tokenHash: expect.any(String), expiresAt: expect.any(Date) },
+    });
+    expect(mail.sendFriendInvite).toHaveBeenCalledOnce();
   });
 
   it.each(['temporary', 'permanent'] as const)(
@@ -213,72 +225,64 @@ describe('friend email invitations workflow', () => {
     );
   });
 
-  it.each(['accepted', 'unavailable', 'disabled'] as const)(
-    'creates the registered request and reports email %s',
-    async (emailStatus) => {
-      const sender = {
-        id: 'sender',
-        email: 'sender@example.test',
-        emailVerifiedAt: new Date(),
-        profile: { displayName: 'Sender' },
-      };
-      const receiver = {
-        id: 'receiver',
-        status: 'ACTIVE',
-        emailVerifiedAt: new Date(),
-        profile: { language: 'en', notificationsEnabled: emailStatus !== 'disabled' },
-      };
-      const mail = {
-        enabled: true,
-        sendFriendInvite:
-          emailStatus === 'unavailable'
-            ? vi.fn().mockRejectedValue(new Error('provider failure'))
-            : vi.fn().mockResolvedValue(undefined),
-      };
-      const tx = {
-        friendship: {
-          findUnique: vi.fn().mockResolvedValue(null),
-          create: vi.fn().mockResolvedValue({
-            id: 'friendship',
-            status: 'PENDING',
-            updatedAt: new Date('2026-10-30T00:00:00Z'),
-          }),
-        },
-        profile: {
-          findUnique: vi.fn().mockResolvedValue({ displayName: 'Sender' }),
-          findMany: vi.fn().mockResolvedValue([{ userId: 'receiver', language: 'en' }]),
-        },
-        notification: { createMany: vi.fn().mockResolvedValue({ count: 1 }) },
-      };
-      const db = {
-        user: {
-          findUnique: vi
-            .fn()
-            .mockImplementation(({ where }) => Promise.resolve(where.id ? sender : receiver)),
-        },
-        atomic: vi.fn().mockImplementation((_, fn) => fn(tx)),
-      };
-      const service = new FriendsService(db as unknown as Database, mail as unknown as MailAdapter);
-      const result = await service.request('sender', 'receiver@example.test');
-      expect(result).toEqual({
-        channel: 'friendship',
-        id: 'friendship',
-        status: 'PENDING',
-        emailStatus,
-      });
-      expect(tx.notification.createMany).toHaveBeenCalledOnce();
-      expect(mail.sendFriendInvite).toHaveBeenCalledTimes(emailStatus === 'disabled' ? 0 : 1);
-      if (emailStatus !== 'disabled')
-        expect(mail.sendFriendInvite).toHaveBeenCalledWith(
-          'receiver@example.test',
-          'Sender',
-          expect.any(String),
-          'en',
-          undefined,
-          true,
-        );
-    },
-  );
+  it('sends email for registered recipients regardless of notification preferences', async () => {
+    const sender = {
+      id: 'sender',
+      email: 'sender@example.test',
+      emailVerifiedAt: new Date(),
+      profile: { displayName: 'Sender' },
+    };
+    const receiver = {
+      id: 'receiver',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: { language: 'en', notificationsEnabled: false },
+    };
+    const mail = {
+      enabled: true,
+      sendFriendInvite: vi.fn().mockResolvedValue(undefined),
+    };
+    const tx = {
+      friendship: {
+        findUnique: vi.fn().mockResolvedValue(null),
+        create: vi.fn().mockResolvedValue({
+          id: 'friendship',
+          status: 'PENDING',
+          updatedAt: new Date('2026-10-30T00:00:00Z'),
+        }),
+      },
+      profile: {
+        findUnique: vi.fn().mockResolvedValue({ displayName: 'Sender' }),
+        findMany: vi.fn().mockResolvedValue([{ userId: 'receiver', language: 'en' }]),
+      },
+      notification: { createMany: vi.fn().mockResolvedValue({ count: 1 }) },
+    };
+    const db = {
+      user: {
+        findUnique: vi
+          .fn()
+          .mockImplementation(({ where }) => Promise.resolve(where.id ? sender : receiver)),
+      },
+      atomic: vi.fn().mockImplementation((_, fn) => fn(tx)),
+    };
+    const service = new FriendsService(db as unknown as Database, mail as unknown as MailAdapter);
+    const result = await service.request('sender', 'receiver@example.test');
+    expect(result).toEqual({
+      channel: 'friendship',
+      id: 'friendship',
+      status: 'PENDING',
+      emailStatus: 'accepted',
+    });
+    expect(tx.notification.createMany).toHaveBeenCalledOnce();
+    expect(mail.sendFriendInvite).toHaveBeenCalledWith(
+      'receiver@example.test',
+      'Sender',
+      'friendship:friendship',
+      'en',
+      undefined,
+      true,
+    );
+  });
 
   it('rejects duplicate friend request when already accepted', async () => {
     const db = {
@@ -428,7 +432,7 @@ describe('friend email invitations workflow', () => {
   });
 
   describe('acceptInvitation', () => {
-    it('redeems a verified recipient invitation as a pending friend request', async () => {
+    it('creates an accepted friendship only after a verified recipient accepts', async () => {
       const token = 'valid-token-to-accept-1234567890';
       const tokenHash = hashToken(token);
       let updatedInv: Record<string, unknown> | null = null;
@@ -491,7 +495,7 @@ describe('friend email invitations workflow', () => {
         expect.objectContaining({
           senderId: 'sender-1',
           receiverId: 'user-2',
-          status: 'PENDING',
+          status: 'ACCEPTED',
         }),
       );
     });
@@ -542,7 +546,15 @@ describe('friend email invitations workflow', () => {
                 .fn()
                 .mockResolvedValue({ email: 'invited@example.test', emailVerifiedAt: null }),
             },
-            invitation: { updateMany },
+            invitation: {
+              findUnique: vi.fn().mockResolvedValue({
+                senderId: 'sender',
+                email: 'invited@example.test',
+              }),
+              updateMany,
+            },
+            profile: { findMany: vi.fn().mockResolvedValue([]) },
+            notification: { createMany: vi.fn().mockResolvedValue({ count: 1 }) },
           }),
         ),
       };
@@ -648,6 +660,49 @@ describe('friend email invitations workflow', () => {
       await expect(service.acceptInvitation('user-1', token)).rejects.toThrow(
         'You cannot accept your own invitation.',
       );
+    });
+  });
+
+  describe('declineInvitation', () => {
+    it('declines only a pending invitation owned by the verified recipient', async () => {
+      const updateMany = vi.fn().mockResolvedValue({ count: 1 });
+      const db = {
+        atomic: vi.fn().mockImplementation((_, fn) =>
+          fn({
+            user: {
+              findUniqueOrThrow: vi.fn().mockResolvedValue({
+                email: 'invited@example.test',
+                emailVerifiedAt: new Date(),
+              }),
+            },
+            invitation: {
+              findUnique: vi.fn().mockResolvedValue({
+                senderId: 'sender',
+                email: 'invited@example.test',
+              }),
+              updateMany,
+            },
+            profile: { findMany: vi.fn().mockResolvedValue([]) },
+            notification: { createMany: vi.fn().mockResolvedValue({ count: 1 }) },
+          }),
+        ),
+      };
+      const service = new FriendsService(db as unknown as Database, {} as MailAdapter);
+      await expect(
+        service.declineInvitation('recipient', 'decline-token-123456789012'),
+      ).resolves.toEqual({
+        success: true,
+        status: 'declined',
+      });
+      expect(updateMany).toHaveBeenCalledWith({
+        where: expect.objectContaining({
+          tokenHash: hashToken('decline-token-123456789012'),
+          email: 'invited@example.test',
+          status: 'PENDING',
+          OR: [{ recipientId: null }, { recipientId: 'recipient' }],
+        }),
+        data: { status: 'DECLINED' },
+      });
     });
   });
 });

@@ -29,7 +29,7 @@ export const mailConfig = registerAs('mail', (): MailConfig => {
   const mode = (process.env['MAIL_MODE'] ?? 'development') as
     'development' | 'disabled' | 'production';
   const isProd = process.env['NODE_ENV'] === 'production';
-  const defaultProvider = isProd ? 'resend' : 'file';
+  const defaultProvider = isProd ? 'resend' : process.env['NODE_ENV'] === 'test' ? 'file' : 'smtp';
   const provider = (process.env['EMAIL_PROVIDER'] ?? defaultProvider) as
     'file' | 'smtp' | 'resend' | 'memory';
 

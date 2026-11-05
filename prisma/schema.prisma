@@ -92,6 +92,7 @@ enum FriendshipStatus {
 enum InvitationStatus {
   PENDING
   ACCEPTED
+  DECLINED
   EXPIRED
   REVOKED
 }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Api, Area, User } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
@@ -10,7 +10,15 @@ import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-onboarding',
   imports: [
-    TranslatePipe,ReactiveFormsModule, ErrorState, Icon, Logo, Progress, Skeleton, FormField],
+    TranslatePipe,
+    ReactiveFormsModule,
+    ErrorState,
+    Icon,
+    Logo,
+    Progress,
+    Skeleton,
+    FormField,
+  ],
   templateUrl: './onboarding.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -19,6 +27,7 @@ export class OnboardingPage {
   private readonly fb = inject(FormBuilder);
   readonly auth = inject(AuthStore);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   readonly i18n = inject(Preferences);
   readonly areas = this.api.resource<Area[]>('life-areas');
   readonly selected = signal<string[]>([]);
@@ -76,7 +85,10 @@ export class OnboardingPage {
       });
       const user = await this.api.get<User>('auth/me');
       this.auth.setUser(user);
-      await this.router.navigate(['/today']);
+      const inviteToken = this.route.snapshot.queryParamMap.get('inviteToken');
+      await this.router.navigate(inviteToken ? ['/friends'] : ['/today'], {
+        ...(inviteToken ? { queryParams: { inviteToken } } : {}),
+      });
     } catch (error) {
       applyServerValidation(this.form, error);
       this.error.set(this.api.errorMessage(error));

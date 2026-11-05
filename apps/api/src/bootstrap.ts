@@ -79,6 +79,7 @@ export function configureApp(app: INestApplication) {
             method: request.method,
             path: request.path,
             status: response.statusCode,
+            ...(request.errorCode ? { errorCode: request.errorCode } : {}),
             durationMs: Math.round(performance.now() - start),
           }),
         );

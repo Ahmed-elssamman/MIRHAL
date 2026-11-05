@@ -5,6 +5,7 @@ import {
   Injectable,
   ServiceUnavailableException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { randomBytes } from 'node:crypto';
 import * as argon2 from 'argon2';
@@ -13,7 +14,6 @@ import { InputOf, registerSchema } from '@lifequest/contracts';
 import { Database } from '../common/database';
 import { hashToken } from './auth.guard';
 import { MailAdapter } from './mail.adapter';
-import { notify } from '../common/notifications';
 export const safeUser = {
   id: true,
   email: true,
@@ -40,6 +40,21 @@ export class AuthService {
       parallelism: 1,
     });
     const user = await this.db.$transaction(async (tx) => {
+      if (input.inviteToken) {
+        const invitation = await tx.invitation.findUnique({
+          where: { tokenHash: hashToken(input.inviteToken) },
+          select: { email: true, status: true, expiresAt: true },
+        });
+        if (
+          invitation?.status === 'PENDING' &&
+          invitation.expiresAt > new Date() &&
+          invitation.email.toLowerCase() !== input.email.toLowerCase()
+        ) {
+          throw new ForbiddenException(
+            'Register with the email address that received this invitation.',
+          );
+        }
+      }
       const created = await tx.user.create({
         data: {
           email: input.email,
@@ -73,7 +88,12 @@ export class AuthService {
     let verificationEmail: 'accepted' | 'disabled' | 'unavailable' = 'disabled';
     if (this.mail.enabled) {
       try {
-        verificationEmail = (await this.issueEmailToken(user.id, input.email, 'VERIFY_EMAIL'))
+        verificationEmail = (await this.issueEmailToken(
+          user.id,
+          input.email,
+          'VERIFY_EMAIL',
+          input.inviteToken,
+        ))
           ? 'accepted'
           : 'unavailable';
       } catch (error) {
@@ -131,7 +151,12 @@ export class AuthService {
       return { expiresAt };
     });
   }
-  async issueEmailToken(userId: string, email: string, purpose: TokenPurpose) {
+  async issueEmailToken(
+    userId: string,
+    email: string,
+    purpose: TokenPurpose,
+    inviteToken?: string,
+  ) {
     this.mail.assertConfigured();
     const token = randomBytes(32).toString('base64url');
     const issued = await this.db.atomic(userId, async (tx) => {
@@ -155,7 +180,13 @@ export class AuthService {
       where: { userId },
       select: { language: true },
     });
-    await this.mail.send(email, purpose, token, profile?.language === 'en' ? 'en' : 'ar');
+    await this.mail.send(
+      email,
+      purpose,
+      token,
+      profile?.language === 'en' ? 'en' : 'ar',
+      inviteToken,
+    );
     return true;
   }
   async forgot(email: string) {
@@ -202,13 +233,10 @@ export class AuthService {
               select: { email: true, profile: { select: { language: true } } },
             })
           : undefined;
-      const verifiedUser = await tx.user.update({
+      await tx.user.update({
         where: { id: record.userId },
         data: purpose === 'VERIFY_EMAIL' ? { emailVerifiedAt: new Date() } : { passwordHash },
-        select: { email: true },
       });
-      if (purpose === 'VERIFY_EMAIL')
-        await this.resolveRegisteredInvitation(tx, record.userId, verifiedUser.email);
       if (purpose === 'RESET_PASSWORD') {
         await tx.session.deleteMany({ where: { userId: record.userId } });
         await tx.authToken.updateMany({
@@ -239,48 +267,5 @@ export class AuthService {
       }
     }
     return { success: true };
-  }
-
-  private async resolveRegisteredInvitation(
-    tx: Prisma.TransactionClient,
-    userId: string,
-    email: string,
-  ) {
-    const invitation = await tx.invitation.findFirst({
-      where: { recipientId: userId, email, status: 'PENDING', expiresAt: { gt: new Date() } },
-      include: { sender: { select: { profile: { select: { displayName: true } } } } },
-    });
-    if (!invitation || invitation.senderId === userId) return;
-    const pairKey = [invitation.senderId, userId].sort().join(':');
-    const existing = await tx.friendship.findUnique({ where: { pairKey } });
-    if (existing?.status === 'BLOCKED') return;
-    const claimed = await tx.invitation.updateMany({
-      where: {
-        id: invitation.id,
-        recipientId: userId,
-        status: 'PENDING',
-        expiresAt: { gt: new Date() },
-      },
-      data: { status: 'ACCEPTED', acceptedAt: new Date() },
-    });
-    if (claimed.count !== 1) return;
-    if (existing) return;
-    await tx.friendship.create({
-      data: { senderId: invitation.senderId, receiverId: userId, pairKey, status: 'PENDING' },
-    });
-    const senderName = invitation.sender.profile?.displayName;
-    await notify(tx, {
-      data: {
-        userId,
-        type: 'FRIEND_REQUEST',
-        title: 'A little company on your journey',
-        body: `${senderName ?? 'Someone'} sent you a friend request.`,
-        arabic: {
-          title: 'رفيق جديد في رحلتك',
-          body: `أرسل ${senderName ?? 'أحد المستخدمين'} إليك طلب صداقة.`,
-        },
-        href: '/friends',
-      },
-    });
   }
 }

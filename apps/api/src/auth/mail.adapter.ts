@@ -39,7 +39,9 @@ export class MailAdapter implements OnModuleInit {
           ? 'resend'
           : process.env['NODE_ENV'] === 'production'
             ? ''
-            : 'file')
+            : process.env['NODE_ENV'] === 'test'
+              ? 'file'
+              : 'smtp')
     );
   }
 
@@ -60,6 +62,9 @@ export class MailAdapter implements OnModuleInit {
         'Email verification and password recovery are currently unavailable.',
       );
     const provider = this.providerName;
+    if ((provider === 'file' || provider === 'memory') && process.env['NODE_ENV'] !== 'test') {
+      throw new ServiceUnavailableException('Real email delivery is not configured.');
+    }
     const required = ['APP_URL', 'SMTP_FROM'];
     if (provider === 'smtp') required.push('SMTP_HOST', 'SMTP_USER', 'SMTP_PASSWORD');
     else if (provider === 'resend') required.push('RESEND_API_KEY');
@@ -89,11 +94,21 @@ export class MailAdapter implements OnModuleInit {
     }
   }
 
-  async send(to: string, purpose: TokenPurpose, token: string, language: EmailLanguage = 'ar') {
+  async send(
+    to: string,
+    purpose: TokenPurpose,
+    token: string,
+    language: EmailLanguage = 'ar',
+    inviteToken?: string,
+  ) {
     this.assertConfigured();
     const path = purpose === 'VERIFY_EMAIL' ? 'verify-email' : 'reset-password';
     const origin = new URL(process.env['APP_URL'] ?? 'http://localhost:4200').origin;
-    const url = `${origin}/auth/${path}?token=${encodeURIComponent(token)}`;
+    const link = new URL(`/auth/${path}`, origin);
+    link.searchParams.set('token', token);
+    if (purpose === 'VERIFY_EMAIL' && inviteToken)
+      link.searchParams.set('inviteToken', inviteToken);
+    const url = link.href;
     const mail: Message = { to, purpose, url, language };
 
     if (process.env['NODE_ENV'] === 'test') {
@@ -156,14 +171,15 @@ export class MailAdapter implements OnModuleInit {
     language: EmailLanguage = 'ar',
     inviteToken?: string,
     registered = false,
+    requestId?: string,
   ) {
     this.assertConfigured();
     const origin = new URL(process.env['APP_URL'] ?? 'http://localhost:4200').origin;
     const url = registered
       ? new URL('/friends', origin).href
       : inviteToken
-      ? new URL(`/auth/register?inviteToken=${encodeURIComponent(inviteToken)}`, origin).href
-      : new URL('/auth/register', origin).href;
+        ? new URL(`/auth/register?inviteToken=${encodeURIComponent(inviteToken)}`, origin).href
+        : new URL('/auth/register', origin).href;
     const purpose: EmailPurpose = registered ? 'FRIEND_REQUEST' : 'FRIEND_INVITE';
     const mail: Message = { to, purpose, url, language };
     if (process.env['NODE_ENV'] === 'test') {
@@ -186,7 +202,7 @@ export class MailAdapter implements OnModuleInit {
       purpose,
       language,
     };
-    await this.deliver(delivery, purpose);
+    await this.deliver(delivery, purpose, requestId);
   }
 
   async verifyConnection(): Promise<boolean> {
@@ -202,7 +218,7 @@ export class MailAdapter implements OnModuleInit {
     return true;
   }
 
-  private async deliver(delivery: MailMessage, purpose: EmailPurpose) {
+  private async deliver(delivery: MailMessage, purpose: EmailPurpose, requestId?: string) {
     const provider = this.factory.getProvider(this.providerName, process.env['RESEND_API_KEY']);
     try {
       const result = await provider.send(delivery);
@@ -210,6 +226,7 @@ export class MailAdapter implements OnModuleInit {
         JSON.stringify({
           level: 'info',
           event: 'email_delivery',
+          ...(requestId ? { requestId } : {}),
           provider: this.providerName,
           purpose,
           status: 'accepted',
@@ -222,6 +239,7 @@ export class MailAdapter implements OnModuleInit {
         JSON.stringify({
           level: 'error',
           event: 'email_delivery',
+          ...(requestId ? { requestId } : {}),
           provider: this.providerName,
           purpose,
           status: 'failed',

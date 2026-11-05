@@ -5,10 +5,46 @@ import { MailAdapter } from '../../apps/api/src/auth/mail.adapter';
 import { hashToken } from '../../apps/api/src/auth/auth.guard';
 
 describe('registration invitation verification', () => {
+  it('does not let another email claim a pending invitation during registration', async () => {
+    const tx = {
+      invitation: {
+        findUnique: vi.fn().mockResolvedValue({
+          email: 'invited@example.test',
+          status: 'PENDING',
+          expiresAt: new Date(Date.now() + 60000),
+        }),
+      },
+      user: { create: vi.fn() },
+    };
+    const db = {
+      user: { findUnique: vi.fn().mockResolvedValue(null) },
+      $transaction: vi.fn().mockImplementation((fn) => fn(tx)),
+    };
+    const service = new AuthService(db as unknown as Database, { enabled: false } as MailAdapter);
+    await expect(
+      service.register({
+        email: 'other@example.test',
+        password: 'long-password-for-test',
+        displayName: 'Recipient',
+        timezone: 'UTC',
+        language: 'en',
+        inviteToken: 'invitation-token-123',
+      }),
+    ).rejects.toThrow('Register with the email address that received this invitation.');
+    expect(tx.user.create).not.toHaveBeenCalled();
+  });
+
   it('binds the invitation during registration without consuming it or creating a friendship', async () => {
     const tx = {
       user: { create: vi.fn().mockResolvedValue({ id: 'recipient' }) },
-      invitation: { updateMany: vi.fn().mockResolvedValue({ count: 1 }) },
+      invitation: {
+        findUnique: vi.fn().mockResolvedValue({
+          email: 'invited@example.test',
+          status: 'PENDING',
+          expiresAt: new Date(Date.now() + 60000),
+        }),
+        updateMany: vi.fn().mockResolvedValue({ count: 1 }),
+      },
       session: { create: vi.fn().mockResolvedValue({}) },
       friendship: { create: vi.fn() },
     };
@@ -40,29 +76,25 @@ describe('registration invitation verification', () => {
     expect(tx.friendship.create).not.toHaveBeenCalled();
   });
 
-  it('creates a pending request when the bound recipient verifies their email', async () => {
+  it('does not accept or create a friendship when the recipient verifies their email', async () => {
     const tx = {
       authToken: {
-        findUnique: vi
-          .fn()
-          .mockResolvedValue({
-            id: 'verification',
-            userId: 'recipient',
-            usedAt: null,
-            expiresAt: new Date(Date.now() + 60000),
-            purpose: 'VERIFY_EMAIL',
-          }),
+        findUnique: vi.fn().mockResolvedValue({
+          id: 'verification',
+          userId: 'recipient',
+          usedAt: null,
+          expiresAt: new Date(Date.now() + 60000),
+          purpose: 'VERIFY_EMAIL',
+        }),
         updateMany: vi.fn().mockResolvedValue({ count: 1 }),
       },
       user: { update: vi.fn().mockResolvedValue({ email: 'invited@example.test' }) },
       invitation: {
-        findFirst: vi
-          .fn()
-          .mockResolvedValue({
-            id: 'inv',
-            senderId: 'sender',
-            sender: { profile: { displayName: 'Sender' } },
-          }),
+        findFirst: vi.fn().mockResolvedValue({
+          id: 'inv',
+          senderId: 'sender',
+          sender: { profile: { displayName: 'Sender' } },
+        }),
         updateMany: vi.fn().mockResolvedValue({ count: 1 }),
       },
       friendship: {
@@ -78,23 +110,8 @@ describe('registration invitation verification', () => {
     };
     const service = new AuthService(db as unknown as Database, { enabled: false } as MailAdapter);
     await service.consume('verification-token', 'VERIFY_EMAIL');
-    expect(tx.invitation.findFirst).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: expect.objectContaining({
-          recipientId: 'recipient',
-          email: 'invited@example.test',
-          status: 'PENDING',
-        }),
-      }),
-    );
-    expect(tx.friendship.create).toHaveBeenCalledWith({
-      data: {
-        senderId: 'sender',
-        receiverId: 'recipient',
-        pairKey: 'recipient:sender',
-        status: 'PENDING',
-      },
-    });
-    expect(tx.notification.createMany).toHaveBeenCalledOnce();
+    expect(tx.invitation.findFirst).not.toHaveBeenCalled();
+    expect(tx.friendship.create).not.toHaveBeenCalled();
+    expect(tx.notification.createMany).not.toHaveBeenCalled();
   });
 });

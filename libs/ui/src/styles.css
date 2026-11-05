@@ -305,8 +305,8 @@ html[dir='rtl'] .loading-bar {
 .reduce-motion *,
 .reduce-motion *::before,
 .reduce-motion *::after {
-  animation-duration: 0.1ms !important;
-  transition-duration: 0.1ms !important;
+  animation-duration: 1ms !important;
+  transition-duration: 1ms !important;
 }
 .p-dialog {
   max-width: calc(100vw - 2rem);

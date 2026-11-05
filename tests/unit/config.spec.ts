@@ -25,6 +25,11 @@ describe('Configuration Architecture', () => {
     WEB_ORIGIN: 'http://localhost:4200',
     ADMIN_ORIGIN: 'http://localhost:4201',
     APP_URL: 'http://localhost:4200',
+    EMAIL_PROVIDER: 'smtp',
+    SMTP_HOST: 'smtp.example.test',
+    SMTP_USER: 'user@example.test',
+    SMTP_PASSWORD: 'test-only-password',
+    SMTP_FROM: 'MIRHAL <no-reply@example.test>',
   };
 
   it('validates a correct development configuration', () => {
@@ -64,7 +69,6 @@ describe('Configuration Architecture', () => {
       WEB_ORIGIN: 'https://app.mirhal.com',
       ADMIN_ORIGIN: 'https://admin.mirhal.com',
       APP_URL: 'https://app.mirhal.com',
-      MAIL_MODE: 'disabled',
       REDIS_URL: 'redis://localhost:6379',
     };
     expect(() => validateEnvironment(prodEnv)).not.toThrow();
@@ -84,7 +88,6 @@ describe('Configuration Architecture', () => {
       WEB_ORIGIN: 'https://app.mirhal.com',
       ADMIN_ORIGIN: 'https://admin.mirhal.com',
       APP_URL: 'https://app.mirhal.com',
-      MAIL_MODE: 'disabled',
       RATE_LIMIT_MODE: 'redis',
     };
     expect(() => validateEnvironment(prodEnv)).toThrow(/REDIS_URL to be configured/);

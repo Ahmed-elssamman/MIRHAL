@@ -3,15 +3,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Api, Toasts } from '@lifequest/data-access';
+import { Api } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
 import { Icon, Logo } from '@lifequest/ui';
 import { FormField } from '@lifequest/forms';
 import { AuthStore } from '@lifequest/auth';
 @Component({
   selector: 'lq-auth-page',
-  imports: [
-    TranslatePipe,RouterLink, ReactiveFormsModule, Icon, Logo, FormField],
+  imports: [TranslatePipe, RouterLink, ReactiveFormsModule, Icon, Logo, FormField],
   templateUrl: './auth-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -25,7 +24,6 @@ export class AuthPage {
   readonly isAdmin = this.route.snapshot.data['admin'] === true;
   private readonly auth = inject(AuthStore);
   private readonly api = inject(Api);
-  private readonly toasts = inject(Toasts);
   readonly capabilities = this.api.resource<{ emailDelivery: boolean }>('auth/capabilities');
   readonly settings = this.api.resource<{ key: string; value: string }[]>('public-settings');
   readonly notice = computed(
@@ -45,6 +43,11 @@ export class AuthPage {
     const qp = this.route.snapshot.queryParamMap;
     return qp.get('inviteToken') || (this.mode() === 'register' ? qp.get('token') : null) || '';
   });
+  readonly returnTo = computed(() => this.route.snapshot.queryParamMap.get('returnTo') ?? '');
+  readonly continuationParams = computed(() => ({
+    ...(this.inviteToken() ? { inviteToken: this.inviteToken() } : {}),
+    ...(this.returnTo() ? { returnTo: this.returnTo() } : {}),
+  }));
   readonly invitationInfo = signal<{
     valid: boolean;
     inviterName?: string;
@@ -170,9 +173,22 @@ export class AuthPage {
             'كل شيء جاهز. سجل دخولك لمتابعة الرحلة.',
           ),
         );
+        if (mode === 'verify-email' && typeof window !== 'undefined') {
+          const invitation =
+            this.inviteToken() || window.sessionStorage.getItem('mirhal.invitationToken');
+          if (invitation) {
+            window.sessionStorage.removeItem('mirhal.invitationToken');
+            await this.router.navigate(['/friends'], {
+              queryParams: { inviteToken: invitation },
+            });
+          }
+        }
       } else {
         const inviteToken =
           mode === 'register' && this.inviteToken() ? this.inviteToken() : undefined;
+        if (inviteToken && typeof window !== 'undefined') {
+          window.sessionStorage.setItem('mirhal.invitationToken', inviteToken);
+        }
         const registration =
           mode === 'register'
             ? await this.auth.register({
@@ -192,35 +208,26 @@ export class AuthPage {
           );
           return;
         }
-        if (!this.isAdmin && mode === 'login' && this.inviteToken()) {
-          try {
-            const result = await this.api.post<{
-              status: 'pending' | 'awaiting_verification' | 'already_friends';
-            }>('friends/invitations/accept', { token: this.inviteToken() });
-            this.toasts.success(
-              result.status === 'awaiting_verification'
-                ? this.i18n.t(
-                    'Verify your email to receive the friend request.',
-                    'أكد بريدك الإلكتروني لاستلام طلب الصداقة.',
-                  )
-                : result.status === 'already_friends'
-                  ? this.i18n.t('You are already friends.', 'أنتما صديقان بالفعل.')
-                  : this.i18n.t(
-                      'Your friend request is ready to review.',
-                      'طلب الصداقة جاهز للمراجعة.',
-                    ),
-            );
-          } catch (error) {
-            this.toasts.error(error);
-          }
+        const invitation = !this.isAdmin ? this.inviteToken() : '';
+        const returnTo = !this.isAdmin
+          ? (this.route.snapshot.queryParamMap.get('returnTo') ?? '')
+          : '';
+        if (returnTo.startsWith('/') && !returnTo.startsWith('//')) {
+          await this.router.navigateByUrl(returnTo);
+          return;
         }
-        await this.router.navigate([
-          this.isAdmin
-            ? '/overview'
+        const destination = this.isAdmin
+          ? '/overview'
+          : invitation
+            ? user.profile.onboardingCompletedAt
+              ? '/friends'
+              : '/onboarding'
             : user.profile.onboardingCompletedAt
               ? '/today'
-              : '/onboarding',
-        ]);
+              : '/onboarding';
+        await this.router.navigate([destination], {
+          ...(invitation ? { queryParams: { inviteToken: invitation } } : {}),
+        });
       }
     } catch (error) {
       this.error.set(this.api.errorMessage(error));

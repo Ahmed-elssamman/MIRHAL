@@ -22,6 +22,7 @@ export interface Identity {
 export interface ApiRequest extends Request {
   identity?: Identity;
   requestId: string;
+  errorCode?: string;
 }
 export const CurrentUser = createParamDecorator(
   (_data: unknown, context): Identity => context.switchToHttp().getRequest<ApiRequest>().identity!,
@@ -100,6 +101,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
         message = 'A linked item is no longer available.';
       }
     }
+    request.errorCode = code;
     if (status >= 500)
       console.error(
         JSON.stringify({
