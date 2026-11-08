@@ -2,24 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import {
-  Api,
-  Page,
-  Area,
-  Quest,
-  QuestTemplate,
-  Toasts,
-} from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import {
-  Pagination,
-  EmptyState,
-  ErrorState,
-  Icon,
-  PageHeader,
-  Progress,
-} from '@lifequest/ui';
-import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
+import { Api, Page, Area, Quest, QuestTemplate, Toasts } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Progress } from '@mirhal/ui';
+import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@mirhal/forms';
 @Component({
   selector: 'lq-quests',
   imports: [

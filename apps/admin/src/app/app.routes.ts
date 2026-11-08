@@ -1,7 +1,7 @@
-import { unsavedChangesGuard } from '@lifequest/forms';
+import { unsavedChangesGuard } from '@mirhal/forms';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, Routes } from '@angular/router';
-import { adminGuard, AuthStore, unauthGuard } from '@lifequest/auth';
+import { adminGuard, AuthStore, unauthGuard } from '@mirhal/auth';
 const access: CanActivateFn = (route) => {
   const user = inject(AuthStore).user();
   const roles = route.data['roles'] as string[] | undefined;
@@ -16,7 +16,7 @@ export const routes: Routes = [
     path: 'auth/:mode',
     data: { admin: true },
     canActivate: [unauthGuard],
-    loadComponent: () => import('@lifequest/auth-page').then((m) => m.AuthPage),
+    loadComponent: () => import('@mirhal/auth-page').then((m) => m.AuthPage),
   },
   {
     path: '',

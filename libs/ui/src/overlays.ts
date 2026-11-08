@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 @Component({
-  selector: 'lq-overlays',
+  selector: 'mirhal-overlays, lq-overlays',
   imports: [ToastModule, ConfirmDialogModule],
   template: `<p-toast
       position="bottom-right"

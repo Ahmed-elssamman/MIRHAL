@@ -3,6 +3,7 @@ import { MailAdapter } from '../../apps/api/src/auth/mail.adapter';
 import { renderAuthEmail } from '../../apps/api/src/auth/mail.templates';
 import { validateStartupEnvironment } from '../../apps/api/src/common/startup';
 import { classifyDeliveryError } from '../../apps/api/src/mail/mail.types';
+import { SmtpProvider } from '../../apps/api/src/mail/providers/smtp.provider';
 
 const original = { ...process.env };
 afterEach(() => {
@@ -12,6 +13,21 @@ afterEach(() => {
 });
 
 describe('auth email', () => {
+  it('configures implicit TLS for SMTPS and required STARTTLS for port 587', () => {
+    const smtps = new SmtpProvider({ host: 'smtp.example.test', port: 465 });
+    smtps.onModuleInit();
+    const smtpsOptions = Reflect.get(Reflect.get(smtps, 'transporter'), 'options');
+    expect(smtpsOptions).toMatchObject({ secure: true, requireTLS: false });
+    smtps.onModuleDestroy();
+
+    process.env['SMTP_SECURE'] = 'true';
+    const starttls = new SmtpProvider({ host: 'smtp.example.test', port: 587, secure: false });
+    starttls.onModuleInit();
+    const starttlsOptions = Reflect.get(Reflect.get(starttls, 'transporter'), 'options');
+    expect(starttlsOptions).toMatchObject({ secure: false, requireTLS: true });
+    starttls.onModuleDestroy();
+  });
+
   it('renders a registered friend request with a friends link and no registration expiry', () => {
     for (const language of ['en', 'ar'] as const) {
       const email = renderAuthEmail(

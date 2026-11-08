@@ -7,7 +7,7 @@ import {
   habitUpdateSchema,
   InputOf,
   paginationSchema,
-} from '@lifequest/contracts';
+} from '@mirhal/contracts';
 import { CurrentUser, Identity, Validate } from '../common/http';
 import { HabitsService } from './habits.service';
 @ApiTags('Habits and Habit Lab')

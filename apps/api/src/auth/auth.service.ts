@@ -10,7 +10,7 @@ import {
 import { randomBytes } from 'node:crypto';
 import * as argon2 from 'argon2';
 import { Prisma, TokenPurpose } from '@prisma/client';
-import { InputOf, registerSchema } from '@lifequest/contracts';
+import { InputOf, registerSchema } from '@mirhal/contracts';
 import { Database } from '../common/database';
 import { hashToken } from './auth.guard';
 import { MailAdapter } from './mail.adapter';

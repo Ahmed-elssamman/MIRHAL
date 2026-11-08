@@ -10,13 +10,13 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <script>
       try {
-        const preference = localStorage.getItem('lq-theme');
+        const preference = localStorage.getItem('mirhal-theme') || localStorage.getItem('lq-theme');
         const dark =
           preference === 'dark' ||
           (preference !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
         if (dark) document.documentElement.classList.add('dark');
         document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-        document.querySelector('meta[name="theme-color"]').content = dark ? '#14211e' : '#0e7165';
+        document.querySelector('meta[name="theme-color"]').content = dark ? '#1b2824' : '#0e7165';
       } catch {
         /* Theme preference is optional; the application applies a safe default. */
       }
@@ -35,8 +35,8 @@
           sans-serif;
       }
       .dark .initial-loading {
-        background: #14211e;
-        color: #d8eee8;
+        background: #1b2824;
+        color: #52d6a7;
       }
       .initial-loading img {
         width: 64px;

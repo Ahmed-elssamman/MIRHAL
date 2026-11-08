@@ -12,9 +12,9 @@ import {
 } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Preferences } from '@lifequest/utilities';
+import { Preferences } from '@mirhal/utilities';
 @Component({
-  selector: 'lq-field',
+  selector: 'mirhal-field, lq-field',
   host: { '[attr.id]': 'null' },
   template:
     '<div class="mb-4"><label [for]="id()" class="field-label">{{ label() }} @if(required()) { <span class="text-brand" aria-hidden="true">*</span> }</label><ng-content />@if (message()) { <p [id]="id()+\'-error\'" class="mt-1.5 text-xs text-rose-600 dark:text-rose-300" role="alert">{{ message() }}</p> } @else if (hint()) { <p [id]="id()+\'-hint\'" class="mt-1.5 text-xs leading-relaxed text-muted">{{ hint() }}</p> }</div>',

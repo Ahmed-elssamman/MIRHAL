@@ -1,17 +1,20 @@
 <lq-page-header
-  [eyebrow]="('web.features.quests.copy.a_little_focus_goes_a_long_way_38a0ea86' | translate)"
-  [title]="('web.features.quests.copy.give_your_week_a_mission_6ec0cfea' | translate)"
+  [eyebrow]="'web.features.quests.copy.a_little_focus_goes_a_long_way_38a0ea86' | translate"
+  [title]="'web.features.quests.copy.give_your_week_a_mission_6ec0cfea' | translate"
   [description]="
-    ('web.features.quests.copy.create_weekly_quests_choose_their_steps_and_track_each_completed_action_c302efd3' | translate)
+    'web.features.quests.copy.create_weekly_quests_choose_their_steps_and_track_each_completed_action_c302efd3'
+      | translate
   "
   ><button class="btn btn-primary" (click)="create()">
-    <lq-icon name="plus" [size]="17" />{{ ('web.features.quests.copy.new_quest_216e7c03' | translate) }}
+    <lq-icon name="plus" [size]="17" />{{
+      'web.features.quests.copy.new_quest_216e7c03' | translate
+    }}
   </button></lq-page-header
 >
 @if (visibleTemplates().length) {
   <details class="card mb-6 p-5">
     <summary class="min-h-10 cursor-pointer text-sm font-semibold">
-      {{ ('web.features.quests.copy.a_little_inspiration_for_this_week_73eb339f' | translate) }}
+      {{ 'web.features.quests.copy.a_little_inspiration_for_this_week_73eb339f' | translate }}
     </summary>
     <div class="mt-3 grid gap-3 sm:grid-cols-2">
       @for (template of visibleTemplates(); track template.id) {
@@ -59,7 +62,9 @@
         </div>
         <div class="p-6">
           <div class="mb-2 flex justify-between text-xs">
-            <span class="text-muted">{{ ('web.features.quests.copy.your_progress_679c4311' | translate) }}</span
+            <span class="text-muted">{{
+              'web.features.quests.copy.your_progress_679c4311' | translate
+            }}</span
             ><span class="font-semibold text-brand">{{ quest.progress.toFixed(0) }}%</span>
           </div>
           <lq-progress [value]="quest.progress" />
@@ -96,12 +101,13 @@
       <div class="col-span-full">
         <lq-empty
           icon="flag"
-          [title]="('web.features.quests.copy.what_would_make_this_a_good_week_611c68fd' | translate)"
+          [title]="'web.features.quests.copy.what_would_make_this_a_good_week_611c68fd' | translate"
           [description]="
-            ('web.features.quests.copy.choose_a_small_mission_with_a_few_clear_steps_keep_it_meaningful_and_achievable_70b96d24' | translate)
+            'web.features.quests.copy.choose_a_small_mission_with_a_few_clear_steps_keep_it_meaningful_and_achievable_70b96d24'
+              | translate
           "
           ><button class="btn btn-primary" (click)="create()">
-            {{ ('web.features.quests.copy.create_my_first_quest_0cb4ef09' | translate) }}
+            {{ 'web.features.quests.copy.create_my_first_quest_0cb4ef09' | translate }}
           </button></lq-empty
         >
       </div>
@@ -117,16 +123,19 @@
   />
 }
 <p-dialog
-  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
-  [header]="('web.features.quests.copy.your_next_weekly_mission_cf0c5848' | translate)"
+  [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
+  [header]="'web.features.quests.copy.your_next_weekly_mission_cf0c5848' | translate"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '36rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
-    <lq-field id="quest-title" [label]="('web.features.quests.copy.quest_title_c56ff7cf' | translate)"
+    <lq-field id="quest-title" [label]="'web.features.quests.copy.quest_title_c56ff7cf' | translate"
       ><input id="quest-title" class="field" formControlName="title" /></lq-field
-    ><lq-field id="quest-description" [label]="('web.features.quests.copy.why_this_week_53780ac2' | translate)">
+    ><lq-field
+      id="quest-description"
+      [label]="'web.features.quests.copy.why_this_week_53780ac2' | translate"
+    >
       <textarea
         id="quest-description"
         class="field"
@@ -135,21 +144,21 @@
       ></textarea>
     </lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="quest-area" [label]="('common.copy.life_area_9e7a62cc' | translate)"
+      <lq-field id="quest-area" [label]="'common.copy.life_area_9e7a62cc' | translate"
         ><select id="quest-area" class="field" formControlName="areaId">
           @for (area of areas.data(); track area.id) {
             <option [value]="area.id">{{ i18n.t(area.name, area.nameAr) }}</option>
           }
         </select></lq-field
-      ><lq-field id="quest-date" [label]="('web.features.quests.copy.finish_by_62f0623f' | translate)"
+      ><lq-field id="quest-date" [label]="'web.features.quests.copy.finish_by_62f0623f' | translate"
         ><input id="quest-date" type="date" class="field" formControlName="deadline"
       /></lq-field>
     </div>
     <lq-field
       id="quest-items"
-      [label]="('web.features.quests.copy.your_steps_one_per_line_9e92dc64' | translate)"
+      [label]="'web.features.quests.copy.your_steps_one_per_line_9e92dc64' | translate"
       [hint]="
-        ('web.features.quests.copy.between_1_and_12_clear_achievable_actions_e1c84d4c' | translate)
+        'web.features.quests.copy.between_1_and_12_clear_achievable_actions_e1c84d4c' | translate
       "
     >
       <textarea
@@ -158,18 +167,24 @@
         rows="4"
         formControlName="items"
       ></textarea></lq-field
-    ><lq-field id="quest-effort" [label]="('common.copy.effort_d56430cf' | translate)"
+    ><lq-field id="quest-effort" [label]="'common.copy.effort_d56430cf' | translate"
       ><select id="quest-effort" class="field" formControlName="difficulty">
-        <option value="EASY">{{ ('web.features.quests.copy.gentle_60_xp_c01ca74b' | translate) }}</option>
-        <option value="MEDIUM">{{ ('web.features.quests.copy.steady_100_xp_f8cfe0df' | translate) }}</option>
-        <option value="HARD">{{ ('web.features.quests.copy.stretch_150_xp_4e8d6577' | translate) }}</option>
+        <option value="EASY">
+          {{ 'web.features.quests.copy.gentle_60_xp_c01ca74b' | translate }}
+        </option>
+        <option value="MEDIUM">
+          {{ 'web.features.quests.copy.steady_100_xp_f8cfe0df' | translate }}
+        </option>
+        <option value="HARD">
+          {{ 'web.features.quests.copy.stretch_150_xp_4e8d6577' | translate }}
+        </option>
       </select></lq-field
     >
     @if (error()) {
       <p role="alert" class="mb-4 text-sm text-rose-600">{{ error() }}</p>
     }
     <button type="submit" class="btn btn-primary w-full" [disabled]="saving() || form.invalid">
-      {{ ('web.features.quests.copy.start_my_quest_b71ad749' | translate) }}
+      {{ 'web.features.quests.copy.start_my_quest_b71ad749' | translate }}
     </button>
   </form></p-dialog
 >

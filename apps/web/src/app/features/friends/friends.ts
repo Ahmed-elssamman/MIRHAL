@@ -4,10 +4,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmationService } from 'primeng/api';
-import { Api, Page, Friend, Toasts } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
-import { Pagination, EmptyState, ErrorState, Icon, PageHeader } from '@lifequest/ui';
-import { applyServerValidation, FormField } from '@lifequest/forms';
+import { Api, Page, Friend, Toasts } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
+import { Pagination, EmptyState, ErrorState, Icon, PageHeader } from '@mirhal/ui';
+import { applyServerValidation, FormField } from '@mirhal/forms';
 @Component({
   selector: 'lq-friends',
   imports: [

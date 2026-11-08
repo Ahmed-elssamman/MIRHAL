@@ -3,10 +3,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Page, Toasts } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
-import { Pagination, EmptyState, ErrorState, Icon, PageHeader } from '@lifequest/ui';
-import { applyServerValidation, FormField } from '@lifequest/forms';
+import { Api, Page, Toasts } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
+import { Pagination, EmptyState, ErrorState, Icon, PageHeader } from '@mirhal/ui';
+import { applyServerValidation, FormField } from '@mirhal/forms';
 import { catalogs } from './catalogs';
 type CatalogItem = {
   id: string;

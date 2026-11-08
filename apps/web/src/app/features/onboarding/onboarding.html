@@ -9,10 +9,13 @@
         role="alert"
         class="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-950"
       >
-        <p class="font-semibold">{{ ('web.features.onboarding.copy.your_account_is_ready_40893334' | translate) }}</p>
+        <p class="font-semibold">
+          {{ 'web.features.onboarding.copy.your_account_is_ready_40893334' | translate }}
+        </p>
         <p>
           {{
-            ('common.copy.the_email_provider_did_not_accept_the_verification_request_you_can_retry_from_settings_1bd93a0c' | translate)
+            'common.copy.the_email_provider_did_not_accept_the_verification_request_you_can_retry_from_settings_1bd93a0c'
+              | translate
           }}
         </p>
       </aside>
@@ -54,11 +57,12 @@
                 } @empty {
                   <p class="text-sm text-muted">
                     {{
-                      ('web.features.onboarding.copy.areas_are_unavailable_right_now_try_again_f05c7280' | translate)
+                      'web.features.onboarding.copy.areas_are_unavailable_right_now_try_again_f05c7280'
+                        | translate
                     }}
                   </p>
                   <button type="button" class="btn btn-secondary" (click)="areas.load()">
-                    {{ ('common.copy.try_again_213e90fa' | translate) }}
+                    {{ 'common.copy.try_again_213e90fa' | translate }}
                   </button>
                 }
               </div>
@@ -67,9 +71,13 @@
           @case (1) {
             <lq-field
               id="onboard-goal"
-              [label]="('web.features.onboarding.copy.what_would_you_like_to_work_toward_ac2ad97e' | translate)"
+              [label]="
+                'web.features.onboarding.copy.what_would_you_like_to_work_toward_ac2ad97e'
+                  | translate
+              "
               [hint]="
-                ('web.features.onboarding.copy.optional_one_meaningful_direction_is_enough_49f205ca' | translate)
+                'web.features.onboarding.copy.optional_one_meaningful_direction_is_enough_49f205ca'
+                  | translate
               "
             >
               <input
@@ -77,16 +85,20 @@
                 class="field"
                 formControlName="goal"
                 maxlength="160"
-                [placeholder]="('web.features.onboarding.copy.e_g_feel_healthier_8de349bb' | translate)"
+                [placeholder]="
+                  'web.features.onboarding.copy.e_g_feel_healthier_8de349bb' | translate
+                "
               />
             </lq-field>
             <lq-field
               id="onboard-habit"
               [label]="
-                ('web.features.onboarding.copy.what_would_you_like_to_keep_doing_86956f6e' | translate)
+                'web.features.onboarding.copy.what_would_you_like_to_keep_doing_86956f6e'
+                  | translate
               "
               [hint]="
-                ('web.features.onboarding.copy.optional_a_two_minute_action_is_a_good_start_11f38dff' | translate)
+                'web.features.onboarding.copy.optional_a_two_minute_action_is_a_good_start_11f38dff'
+                  | translate
               "
             >
               <input
@@ -94,24 +106,31 @@
                 class="field"
                 formControlName="habit"
                 maxlength="160"
-                [placeholder]="('web.features.onboarding.copy.e_g_take_a_short_walk_bb98e5a0' | translate)"
+                [placeholder]="
+                  'web.features.onboarding.copy.e_g_take_a_short_walk_bb98e5a0' | translate
+                "
               />
             </lq-field>
           }
           @case (2) {
             <lq-field
               id="onboard-routine"
-              [label]="('web.features.onboarding.copy.a_time_that_usually_works_for_me_284bec38' | translate)"
+              [label]="
+                'web.features.onboarding.copy.a_time_that_usually_works_for_me_284bec38' | translate
+              "
             >
               <select id="onboard-routine" class="field" formControlName="preferredRoutine">
-                <option value="morning">{{ ('common.copy.morning_02e055cf' | translate) }}</option>
-                <option value="afternoon">{{ ('common.copy.afternoon_0cc20db7' | translate) }}</option>
-                <option value="evening">{{ ('common.copy.evening_4a5908cf' | translate) }}</option>
+                <option value="morning">{{ 'common.copy.morning_02e055cf' | translate }}</option>
+                <option value="afternoon">
+                  {{ 'common.copy.afternoon_0cc20db7' | translate }}
+                </option>
+                <option value="evening">{{ 'common.copy.evening_4a5908cf' | translate }}</option>
               </select>
             </lq-field>
             <p class="mt-5 rounded-xl bg-brand-soft p-4 text-sm leading-6 text-muted">
               <lq-icon name="shield" [size]="17" class="me-2 inline-block text-brand" />{{
-                ('web.features.onboarding.copy.your_profile_starts_private_you_control_sharing_later_in_settings_45394c3f' | translate)
+                'web.features.onboarding.copy.your_profile_starts_private_you_control_sharing_later_in_settings_45394c3f'
+                  | translate
               }}
             </p>
           }
@@ -126,14 +145,14 @@
               class="btn btn-secondary min-h-11"
               (click)="step.update(previousStep)"
             >
-              {{ ('web.features.onboarding.copy.back_c2954bc2' | translate) }}
+              {{ 'web.features.onboarding.copy.back_c2954bc2' | translate }}
             </button>
           } @else {
             <span></span>
           }
           @if (step() === 1) {
             <button type="button" class="btn btn-quiet min-h-11" (click)="skipDetails()">
-              {{ ('web.features.onboarding.copy.skip_for_now_85953101' | translate) }}
+              {{ 'web.features.onboarding.copy.skip_for_now_85953101' | translate }}
             </button>
           }
           <button

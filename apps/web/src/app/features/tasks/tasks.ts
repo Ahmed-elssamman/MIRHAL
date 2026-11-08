@@ -5,10 +5,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TimeoutError } from 'rxjs';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Goal, Page, Project, Task, Toasts } from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { EmptyState, ErrorState, Icon, PageHeader, Pagination } from '@lifequest/ui';
-import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
+import { Api, Goal, Page, Project, Task, Toasts } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { EmptyState, ErrorState, Icon, PageHeader, Pagination } from '@mirhal/ui';
+import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@mirhal/forms';
 @Component({
   selector: 'lq-tasks',
   imports: [
@@ -155,12 +155,17 @@ export class TasksPage {
       });
       this.resource.data.update((current) => {
         if (!current) return current;
-        const remove = (this.filter() === 'OPEN' && nextStatus === 'COMPLETED') ||
+        const remove =
+          (this.filter() === 'OPEN' && nextStatus === 'COMPLETED') ||
           (this.filter() === 'DONE' && nextStatus !== 'COMPLETED');
         const present = current.items.some((item) => item.id === task.id);
         return {
           ...current,
-          items: remove ? current.items.filter((item) => item.id !== task.id) : current.items.map((item) => item.id === task.id ? { ...item, status: nextStatus } : item),
+          items: remove
+            ? current.items.filter((item) => item.id !== task.id)
+            : current.items.map((item) =>
+                item.id === task.id ? { ...item, status: nextStatus } : item,
+              ),
           total: remove && present ? Math.max(0, current.total - 1) : current.total,
         };
       });
@@ -185,7 +190,10 @@ export class TasksPage {
           },
       );
       this.toasts.error(error);
-      if (error instanceof TimeoutError || (error instanceof HttpErrorResponse && error.status === 0))
+      if (
+        error instanceof TimeoutError ||
+        (error instanceof HttpErrorResponse && error.status === 0)
+      )
         void this.resource.load();
     } finally {
       this.pendingTaskIds.update((set) => {

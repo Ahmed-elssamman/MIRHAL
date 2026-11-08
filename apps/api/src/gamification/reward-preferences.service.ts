@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { InputOf, paginationSchema } from '@lifequest/contracts';
+import { InputOf, paginationSchema } from '@mirhal/contracts';
 import { Database } from '../common/database';
 import { pageArgs, pageResult } from '../core/ownership';
 import { XpService } from './xp.service';

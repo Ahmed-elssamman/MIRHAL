@@ -2,7 +2,7 @@ import { Body, Controller, Get, Inject, Param, Patch, Post, Query } from '@nestj
 import { ApiTags } from '@nestjs/swagger';
 import { ChallengeStatus, Prisma, Role } from '@prisma/client';
 import { z } from 'zod';
-import { feedbackAdminSchema, InputOf, paginationSchema } from '@lifequest/contracts';
+import { feedbackAdminSchema, InputOf, paginationSchema } from '@mirhal/contracts';
 import { CurrentUser, Identity, Roles, Validate } from '../common/http';
 import { Database } from '../common/database';
 import { MailAdapter } from '../auth/mail.adapter';

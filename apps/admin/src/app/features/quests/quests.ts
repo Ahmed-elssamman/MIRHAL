@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Area, Page, QuestTemplate, Toasts } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
-import { EmptyState, ErrorState, PageHeader, Pagination } from '@lifequest/ui';
-import { applyServerValidation, DiscardChanges, FormField, UnsavedForm } from '@lifequest/forms';
+import { Api, Area, Page, QuestTemplate, Toasts } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
+import { EmptyState, ErrorState, PageHeader, Pagination } from '@mirhal/ui';
+import { applyServerValidation, DiscardChanges, FormField, UnsavedForm } from '@mirhal/forms';
 @Component({
   selector: 'lq-admin-quests',
   imports: [

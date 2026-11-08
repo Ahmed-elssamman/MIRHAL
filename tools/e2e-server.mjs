@@ -10,11 +10,19 @@ config({ quiet: true });
 const source = process.env.TEST_DATABASE_URL;
 if (!source) throw new Error('TEST_DATABASE_URL is required.');
 const url = new URL(source);
-if (!['localhost', '127.0.0.1'].includes(url.hostname) || !url.pathname.endsWith('_test') || url.searchParams.has('host') || url.searchParams.has('hostaddr'))
+const hostParam = url.searchParams.get('host');
+const isLocalHostParam =
+  !hostParam || hostParam.startsWith('/') || ['localhost', '127.0.0.1'].includes(hostParam);
+if (
+  !['localhost', '127.0.0.1'].includes(url.hostname) ||
+  !url.pathname.endsWith('_test') ||
+  !isLocalHostParam ||
+  url.searchParams.has('hostaddr')
+)
   throw new Error('E2E requires a dedicated local test database.');
 const admin = new PrismaClient({ datasources: { db: { url: source } } });
 // Every run creates a new isolated database; never truncate an existing one.
-const name = `lifequest_e2e_${randomBytes(8).toString('hex')}_test`;
+const name = `mirhal_e2e_${randomBytes(8).toString('hex')}_test`;
 await admin.$executeRawUnsafe(`CREATE DATABASE "${name}"`);
 await admin.$disconnect();
 url.pathname = '/' + name;
@@ -53,12 +61,18 @@ for (const key of [
 ])
   delete env[key];
 try {
-  execFileSync(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], { env, stdio: 'pipe' });
+  execFileSync(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], {
+    env,
+    stdio: 'pipe',
+  });
 } catch {
   throw new Error('Isolated E2E migrations failed.');
 }
 try {
-  execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', 'prisma/seed.ts'], { env, stdio: 'pipe' });
+  execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', 'prisma/seed.ts'], {
+    env,
+    stdio: 'pipe',
+  });
 } catch {
   throw new Error('Isolated E2E seed failed.');
 }

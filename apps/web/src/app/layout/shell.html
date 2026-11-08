@@ -1,13 +1,13 @@
 <a
   href="#main-content"
   class="sr-only fixed start-4 top-4 z-50 rounded-xl bg-brand p-3 text-white focus:not-sr-only"
-  >{{ ('web.layout.copy.skip_to_content_c7af44e6' | translate) }}</a
+  >{{ 'web.layout.copy.skip_to_content_c7af44e6' | translate }}</a
 >
 <ng-template #navigationTemplate>
   <a routerLink="/dashboard" class="mb-7 block px-3 pt-1" (click)="menuOpen.set(false)"
     ><lq-logo
   /></a>
-  <nav [attr.aria-label]="('web.layout.copy.main_navigation_c5a8374a' | translate)" class="space-y-6">
+  <nav [attr.aria-label]="'web.layout.copy.main_navigation_c5a8374a' | translate" class="space-y-6">
     @for (group of navigation; track group.labelKey) {
       <div>
         <p class="eyebrow mb-2.5 px-4 text-[9px]">{{ group.labelKey | translate }}</p>
@@ -33,7 +33,7 @@
           [attr.aria-expanded]="moreOpen()"
           (click)="moreOpen.update((open) => !open)"
         >
-          <lq-icon name="more" [size]="18" />{{ ('web.layout.copy.more_4f34d900' | translate) }}
+          <lq-icon name="more" [size]="18" />{{ 'web.layout.copy.more_4f34d900' | translate }}
           <lq-icon
             class="ms-auto transition-transform"
             [class.rotate-180]="moreOpen()"
@@ -60,7 +60,9 @@
   </nav>
   <div class="mt-7 border-t border-line pt-4">
     <a routerLink="/help" class="flex min-h-10 items-center gap-3 px-4 text-xs text-muted"
-      ><lq-icon name="help" [size]="18" />{{ ('common.copy.how_mirhal_works_c85b9cc0' | translate) }}</a
+      ><lq-icon name="help" [size]="18" />{{
+        'common.copy.how_mirhal_works_c85b9cc0' | translate
+      }}</a
     >
   </div>
 </ng-template>
@@ -85,15 +87,15 @@
         type="button"
         class="icon-button lg:hidden"
         (click)="menuOpen.set(true)"
-        [attr.aria-label]="('web.layout.copy.open_navigation_b807c8dd' | translate)"
+        [attr.aria-label]="'web.layout.copy.open_navigation_b807c8dd' | translate"
       >
         <lq-icon name="menu" />
       </button>
-      <a routerLink="/today" [attr.aria-label]="('web.layout.copy.mirhal_home_1e77454b' | translate)">
+      <a routerLink="/today" [attr.aria-label]="'web.layout.copy.mirhal_home_1e77454b' | translate">
         <lq-logo [compact]="true" />
       </a>
       <span class="hidden text-xs text-muted sm:block">
-        {{ ('web.layout.copy.your_space_to_grow_763b7948' | translate) }}
+        {{ 'web.layout.copy.your_space_to_grow_763b7948' | translate }}
       </span>
     </div>
     <div class="flex items-center gap-1 sm:gap-3">
@@ -103,7 +105,7 @@
       <a
         routerLink="/tasks"
         class="icon-button hidden sm:inline-flex"
-        [attr.aria-label]="('web.layout.copy.open_tasks_c321a08b' | translate)"
+        [attr.aria-label]="'web.layout.copy.open_tasks_c321a08b' | translate"
       >
         <lq-icon name="tasks" [size]="19" />
       </a>
@@ -112,14 +114,14 @@
         class="icon-button text-xs font-semibold"
         (click)="auth.changeLanguage()"
         [disabled]="auth.languageSaving()"
-        [attr.aria-label]="('web.layout.copy.switch_to_arabic_7da2a422' | translate)"
+        [attr.aria-label]="'web.layout.copy.switch_to_arabic_7da2a422' | translate"
       >
-        {{ ('common.copy.copy_3c098db4' | translate) }}
+        {{ 'common.copy.copy_3c098db4' | translate }}
       </button>
       <button
         type="button"
         class="icon-button"
-        [attr.aria-label]="('web.layout.copy.notifications_381d190f' | translate)"
+        [attr.aria-label]="'web.layout.copy.notifications_381d190f' | translate"
         aria-haspopup="dialog"
         (click)="notificationsOpen.set(true)"
       >
@@ -131,7 +133,8 @@
           type="button"
           class="flex size-11 items-center justify-center rounded-full bg-brand-soft text-brand"
           [attr.aria-label]="
-            ('web.layout.copy.account_for_8b7eb2f1' | translate) + (auth.user()?.profile?.displayName ?? '')
+            ('web.layout.copy.account_for_8b7eb2f1' | translate) +
+            (auth.user()?.profile?.displayName ?? '')
           "
           [attr.aria-expanded]="profileOpen()"
           aria-controls="profile-actions"
@@ -147,7 +150,7 @@
           <section
             id="profile-actions"
             class="absolute end-0 top-full z-50 mt-2 w-64 max-w-[calc(100vw-1.5rem)] rounded-2xl border border-line bg-menu p-2 shadow-xl"
-            [attr.aria-label]="('web.layout.copy.account_actions_6d7ecadf' | translate)"
+            [attr.aria-label]="'web.layout.copy.account_actions_6d7ecadf' | translate"
           >
             <div class="border-b border-line px-3 py-2">
               <p class="truncate text-sm font-semibold">{{ auth.user()?.profile?.displayName }}</p>
@@ -158,21 +161,27 @@
               (click)="closeProfileMenu()"
               class="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm hover:bg-hover"
             >
-              <lq-icon name="user" [size]="17" />{{ ('web.layout.copy.profile_cd17328e' | translate) }}
+              <lq-icon name="user" [size]="17" />{{
+                'web.layout.copy.profile_cd17328e' | translate
+              }}
             </a>
             <a
               routerLink="/friends"
               (click)="closeProfileMenu()"
               class="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm hover:bg-hover"
             >
-              <lq-icon name="users" [size]="17" />{{ ('web.layout.copy.friends_63cc7b7a' | translate) }}
+              <lq-icon name="users" [size]="17" />{{
+                'web.layout.copy.friends_63cc7b7a' | translate
+              }}
             </a>
             <a
               routerLink="/settings"
               (click)="closeProfileMenu()"
               class="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm hover:bg-hover"
             >
-              <lq-icon name="settings" [size]="17" />{{ ('web.layout.copy.settings_4b058728' | translate) }}
+              <lq-icon name="settings" [size]="17" />{{
+                'web.layout.copy.settings_4b058728' | translate
+              }}
             </a>
             @if (!install.installed() && (install.canInstall() || install.hasGuidance())) {
               <button
@@ -181,7 +190,7 @@
                 class="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-start text-sm hover:bg-hover"
               >
                 <lq-icon name="download" [size]="17" />{{
-                  ('common.copy.install_mirhal_8a3f95dd' | translate)
+                  'common.copy.install_mirhal_8a3f95dd' | translate
                 }}
               </button>
             }
@@ -191,7 +200,9 @@
               [disabled]="loggingOut()"
               class="mt-1 flex min-h-11 w-full items-center gap-3 rounded-xl border-t border-line px-3 pt-2 text-start text-sm text-danger hover:bg-danger-soft"
             >
-              <lq-icon name="logout" [size]="17" />{{ ('web.layout.copy.log_out_88c6d8b5' | translate) }}
+              <lq-icon name="logout" [size]="17" />{{
+                'web.layout.copy.log_out_88c6d8b5' | translate
+              }}
             </button>
           </section>
         }
@@ -216,7 +227,8 @@
         class="mb-4 rounded-xl border border-warning/30 bg-warning-soft px-4 py-3 text-sm text-warning-ink"
       >
         {{
-          ('web.layout.copy.you_are_offline_mirhal_needs_an_internet_connection_to_load_and_save_your_account_f95751ba' | translate)
+          'web.layout.copy.you_are_offline_mirhal_needs_an_internet_connection_to_load_and_save_your_account_f95751ba'
+            | translate
         }}
       </p>
     }
@@ -227,17 +239,18 @@
         class="mb-5 flex flex-wrap items-center gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950"
       >
         <span class="min-w-0 flex-1">{{
-          ('common.copy.the_email_provider_did_not_accept_the_verification_request_you_can_retry_from_settings_1bd93a0c' | translate)
+          'common.copy.the_email_provider_did_not_accept_the_verification_request_you_can_retry_from_settings_1bd93a0c'
+            | translate
         }}</span>
         <a routerLink="/settings" class="btn btn-secondary min-h-11">{{
-          ('web.layout.copy.open_settings_45de88b6' | translate)
+          'web.layout.copy.open_settings_45de88b6' | translate
         }}</a>
         <button
           type="button"
           class="btn btn-quiet min-h-11"
           (click)="auth.dismissVerificationNotice()"
         >
-          {{ ('web.layout.copy.dismiss_265915f3' | translate) }}
+          {{ 'web.layout.copy.dismiss_265915f3' | translate }}
         </button>
       </aside>
     }
@@ -245,7 +258,7 @@
   </main>
   <nav
     class="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-surface/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
-    [attr.aria-label]="('web.layout.copy.quick_navigation_7e9b66c6' | translate)"
+    [attr.aria-label]="'web.layout.copy.quick_navigation_7e9b66c6' | translate"
   >
     @for (item of bottom; track item.path) {
       <a
@@ -264,9 +277,11 @@
       type="button"
       class="flex min-h-16 min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl px-1 text-[9px] font-medium text-muted"
       (click)="menuOpen.set(true)"
-      [attr.aria-label]="('web.layout.copy.more_navigation_035b4be2' | translate)"
+      [attr.aria-label]="'web.layout.copy.more_navigation_035b4be2' | translate"
     >
-      <lq-icon name="more" [size]="20" /><span>{{ ('web.layout.copy.more_4f34d900' | translate) }}</span>
+      <lq-icon name="more" [size]="20" /><span>{{
+        'web.layout.copy.more_4f34d900' | translate
+      }}</span>
     </button>
   </nav>
 </div>

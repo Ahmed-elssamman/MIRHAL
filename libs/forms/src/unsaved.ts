@@ -2,7 +2,7 @@ import { Directive, HostListener, Injectable, WritableSignal, inject, input } fr
 import { AbstractControl } from '@angular/forms';
 import { CanDeactivateFn } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
-import { Preferences } from '@lifequest/utilities';
+import { Preferences } from '@mirhal/utilities';
 @Injectable({ providedIn: 'root' })
 export class DiscardChanges {
   private readonly confirmation = inject(ConfirmationService);

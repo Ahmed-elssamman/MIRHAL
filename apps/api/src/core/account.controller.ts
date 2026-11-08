@@ -14,7 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { z } from 'zod';
 import * as argon2 from 'argon2';
-import { InputOf, onboardingSchema, profileSchema, journeyQuerySchema } from '@lifequest/contracts';
+import { InputOf, onboardingSchema, profileSchema, journeyQuerySchema } from '@mirhal/contracts';
 import { Database } from '../common/database';
 import { CurrentUser, Identity, Public, Validate } from '../common/http';
 import { erasePersonalContent } from './account-erasure';

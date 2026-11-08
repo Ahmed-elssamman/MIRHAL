@@ -4,18 +4,38 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideRouter, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { provideTranslateLoader, provideTranslateService } from '@ngx-translate/core';
-import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { MirhalTranslationLoader } from '@mirhal/i18n';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { NotificationOverlay } from '../app/features/notifications/notification-overlay';
 
-const notification = { id: 'n1', title: 'Notice', body: 'Details', type: 'FRIEND_REQUEST', href: null, readAt: null, createdAt: '2026-10-30T00:00:00Z' };
+const notification = {
+  id: 'n1',
+  title: 'Notice',
+  body: 'Details',
+  type: 'FRIEND_REQUEST',
+  href: null,
+  readAt: null,
+  createdAt: '2026-10-30T00:00:00Z',
+};
 describe('notification overlay', () => {
-  beforeEach(() => TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), MessageService, provideTranslateService({ loader: provideTranslateLoader(MirhalTranslationLoader) })] }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        MessageService,
+        provideTranslateService({ loader: provideTranslateLoader(MirhalTranslationLoader) }),
+      ],
+    }),
+  );
   it('marks an unlinked item read without navigating', async () => {
     const fixture = TestBed.createComponent(NotificationOverlay);
     const page = fixture.componentInstance;
     const http = TestBed.inject(HttpTestingController);
-    http.expectOne('/api/notifications?limit=6').flush({ items: [notification], total: 1, page: 1, limit: 6 });
+    http
+      .expectOne('/api/notifications?limit=6')
+      .flush({ items: [notification], total: 1, page: 1, limit: 6 });
     await fixture.whenStable();
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl');
     const pending = page.openItem(notification);
@@ -43,7 +63,9 @@ describe('notification overlay', () => {
     const fixture = TestBed.createComponent(NotificationOverlay);
     const page = fixture.componentInstance;
     const http = TestBed.inject(HttpTestingController);
-    http.expectOne('/api/notifications?limit=6').flush({ items: [notification], total: 1, page: 1, limit: 6 });
+    http
+      .expectOne('/api/notifications?limit=6')
+      .flush({ items: [notification], total: 1, page: 1, limit: 6 });
     await fixture.whenStable();
     const pending = page.readAll();
     void page.readAll();

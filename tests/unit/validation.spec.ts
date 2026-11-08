@@ -10,7 +10,7 @@ import {
   profileSchema,
   registerSchema,
   rewardSchema,
-} from '@lifequest/contracts';
+} from '@mirhal/contracts';
 describe('External input validation', () => {
   it('rejects mass assignment and weak passwords', () => {
     expect(

@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Api, Profile } from '@lifequest/data-access';
-import { AuthStore } from '@lifequest/auth';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Avatar, Icon, PageHeader } from '@lifequest/ui';
-import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms';
+import { Api, Profile } from '@mirhal/data-access';
+import { AuthStore } from '@mirhal/auth';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { Avatar, Icon, PageHeader } from '@mirhal/ui';
+import { UnsavedForm, applyServerValidation, FormField } from '@mirhal/forms';
 @Component({
   selector: 'lq-profile',
   imports: [

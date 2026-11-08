@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { InputOf, paginationSchema } from '@lifequest/contracts';
+import { InputOf, paginationSchema } from '@mirhal/contracts';
 import { pageArgs, pageResult } from '../core/ownership';
 import { notify } from '../common/notifications';
 import { MailAdapter } from '../auth/mail.adapter';
@@ -216,7 +216,14 @@ export class FriendsService {
         requestId,
       );
     else
-      await this.mail.sendFriendInvite(normalizedEmail, inviterName, eventId, language, undefined, true);
+      await this.mail.sendFriendInvite(
+        normalizedEmail,
+        inviterName,
+        eventId,
+        language,
+        undefined,
+        true,
+      );
     return {
       channel: 'friendship' as const,
       id: friendship.id,

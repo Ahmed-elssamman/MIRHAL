@@ -4,7 +4,7 @@ Status: phases 0–10 verified locally. On 2 October 2026, the candidate was dep
 
 ## Architecture and product structure
 
-Keep the Nx modular monolith, separate Angular web/admin apps, NestJS REST API, Prisma/PostgreSQL schema, Zod contracts, shared UI/forms/auth/data libraries, session security and established Tailwind/PrimeNG design. Retain the distinct Goal, Project, Task, Habit, HabitLog, DailyCheckIn, Quest, XP, Reward and Challenge models. Existing dashboard, Today, Habit Lab and help are extension points. Deployed URLs, `@lifequest/*` import aliases, `lq-` selectors and migration SQL identifiers are compatibility identifiers, not public product copy.
+Keep the Nx modular monolith, separate Angular web/admin apps, NestJS REST API, Prisma/PostgreSQL schema, Zod contracts, shared UI/forms/auth/data libraries, session security and established Tailwind/PrimeNG design. Retain the distinct Goal, Project, Task, Habit, HabitLog, DailyCheckIn, Quest, XP, Reward and Challenge models. Existing dashboard, Today, Habit Lab and help are extension points. The internal `@lifequest/*` aliases have been migrated to `@mirhal/*`; deployed URLs, `lq-` selectors, and migration SQL identifiers remain compatibility identifiers.
 
 ## Incremental sequence
 

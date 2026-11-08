@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Preferences } from '@lifequest/utilities';
+import { Preferences } from '@mirhal/utilities';
 @Component({
   selector: 'lq-activity-chart',
   imports: [TranslatePipe],
@@ -10,7 +10,8 @@ import { Preferences } from '@lifequest/utilities';
       role="img"
       [attr.aria-label]="
         label() ??
-        ('web.features.analytics.copy.habit_actions_over_the_last_28_days_green_dots_indicate_daily_check_ins_1f0a6b44' | translate)
+        ('web.features.analytics.copy.habit_actions_over_the_last_28_days_green_dots_indicate_daily_check_ins_1f0a6b44'
+          | translate)
       "
       class="w-full"
     >
@@ -27,7 +28,7 @@ import { Preferences } from '@lifequest/utilities';
           <title>{{ day.date }}: {{ day.habits }}</title>
         </rect>
         @if (day.checkIn) {
-          <circle [attr.cx]="day.x + 6.5" cy="160" r="2.5" fill="#267755" />
+          <circle [attr.cx]="day.x + 6.5" cy="160" r="2.5" class="fill-brand" />
         }
       }
     </svg>

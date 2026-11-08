@@ -3,9 +3,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
-import { Api, Page } from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { AccessibleTable, ErrorState, Icon, PageHeader, Pagination } from '@lifequest/ui';
+import { Api, Page } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { AccessibleTable, ErrorState, Icon, PageHeader, Pagination } from '@mirhal/ui';
 import { AdminUser } from '../../models';
 @Component({
   selector: 'lq-admin-users',

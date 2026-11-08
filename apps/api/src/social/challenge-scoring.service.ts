@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { createHash } from 'node:crypto';
-import { ScoringEngine, addDays, dateOnly, isScheduled, localDate } from '@lifequest/domain';
+import { ScoringEngine, addDays, dateOnly, isScheduled, localDate } from '@mirhal/domain';
 import { Database } from '../common/database';
 export const challengeInclude = {
   rules: true,

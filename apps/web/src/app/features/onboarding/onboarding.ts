@@ -2,22 +2,14 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Api, Area, User } from '@lifequest/data-access';
-import { AuthStore } from '@lifequest/auth';
-import { Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, Logo, Progress } from '@lifequest/ui';
-import { applyServerValidation, FormField } from '@lifequest/forms';
+import { Api, Area, User } from '@mirhal/data-access';
+import { AuthStore } from '@mirhal/auth';
+import { Preferences } from '@mirhal/utilities';
+import { ErrorState, Icon, Logo, Progress } from '@mirhal/ui';
+import { applyServerValidation, FormField } from '@mirhal/forms';
 @Component({
   selector: 'lq-onboarding',
-  imports: [
-    TranslatePipe,
-    ReactiveFormsModule,
-    ErrorState,
-    Icon,
-    Logo,
-    Progress,
-    FormField,
-  ],
+  imports: [TranslatePipe, ReactiveFormsModule, ErrorState, Icon, Logo, Progress, FormField],
   templateUrl: './onboarding.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

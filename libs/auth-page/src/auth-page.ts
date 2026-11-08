@@ -3,11 +3,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Api } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
-import { Icon, Logo } from '@lifequest/ui';
-import { FormField } from '@lifequest/forms';
-import { AuthStore } from '@lifequest/auth';
+import { Api } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
+import { Icon, Logo } from '@mirhal/ui';
+import { FormField } from '@mirhal/forms';
+import { AuthStore } from '@mirhal/auth';
 @Component({
   selector: 'lq-auth-page',
   imports: [TranslatePipe, RouterLink, ReactiveFormsModule, Icon, Logo, FormField],

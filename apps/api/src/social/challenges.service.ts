@@ -11,7 +11,7 @@ import {
   challengeSchema,
   challengeAcceptSchema,
   paginationSchema,
-} from '@lifequest/contracts';
+} from '@mirhal/contracts';
 import { Database } from '../common/database';
 import { ChallengeLifecycleService } from './challenge-lifecycle.service';
 import { assertReferences, pageArgs, pageResult } from '../core/ownership';

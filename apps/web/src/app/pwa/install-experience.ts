@@ -2,19 +2,18 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Component, DestroyRef, PLATFORM_ID, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DialogModule } from 'primeng/dialog';
-import { Preferences } from '@lifequest/utilities';
-import { Icon } from '@lifequest/ui';
+import { Preferences } from '@mirhal/utilities';
+import { Icon } from '@mirhal/ui';
 import { PwaInstallation } from './install';
 
 @Component({
   selector: 'lq-install-experience',
-  imports: [
-    TranslatePipe,DialogModule, Icon],
+  imports: [TranslatePipe, DialogModule, Icon],
   template: `
     @if (install.canOffer()) {
       <aside
         class="mb-5 flex flex-wrap items-center gap-3 rounded-2xl border border-brand/20 bg-brand-soft p-4 sm:p-5"
-        aria-label="{{ ('common.copy.install_mirhal_8a3f95dd' | translate) }}"
+        aria-label="{{ 'common.copy.install_mirhal_8a3f95dd' | translate }}"
       >
         <span
           class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface text-brand"
@@ -23,21 +22,22 @@ import { PwaInstallation } from './install';
         </span>
         <div class="min-w-0 flex-1">
           <h2 class="text-sm font-semibold">
-            {{ ('web.app.copy.mirhal_close_at_hand_5f53cbfc' | translate) }}
+            {{ 'web.app.copy.mirhal_close_at_hand_5f53cbfc' | translate }}
           </h2>
           <p class="mt-1 text-xs leading-5 text-muted">
             {{
-              ('web.app.copy.add_a_home_screen_shortcut_for_quick_access_your_account_still_needs_an_internet_connection_1d9ed936' | translate)
+              'web.app.copy.add_a_home_screen_shortcut_for_quick_access_your_account_still_needs_an_internet_connection_1d9ed936'
+                | translate
             }}
           </p>
         </div>
         <button type="button" class="btn btn-secondary min-h-11" (click)="openInstall()">
-          {{ ('web.app.copy.install_or_get_help_dd7abda0' | translate) }}
+          {{ 'web.app.copy.install_or_get_help_dd7abda0' | translate }}
         </button>
         <button
           type="button"
           class="icon-button"
-          [attr.aria-label]="('web.app.copy.maybe_later_7bfa4a05' | translate)"
+          [attr.aria-label]="'web.app.copy.maybe_later_7bfa4a05' | translate"
           (click)="install.dismiss()"
         >
           <lq-icon name="x" [size]="17" />
@@ -53,7 +53,7 @@ import { PwaInstallation } from './install';
       [resizable]="false"
       [closeOnEscape]="true"
       [style]="{ width: 'min(29rem, calc(100vw - 2rem))' }"
-      [header]="('web.app.copy.make_mirhal_easy_to_reach_d53f61be' | translate)"
+      [header]="'web.app.copy.make_mirhal_easy_to_reach_d53f61be' | translate"
       [appendTo]="'body'"
     >
       <div class="flex items-start gap-4">
@@ -65,52 +65,55 @@ import { PwaInstallation } from './install';
         <div>
           <p class="text-sm font-medium">
             {{
-              ('web.app.copy.open_mirhal_from_your_home_screen_in_its_own_window_2c9b5edb' | translate)
+              'web.app.copy.open_mirhal_from_your_home_screen_in_its_own_window_2c9b5edb'
+                | translate
             }}
           </p>
           @if (install.platform() === 'ios-safari') {
             <p class="mt-3 text-sm leading-6 text-muted">
-              {{
-                ('web.app.copy.in_safari_tap_share_then_add_to_home_screen_8fb7218a' | translate)
-              }}
+              {{ 'web.app.copy.in_safari_tap_share_then_add_to_home_screen_8fb7218a' | translate }}
             </p>
           } @else if (install.platform() === 'android') {
             <p class="mt-3 text-sm leading-6 text-muted">
               {{
-                ('web.app.copy.open_your_browser_menu_and_choose_install_app_or_add_to_home_screen_the_wording_can_vary_by_browser_0066fed5' | translate)
+                'web.app.copy.open_your_browser_menu_and_choose_install_app_or_add_to_home_screen_the_wording_can_vary_by_browser_0066fed5'
+                  | translate
               }}
             </p>
           } @else if (install.platform() === 'mac-safari') {
             <p class="mt-3 text-sm leading-6 text-muted">
-              {{
-                ('web.app.copy.in_safari_choose_file_then_add_to_dock_df3dd673' | translate)
-              }}
+              {{ 'web.app.copy.in_safari_choose_file_then_add_to_dock_df3dd673' | translate }}
             </p>
           } @else if (install.canInstall()) {
             <p class="mt-3 text-sm leading-6 text-muted">
               {{
-                ('web.app.copy.your_browser_can_install_mirhal_continue_when_you_are_ready_7b7a584f' | translate)
+                'web.app.copy.your_browser_can_install_mirhal_continue_when_you_are_ready_7b7a584f'
+                  | translate
               }}
             </p>
           } @else {
             <p class="mt-3 text-sm leading-6 text-muted">
-              {{ ('web.app.copy.your_browser_does_not_provide_installation_instructions_here_you_can_still_use_mirhal_in_this_browser_1cdd3a74' | translate) }}
+              {{
+                'web.app.copy.your_browser_does_not_provide_installation_instructions_here_you_can_still_use_mirhal_in_this_browser_1cdd3a74'
+                  | translate
+              }}
             </p>
           }
           <p class="mt-3 text-xs leading-5 text-muted">
             {{
-              ('web.app.copy.your_goals_habits_and_tasks_still_need_an_internet_connection_ea87caa8' | translate)
+              'web.app.copy.your_goals_habits_and_tasks_still_need_an_internet_connection_ea87caa8'
+                | translate
             }}
           </p>
         </div>
       </div>
       <div class="mt-6 flex flex-wrap justify-end gap-2">
         <button type="button" class="btn btn-quiet" (click)="dismiss()">
-          {{ ('web.app.copy.maybe_later_7bfa4a05' | translate) }}
+          {{ 'web.app.copy.maybe_later_7bfa4a05' | translate }}
         </button>
         @if (install.canInstall()) {
           <button type="button" class="btn btn-primary" (click)="installNow()">
-            {{ ('common.copy.install_mirhal_8a3f95dd' | translate) }}
+            {{ 'common.copy.install_mirhal_8a3f95dd' | translate }}
           </button>
         }
       </div>

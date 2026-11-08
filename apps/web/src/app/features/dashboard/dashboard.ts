@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
-import { Api, Dashboard, Toasts } from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
+import { Api, Dashboard, Toasts } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
 import {
   ErrorState,
   HabitRow,
@@ -12,7 +12,7 @@ import {
   ProgressRing,
   SectionTitle,
   StatCard,
-} from '@lifequest/ui';
+} from '@mirhal/ui';
 @Component({
   selector: 'lq-dashboard',
   imports: [

@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Api } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, PageHeader, SectionTitle, StatCard } from '@lifequest/ui';
+import { Api } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
+import { ErrorState, Icon, PageHeader, SectionTitle, StatCard } from '@mirhal/ui';
 import { Overview } from '../../models';
 @Component({
   selector: 'lq-admin-overview',

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Api, Page, Feedback, Toasts } from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Pagination, ErrorState, Icon, PageHeader, SectionTitle } from '@lifequest/ui';
-import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms';
+import { Api, Page, Feedback, Toasts } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { Pagination, ErrorState, Icon, PageHeader, SectionTitle } from '@mirhal/ui';
+import { UnsavedForm, applyServerValidation, FormField } from '@mirhal/forms';
 @Component({
   selector: 'lq-feedback',
   imports: [

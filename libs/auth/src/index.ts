@@ -3,8 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, catchError, exhaustMap, filter, from, timer } from 'rxjs';
 import { Injectable, inject, signal, PLATFORM_ID, DestroyRef } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
-import { Api, User, Celebrations } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
+import { Api, User, Celebrations } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
 
 export type AuthStatus = 'initializing' | 'authenticated' | 'unauthenticated';
 

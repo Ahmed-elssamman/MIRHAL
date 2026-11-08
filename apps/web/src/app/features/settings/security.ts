@@ -3,15 +3,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Toasts } from '@lifequest/data-access';
-import { AuthStore } from '@lifequest/auth';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Icon } from '@lifequest/ui';
-import { applyServerValidation, FormField } from '@lifequest/forms';
+import { Api, Toasts } from '@mirhal/data-access';
+import { AuthStore } from '@mirhal/auth';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { Icon } from '@mirhal/ui';
+import { applyServerValidation, FormField } from '@mirhal/forms';
 @Component({
   selector: 'lq-security-settings',
-  imports: [
-    TranslatePipe,LocalizedDatePipe, ReactiveFormsModule, DialogModule, Icon, FormField],
+  imports: [TranslatePipe, LocalizedDatePipe, ReactiveFormsModule, DialogModule, Icon, FormField],
   templateUrl: './security.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

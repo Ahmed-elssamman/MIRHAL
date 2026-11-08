@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient, HttpErrorResponse } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { Api, ApiErrors, Remote, Celebrations } from '@lifequest/data-access';
+import { Api, ApiErrors, Remote, Celebrations } from '@mirhal/data-access';
 import { TranslateService } from '@ngx-translate/core';
 import { beforeEach, describe, expect, it } from 'vitest';
 
@@ -15,7 +15,8 @@ describe('HTTP state and race handling', () => {
         'errors.generic': 'We could not complete that action. Please try again.',
         'errors.accessDenied': 'This action is not available to your account right now.',
         'errors.server.emailPasswordIncorrect': 'Email or password is incorrect.',
-        'errors.server.linkExpiredAlreadyBeenUsed': 'This link has expired or has already been used.',
+        'errors.server.linkExpiredAlreadyBeenUsed':
+          'This link has expired or has already been used.',
         'errors.server.invitationNoLongerActive': 'This invitation is no longer active.',
       },
       ar: {

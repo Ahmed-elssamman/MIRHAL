@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { HabitSummary } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
+import { HabitSummary } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
 import { Icon } from './icon';
 
 @Component({
-  selector: 'lq-habit-row',
+  selector: 'mirhal-habit-row, lq-habit-row',
   imports: [TranslatePipe, Icon],
   template: `
     <div class="flex items-center gap-3 rounded-xl px-1 py-3.5 sm:gap-4">

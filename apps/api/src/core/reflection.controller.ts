@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { checkInSchema, InputOf, questSchema, paginationSchema } from '@lifequest/contracts';
-import { dateOnly, localDate } from '@lifequest/domain';
+import { checkInSchema, InputOf, questSchema, paginationSchema } from '@mirhal/contracts';
+import { dateOnly, localDate } from '@mirhal/domain';
 import { CurrentUser, Identity, Validate } from '../common/http';
 import { Database } from '../common/database';
 import { XpService } from '../gamification/xp.service';

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 @Component({
-  selector: 'lq-avatar',
+  selector: 'mirhal-avatar, lq-avatar',
   host: { class: 'inline-flex shrink-0' },
   template: `<span
     class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-soft font-semibold text-brand"

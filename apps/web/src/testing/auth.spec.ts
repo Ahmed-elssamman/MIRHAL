@@ -9,9 +9,9 @@ import {
   convertToParamMap,
 } from '@angular/router';
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-import { AuthStore, authGuard, adminGuard, unauthGuard } from '@lifequest/auth';
-import { Api, User } from '@lifequest/data-access';
-import { sessionInterceptor } from '@lifequest/auth';
+import { AuthStore, authGuard, adminGuard, unauthGuard } from '@mirhal/auth';
+import { Api, User } from '@mirhal/data-access';
+import { sessionInterceptor } from '@mirhal/auth';
 import { MessageService } from 'primeng/api';
 const user: User = {
   id: 'u1',

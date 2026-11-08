@@ -3,8 +3,12 @@ export class StartupConfigurationError extends Error {}
 export function validateStartupEnvironment() {
   const required = ['DATABASE_URL'];
   if (process.env['VERCEL'] !== '1') required.push('DIRECT_URL');
-  if (process.env['NODE_ENV'] === 'production')
-    required.push('WEB_ORIGIN', 'ADMIN_ORIGIN', 'APP_URL', 'REDIS_URL');
+  if (process.env['NODE_ENV'] === 'production') {
+    required.push('WEB_ORIGIN', 'ADMIN_ORIGIN', 'APP_URL');
+    if (process.env['RATE_LIMIT_MODE'] === 'redis') {
+      required.push('REDIS_URL');
+    }
+  }
   const missing = required.filter((name) => !process.env[name]);
   if (missing.length)
     throw new StartupConfigurationError(

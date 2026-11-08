@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Icon } from './icon';
 
 @Component({
-  selector: 'lq-pagination',
+  selector: 'mirhal-pagination, lq-pagination',
   imports: [TranslatePipe, Icon],
   template: `
     @if (pages() > 1) {

@@ -2,7 +2,7 @@ import { notify } from '../common/notifications';
 import { achievementProgress } from './achievement-progress';
 import { Inject, Injectable } from '@nestjs/common';
 import { Prisma, XpType } from '@prisma/client';
-import { levelProgress } from '@lifequest/domain';
+import { levelProgress } from '@mirhal/domain';
 import { Database } from '../common/database';
 @Injectable()
 export class XpService {

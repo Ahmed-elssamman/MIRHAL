@@ -1,9 +1,9 @@
 ﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Api, Toasts } from '@lifequest/data-access';
-import { PageHeader } from '@lifequest/ui';
-import { FormField } from '@lifequest/forms';
+import { Api, Toasts } from '@mirhal/data-access';
+import { PageHeader } from '@mirhal/ui';
+import { FormField } from '@mirhal/forms';
 
 @Component({
   selector: 'lq-admin-settings',
@@ -18,8 +18,12 @@ import { FormField } from '@lifequest/forms';
         <lq-field id="system-key" [label]="'adminSettings.setting' | translate">
           <select id="system-key" class="field" formControlName="key">
             <option value="support_email">{{ 'adminSettings.supportEmail' | translate }}</option>
-            <option value="maintenance_message">{{ 'adminSettings.maintenanceMessage' | translate }}</option>
-            <option value="registration_notice">{{ 'adminSettings.registrationNotice' | translate }}</option>
+            <option value="maintenance_message">
+              {{ 'adminSettings.maintenanceMessage' | translate }}
+            </option>
+            <option value="registration_notice">
+              {{ 'adminSettings.registrationNotice' | translate }}
+            </option>
           </select>
         </lq-field>
         <lq-field id="system-value" [label]="'adminSettings.value' | translate">
@@ -50,9 +54,8 @@ export class AdminSettingsPage {
   private readonly fb = inject(FormBuilder);
   private readonly toasts = inject(Toasts);
   private readonly translations = inject(TranslateService);
-  readonly resource = this.api.resource<{ key: string; value: string; description: string }[]>(
-    'admin/settings',
-  );
+  readonly resource =
+    this.api.resource<{ key: string; value: string; description: string }[]>('admin/settings');
   readonly saving = signal(false);
   readonly form = this.fb.nonNullable.group({ key: ['support_email'], value: [''] });
 

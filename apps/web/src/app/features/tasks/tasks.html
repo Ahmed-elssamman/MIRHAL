@@ -1,11 +1,12 @@
 <lq-page-header
-  [eyebrow]="('web.features.tasks.copy.one_thing_at_a_time_98ba91d8' | translate)"
-  [title]="('web.features.tasks.copy.make_space_for_focused_work_6e5e43d6' | translate)"
+  [eyebrow]="'web.features.tasks.copy.one_thing_at_a_time_98ba91d8' | translate"
+  [title]="'web.features.tasks.copy.make_space_for_focused_work_6e5e43d6' | translate"
   [description]="
-    ('web.features.tasks.copy.organize_tasks_set_priorities_and_dates_and_mark_each_step_complete_as_you_go_05f0e4d7' | translate)
+    'web.features.tasks.copy.organize_tasks_set_priorities_and_dates_and_mark_each_step_complete_as_you_go_05f0e4d7'
+      | translate
   "
   ><button class="btn btn-primary" (click)="create()">
-    <lq-icon name="plus" [size]="17" />{{ ('web.features.tasks.copy.new_task_662057e2' | translate) }}
+    <lq-icon name="plus" [size]="17" />{{ 'web.features.tasks.copy.new_task_662057e2' | translate }}
   </button></lq-page-header
 >
 <div class="mb-5 flex flex-wrap items-center justify-between gap-4">
@@ -26,12 +27,12 @@
       [ngModel]="search()"
       (ngModelChange)="search.set($event)"
       name="search"
-      [placeholder]="('web.features.tasks.copy.find_a_task_0ed61438' | translate)"
-      [attr.aria-label]="('web.features.tasks.copy.search_tasks_86e2bf6b' | translate)"
+      [placeholder]="'web.features.tasks.copy.find_a_task_0ed61438' | translate"
+      [attr.aria-label]="'web.features.tasks.copy.search_tasks_86e2bf6b' | translate"
     /><button
       class="icon-button border border-line"
       type="submit"
-      [attr.aria-label]="('common.copy.search_c646a2c9' | translate)"
+      [attr.aria-label]="'common.copy.search_c646a2c9' | translate"
     >
       <lq-icon name="search" />
     </button>
@@ -71,7 +72,9 @@
             {{ task.title }}
           </h2>
           @if (pendingTaskIds().has(task.id)) {
-            <p role="status" class="mt-1 text-xs text-muted">{{ ('common.copy.saving_74119e7f' | translate) }}</p>
+            <p role="status" class="mt-1 text-xs text-muted">
+              {{ 'common.copy.saving_74119e7f' | translate }}
+            </p>
           }
           @if (task.description) {
             <p class="mt-1 text-xs leading-6 text-muted">{{ task.description }}</p>
@@ -86,10 +89,13 @@
               <span>{{ task.dueDate | date: 'MMM d' }}</span>
             }
             @if (task.parent) {
-              <span>{{ ('web.features.tasks.copy.part_of_789d6a9f' | translate) }}{{ task.parent.title }}</span>
+              <span
+                >{{ 'web.features.tasks.copy.part_of_789d6a9f' | translate
+                }}{{ task.parent.title }}</span
+              >
             }
             @if (task.estimatedMinutes) {
-              <span>{{ task.estimatedMinutes }} {{ ('common.copy.min_c98f4557' | translate) }}</span>
+              <span>{{ task.estimatedMinutes }} {{ 'common.copy.min_c98f4557' | translate }}</span>
             }
           </div>
         </div>
@@ -115,12 +121,13 @@
     } @empty {
       <lq-empty
         icon="tasks"
-        [title]="('web.features.tasks.copy.a_little_breathing_room_49541d6d' | translate)"
+        [title]="'web.features.tasks.copy.a_little_breathing_room_49541d6d' | translate"
         [description]="
-          ('web.features.tasks.copy.no_tasks_in_this_view_add_your_next_meaningful_action_or_enjoy_the_space_9f21e12a' | translate)
+          'web.features.tasks.copy.no_tasks_in_this_view_add_your_next_meaningful_action_or_enjoy_the_space_9f21e12a'
+            | translate
         "
         ><button class="btn btn-primary" (click)="create()">
-          {{ ('common.copy.add_a_task_7f97e88c' | translate) }}
+          {{ 'common.copy.add_a_task_7f97e88c' | translate }}
         </button></lq-empty
       >
     }
@@ -130,18 +137,20 @@
   }
 }
 <p-dialog
-  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
-  [header]="('web.features.tasks.copy.one_clear_next_step_62f15063' | translate)"
+  [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
+  [header]="'web.features.tasks.copy.one_clear_next_step_62f15063' | translate"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '34rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
-    <lq-field id="task-title" [label]="('web.features.tasks.copy.what_needs_doing_6b10ac46' | translate)"
+    <lq-field
+      id="task-title"
+      [label]="'web.features.tasks.copy.what_needs_doing_6b10ac46' | translate"
       ><input id="task-title" class="field" formControlName="title" /></lq-field
     ><lq-field
       id="task-description"
-      [label]="('web.features.tasks.copy.a_little_context_optional_4026a906' | translate)"
+      [label]="'web.features.tasks.copy.a_little_context_optional_4026a906' | translate"
     >
       <textarea
         id="task-description"
@@ -149,37 +158,43 @@
         rows="2"
         formControlName="description"
       ></textarea></lq-field
-    ><lq-field id="task-project" [label]="('web.features.tasks.copy.project_7b5fea5e' | translate)"
+    ><lq-field id="task-project" [label]="'web.features.tasks.copy.project_7b5fea5e' | translate"
       ><select id="task-project" class="field" formControlName="projectId">
-        <option value="">{{ ('web.features.tasks.copy.independent_task_30027d66' | translate) }}</option>
+        <option value="">
+          {{ 'web.features.tasks.copy.independent_task_30027d66' | translate }}
+        </option>
         @for (project of projects.data()?.items; track project.id) {
           <option [value]="project.id">{{ project.title }}</option>
         }
       </select></lq-field
     >
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="task-date" [label]="('web.features.tasks.copy.due_date_d98bb1eb' | translate)"
+      <lq-field id="task-date" [label]="'web.features.tasks.copy.due_date_d98bb1eb' | translate"
         ><input id="task-date" type="date" class="field" formControlName="dueDate" /></lq-field
-      ><lq-field id="task-priority" [label]="('common.copy.priority_e68d9f29' | translate)"
+      ><lq-field id="task-priority" [label]="'common.copy.priority_e68d9f29' | translate"
         ><select id="task-priority" class="field" formControlName="priority">
-          <option value="LOW">{{ ('common.copy.low_b1dd9521' | translate) }}</option>
-          <option value="MEDIUM">{{ ('common.copy.medium_09be5f96' | translate) }}</option>
-          <option value="HIGH">{{ ('common.copy.high_be0a061d' | translate) }}</option>
+          <option value="LOW">{{ 'common.copy.low_b1dd9521' | translate }}</option>
+          <option value="MEDIUM">{{ 'common.copy.medium_09be5f96' | translate }}</option>
+          <option value="HIGH">{{ 'common.copy.high_be0a061d' | translate }}</option>
         </select></lq-field
       >
     </div>
-    <lq-field id="task-goal" [label]="('web.features.tasks.copy.linked_goal_a8ebfaf3' | translate)"
+    <lq-field id="task-goal" [label]="'web.features.tasks.copy.linked_goal_a8ebfaf3' | translate"
       ><select id="task-goal" class="field" formControlName="goalId">
-        <option value="">{{ ('web.features.tasks.copy.no_direct_goal_cf7cfac6' | translate) }}</option>
+        <option value="">
+          {{ 'web.features.tasks.copy.no_direct_goal_cf7cfac6' | translate }}
+        </option>
         @for (goal of goals.data()?.items; track goal.id) {
           <option [value]="goal.id">{{ goal.title }}</option>
         }
       </select></lq-field
     >
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="task-start" [label]="('web.features.tasks.copy.start_date_9a3729e1' | translate)"
+      <lq-field id="task-start" [label]="'web.features.tasks.copy.start_date_9a3729e1' | translate"
         ><input id="task-start" class="field" type="date" formControlName="startDate" /></lq-field
-      ><lq-field id="task-effort" [label]="('web.features.tasks.copy.estimated_minutes_c00810e0' | translate)"
+      ><lq-field
+        id="task-effort"
+        [label]="'web.features.tasks.copy.estimated_minutes_c00810e0' | translate"
         ><input
           id="task-effort"
           class="field"
@@ -193,13 +208,15 @@
       <div
         class="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-brand-soft p-3 text-xs"
       >
-        <span>{{ ('web.features.tasks.copy.a_small_step_within_a_bigger_task_b0513a72' | translate) }}</span>
+        <span>{{
+          'web.features.tasks.copy.a_small_step_within_a_bigger_task_b0513a72' | translate
+        }}</span>
         <button
           type="button"
           class="btn btn-quiet text-xs"
           (click)="form.controls.parentId.setValue(''); form.markAsDirty()"
         >
-          {{ ('web.features.tasks.copy.make_independent_98e389fd' | translate) }}
+          {{ 'web.features.tasks.copy.make_independent_98e389fd' | translate }}
         </button>
       </div>
     }
@@ -210,17 +227,23 @@
         (click)="subtask()"
         [disabled]="saving()"
       >
-        {{ ('web.features.tasks.copy.break_into_a_subtask_435c8a02' | translate) }}
+        {{ 'web.features.tasks.copy.break_into_a_subtask_435c8a02' | translate }}
       </button>
     }
-    <lq-field id="task-labels" [label]="('web.features.tasks.copy.labels_comma_separated_e329b7b5' | translate)"
+    <lq-field
+      id="task-labels"
+      [label]="'web.features.tasks.copy.labels_comma_separated_e329b7b5' | translate"
       ><input id="task-labels" class="field" formControlName="labels"
     /></lq-field>
     @if (error()) {
       <p role="alert" class="mb-4 text-sm text-rose-600">{{ error() }}</p>
     }
     <button class="btn btn-primary w-full" type="submit" [disabled]="saving() || form.invalid">
-      {{ editing() ? ('web.features.tasks.copy.save_task_9bfaf3dd' | translate) : ('web.features.tasks.copy.add_task_1812b769' | translate) }}
+      {{
+        editing()
+          ? ('web.features.tasks.copy.save_task_9bfaf3dd' | translate)
+          : ('web.features.tasks.copy.add_task_1812b769' | translate)
+      }}
     </button>
   </form></p-dialog
 >

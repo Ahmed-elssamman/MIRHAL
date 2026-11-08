@@ -1,15 +1,21 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  output,
+  signal,
+} from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router, RouterLink } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Notification, Page, Remote, Toasts } from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Icon } from '@lifequest/ui';
+import { Api, Notification, Page, Remote, Toasts } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { Icon } from '@mirhal/ui';
 
 @Component({
   selector: 'lq-notification-overlay',
-  imports: [
-    TranslatePipe,DialogModule, RouterLink, LocalizedDatePipe, Icon],
+  imports: [TranslatePipe, DialogModule, RouterLink, LocalizedDatePipe, Icon],
   template: `
     <p-dialog
       [visible]="true"
@@ -19,14 +25,16 @@ import { Icon } from '@lifequest/ui';
       [resizable]="false"
       [closeOnEscape]="true"
       [style]="{ width: 'min(34rem, calc(100vw - 1.5rem))' }"
-      [header]="('web.features.notifications.copy.a_few_things_to_know_9a51a76b' | translate)"
+      [header]="'web.features.notifications.copy.a_few_things_to_know_9a51a76b' | translate"
       [appendTo]="'body'"
     >
       @if (resource.loading() && !resource.data()) {
         <div
           class="space-y-3"
           aria-busy="true"
-          [attr.aria-label]="('web.features.notifications.copy.loading_notifications_d98d753f' | translate)"
+          [attr.aria-label]="
+            'web.features.notifications.copy.loading_notifications_d98d753f' | translate
+          "
         >
           <div class="skeleton h-16"></div>
           <div class="skeleton h-16"></div>
@@ -36,7 +44,7 @@ import { Icon } from '@lifequest/ui';
         <div role="alert" class="rounded-xl border border-line p-4">
           <p class="text-sm text-muted">{{ resource.error() }}</p>
           <button type="button" class="btn btn-secondary mt-3" (click)="resource.load()">
-            {{ ('common.copy.try_again_213e90fa' | translate) }}
+            {{ 'common.copy.try_again_213e90fa' | translate }}
           </button>
         </div>
       } @else {
@@ -47,7 +55,7 @@ import { Icon } from '@lifequest/ui';
             (click)="readAll()"
             [disabled]="working()"
           >
-            {{ ('web.features.notifications.copy.mark_all_as_read_6d267c97' | translate) }}
+            {{ 'web.features.notifications.copy.mark_all_as_read_6d267c97' | translate }}
           </button>
         }
         <div class="max-h-[min(65vh,34rem)] space-y-2 overflow-y-auto">
@@ -74,7 +82,7 @@ import { Icon } from '@lifequest/ui';
               @if (!item.readAt) {
                 <span
                   class="mt-1.5 size-2 shrink-0 rounded-full bg-brand"
-                  [attr.aria-label]="('web.features.notifications.copy.unread_0eb8c982' | translate)"
+                  [attr.aria-label]="'web.features.notifications.copy.unread_0eb8c982' | translate"
                 ></span>
               }
             </button>
@@ -82,11 +90,14 @@ import { Icon } from '@lifequest/ui';
             <div class="rounded-xl border border-line px-5 py-8 text-center">
               <lq-icon name="bell" class="text-brand" [size]="24" />
               <p class="mt-3 text-sm font-semibold">
-                {{ ('web.features.notifications.copy.a_little_quiet_is_good_too_a9b1cbb1' | translate) }}
+                {{
+                  'web.features.notifications.copy.a_little_quiet_is_good_too_a9b1cbb1' | translate
+                }}
               </p>
               <p class="mt-1 text-xs leading-5 text-muted">
                 {{
-                  ('web.features.notifications.copy.your_invitations_and_milestones_will_find_a_home_here_7fca0749' | translate)
+                  'web.features.notifications.copy.your_invitations_and_milestones_will_find_a_home_here_7fca0749'
+                    | translate
                 }}
               </p>
             </div>
@@ -94,7 +105,7 @@ import { Icon } from '@lifequest/ui';
         </div>
       }
       <a routerLink="/notifications" class="btn btn-secondary mt-4 w-full" (click)="close.emit()">
-        {{ ('web.features.notifications.copy.all_notifications_7b3946e0' | translate) }}
+        {{ 'web.features.notifications.copy.all_notifications_7b3946e0' | translate }}
         <lq-icon [name]="i18n.rtl() ? 'arrow-left' : 'arrow-right'" [size]="16" />
       </a>
     </p-dialog>
@@ -138,14 +149,23 @@ export class NotificationOverlay {
     this.pendingIds.update((ids) => new Set(ids).add(item.id));
     try {
       await this.api.patch(`notifications/${item.id}/read`, {});
-      this.resource.data.update((page) => page && ({
-        ...page,
-        items: page.items.map((entry) => entry.id === item.id ? { ...entry, readAt: new Date().toISOString() } : entry),
-      }));
+      this.resource.data.update(
+        (page) =>
+          page && {
+            ...page,
+            items: page.items.map((entry) =>
+              entry.id === item.id ? { ...entry, readAt: new Date().toISOString() } : entry,
+            ),
+          },
+      );
     } catch (error) {
       this.toasts.error(error);
     } finally {
-      this.pendingIds.update((ids) => { const next = new Set(ids); next.delete(item.id); return next; });
+      this.pendingIds.update((ids) => {
+        const next = new Set(ids);
+        next.delete(item.id);
+        return next;
+      });
     }
   }
 
@@ -155,7 +175,13 @@ export class NotificationOverlay {
     try {
       await this.api.post('notifications/read-all');
       const readAt = new Date().toISOString();
-      this.resource.data.update((page) => page && ({ ...page, items: page.items.map((item) => ({ ...item, readAt: item.readAt ?? readAt })) }));
+      this.resource.data.update(
+        (page) =>
+          page && {
+            ...page,
+            items: page.items.map((item) => ({ ...item, readAt: item.readAt ?? readAt })),
+          },
+      );
     } catch (error) {
       this.toasts.error(error);
     } finally {

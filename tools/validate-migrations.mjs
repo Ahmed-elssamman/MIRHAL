@@ -8,7 +8,7 @@ const url = new URL(value);
 if (!['localhost', '127.0.0.1'].includes(url.hostname) || !url.pathname.endsWith('_test'))
   throw new Error('Migration validation requires isolated local PostgreSQL.');
 const db = new PrismaClient({ datasources: { db: { url: value } } });
-const name = 'lifequest_migration_shadow_test';
+const name = 'mirhal_migration_shadow_test';
 if (!(await db.$queryRaw`SELECT 1 FROM pg_database WHERE datname=${name}`).length)
   await db.$executeRawUnsafe(`CREATE DATABASE "${name}"`);
 await db.$disconnect();

@@ -9,7 +9,7 @@ import {
   apiLoadingInterceptor,
   isApiRequest,
   LoadingService,
-} from '@lifequest/data-access';
+} from '@mirhal/data-access';
 
 describe('Centralized API-driven loading architecture', () => {
   beforeEach(() => {

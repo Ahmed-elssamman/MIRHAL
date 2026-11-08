@@ -1,27 +1,32 @@
 <lq-page-header
-  [eyebrow]="('web.features.rewards.copy.progress_deserves_a_little_joy_6e33c618' | translate)"
-  [title]="('web.features.rewards.copy.make_room_for_the_good_things_7b603e66' | translate)"
+  [eyebrow]="'web.features.rewards.copy.progress_deserves_a_little_joy_6e33c618' | translate"
+  [title]="'web.features.rewards.copy.make_room_for_the_good_things_7b603e66' | translate"
   [description]="
-    ('web.features.rewards.copy.explore_rewards_save_toward_a_favorite_or_create_a_personal_reward_for_your_progress_c437ac19' | translate)
+    'web.features.rewards.copy.explore_rewards_save_toward_a_favorite_or_create_a_personal_reward_for_your_progress_c437ac19'
+      | translate
   "
   ><button class="btn btn-secondary" (click)="create()">
-    <lq-icon name="plus" [size]="17" />{{ ('web.features.rewards.copy.personal_reward_3265fe10' | translate) }}
+    <lq-icon name="plus" [size]="17" />{{
+      'web.features.rewards.copy.personal_reward_3265fe10' | translate
+    }}
   </button></lq-page-header
 >
-<div class="mb-7 flex items-center justify-between gap-4 rounded-2xl bg-[#302943] p-6 text-white">
+<div class="mb-7 flex items-center justify-between gap-4 rounded-2xl brand-panel p-6">
   <div>
-    <p class="text-[10px] uppercase tracking-widest text-white/50">
-      {{ ('web.features.rewards.copy.yours_to_enjoy_2483b0cf' | translate) }}
+    <p class="text-[10px] uppercase tracking-widest text-brand-panel-muted">
+      {{ 'web.features.rewards.copy.yours_to_enjoy_2483b0cf' | translate }}
     </p>
     <p class="mt-2 text-3xl font-semibold">
-      {{ xp.data()?.balance ?? '…' }} <span class="text-sm font-normal text-[#c7bafa]">{{ 'common.xp' | translate }}</span>
+      {{ xp.data()?.balance ?? '…' }}
+      <span class="text-sm font-normal text-brand-panel-muted">{{ 'common.xp' | translate }}</span>
     </p>
   </div>
   <div class="max-w-48 text-end">
-    <lq-icon name="gift" [size]="28" class="mb-2 text-[#c7bafa]" />
-    <p class="text-[10px] leading-5 text-white/60">
+    <lq-icon name="gift" [size]="28" class="mb-2 text-brand-panel-muted" />
+    <p class="text-[10px] leading-5 text-white/70">
       {{
-        ('web.features.rewards.copy.spending_xp_never_takes_away_your_level_or_lifetime_progress_97cd6ec5' | translate)
+        'web.features.rewards.copy.spending_xp_never_takes_away_your_level_or_lifetime_progress_97cd6ec5'
+          | translate
       }}
     </p>
   </div>
@@ -37,15 +42,17 @@
 @if (recommendations.data()?.length) {
   <section class="mb-7" aria-labelledby="reward-suggestions-heading">
     <h2 id="reward-suggestions-heading" class="mb-3 text-lg font-semibold">
-      {{ ('web.features.rewards.copy.a_few_ideas_for_you_91d63d3a' | translate) }}
+      {{ 'web.features.rewards.copy.a_few_ideas_for_you_91d63d3a' | translate }}
     </h2>
     <div class="grid gap-3 sm:grid-cols-2">
       @for (item of recommendations.data(); track item.reward.id) {
         <div class="card p-4">
-          <p class="font-medium">{{ rewardTitle(item.reward) }} · {{ item.reward.cost }} {{ 'common.xp' | translate }}</p>
+          <p class="font-medium">
+            {{ rewardTitle(item.reward) }} · {{ item.reward.cost }} {{ 'common.xp' | translate }}
+          </p>
           <p class="mt-1 text-xs text-muted">{{ recommendationReason(item) }}</p>
           <button class="btn btn-quiet mt-2 text-xs" (click)="saveFor(item.reward)">
-            {{ ('web.features.rewards.copy.save_for_this_fbd96301' | translate) }}
+            {{ 'web.features.rewards.copy.save_for_this_fbd96301' | translate }}
           </button>
         </div>
       }
@@ -58,7 +65,7 @@
 @if (savings.data()?.items?.length) {
   <section class="mb-7" aria-labelledby="reward-savings-heading">
     <h2 id="reward-savings-heading" class="mb-3 text-lg font-semibold">
-      {{ ('web.features.rewards.copy.saving_for_something_1b91e240' | translate) }}
+      {{ 'web.features.rewards.copy.saving_for_something_1b91e240' | translate }}
     </h2>
     <div class="grid gap-3 sm:grid-cols-2">
       @for (item of savings.data()?.items; track item.rewardId) {
@@ -66,7 +73,7 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <p class="font-medium">{{ rewardTitle(item.reward) }}</p>
             <button class="btn btn-quiet text-xs" (click)="removeSaving(item.rewardId)">
-              {{ ('web.features.rewards.copy.remove_goal_7b5348c8' | translate) }}
+              {{ 'web.features.rewards.copy.remove_goal_7b5348c8' | translate }}
             </button>
           </div>
           <progress
@@ -127,11 +134,11 @@
               }}
             </button>
             <button class="btn btn-quiet text-xs" (click)="saveFor(reward)">
-              {{ ('web.features.rewards.copy.save_for_this_fbd96301' | translate) }}
+              {{ 'web.features.rewards.copy.save_for_this_fbd96301' | translate }}
             </button>
             @if (reward.userId) {
               <button class="btn btn-quiet text-xs" (click)="edit(reward)">
-                {{ ('common.copy.edit_c2c76cb1' | translate) }}
+                {{ 'common.copy.edit_c2c76cb1' | translate }}
               </button>
             }
           </div>
@@ -158,12 +165,15 @@
       <div class="col-span-full">
         <lq-empty
           icon="gift"
-          [title]="('web.features.rewards.copy.what_would_feel_like_a_little_reward_17a016ee' | translate)"
+          [title]="
+            'web.features.rewards.copy.what_would_feel_like_a_little_reward_17a016ee' | translate
+          "
           [description]="
-            ('web.features.rewards.copy.add_something_personal_to_look_forward_to_93b53e74' | translate)
+            'web.features.rewards.copy.add_something_personal_to_look_forward_to_93b53e74'
+              | translate
           "
           ><button class="btn btn-primary" (click)="create()">
-            {{ ('web.features.rewards.copy.create_a_reward_374af979' | translate) }}
+            {{ 'web.features.rewards.copy.create_a_reward_374af979' | translate }}
           </button></lq-empty
         >
       </div>
@@ -179,7 +189,9 @@
   />
 }
 <section class="mt-9">
-  <lq-section-title [title]="('web.features.rewards.copy.little_joys_you_ve_earned_bd78fac2' | translate)" />
+  <lq-section-title
+    [title]="'web.features.rewards.copy.little_joys_you_ve_earned_bd78fac2' | translate"
+  />
   @if (history.error()) {
     <lq-error [message]="history.error()" (retry)="history.load()" />
   } @else if (history.data()) {
@@ -200,23 +212,35 @@
           }}</span>
           @if (refundable(item)) {
             <button class="btn btn-quiet text-xs" (click)="refund(item.id)">
-              {{ ('web.features.rewards.copy.undo_71fd4acf' | translate) }}
+              {{ 'web.features.rewards.copy.undo_71fd4acf' | translate }}
             </button>
           }
           @if (!item.refundedAt) {
             <label class="text-xs text-muted">
-              {{ ('web.features.rewards.copy.how_was_it_4f667676' | translate) }}
+              {{ 'web.features.rewards.copy.how_was_it_4f667676' | translate }}
               <select
                 class="field mt-1"
                 [value]="item.rating ?? ''"
                 (change)="rateSelected(item, $event)"
               >
-                <option value="" disabled>{{ ('web.features.rewards.copy.optional_fdd15019' | translate) }}</option>
-                <option value="5">{{ ('web.features.rewards.copy.loved_it_ef05ac98' | translate) }}</option>
-                <option value="4">{{ ('web.features.rewards.copy.good_7a8c7df8' | translate) }}</option>
-                <option value="3">{{ ('web.features.rewards.copy.okay_3acb3769' | translate) }}</option>
-                <option value="2">{{ ('web.features.rewards.copy.not_really_d400a54d' | translate) }}</option>
-                <option value="1">{{ ('web.features.rewards.copy.did_not_enjoy_it_ae647359' | translate) }}</option>
+                <option value="" disabled>
+                  {{ 'web.features.rewards.copy.optional_fdd15019' | translate }}
+                </option>
+                <option value="5">
+                  {{ 'web.features.rewards.copy.loved_it_ef05ac98' | translate }}
+                </option>
+                <option value="4">
+                  {{ 'web.features.rewards.copy.good_7a8c7df8' | translate }}
+                </option>
+                <option value="3">
+                  {{ 'web.features.rewards.copy.okay_3acb3769' | translate }}
+                </option>
+                <option value="2">
+                  {{ 'web.features.rewards.copy.not_really_d400a54d' | translate }}
+                </option>
+                <option value="1">
+                  {{ 'web.features.rewards.copy.did_not_enjoy_it_ae647359' | translate }}
+                </option>
               </select>
             </label>
           }
@@ -224,7 +248,8 @@
       } @empty {
         <p class="p-6 text-xs leading-6 text-muted">
           {{
-            ('web.features.rewards.copy.your_first_reward_is_waiting_every_small_step_brings_it_closer_f192fc2c' | translate)
+            'web.features.rewards.copy.your_first_reward_is_waiting_every_small_step_brings_it_closer_f192fc2c'
+              | translate
           }}
         </p>
       }
@@ -237,18 +262,24 @@
 @if (mine.data()?.items?.length) {
   <section class="mt-9" aria-labelledby="personal-rewards-heading">
     <h2 id="personal-rewards-heading" class="mb-3 text-lg font-semibold">
-      {{ ('web.features.rewards.copy.your_personal_rewards_69de03c2' | translate) }}
+      {{ 'web.features.rewards.copy.your_personal_rewards_69de03c2' | translate }}
     </h2>
     <div class="card divide-y divide-line">
       @for (reward of mine.data()?.items; track reward.id) {
         <div class="flex flex-wrap items-center justify-between gap-3 p-4">
-          <span class="text-sm">{{ rewardTitle(reward) }} · {{ reward.cost }} {{ 'common.xp' | translate }}</span>
+          <span class="text-sm"
+            >{{ rewardTitle(reward) }} · {{ reward.cost }} {{ 'common.xp' | translate }}</span
+          >
           <div class="flex gap-2">
             <button class="btn btn-quiet text-xs" (click)="edit(reward)">
-              {{ ('common.copy.edit_c2c76cb1' | translate) }}
+              {{ 'common.copy.edit_c2c76cb1' | translate }}
             </button>
             <button class="btn btn-quiet text-xs" (click)="setActive(reward)">
-              {{ reward.active ? ('web.features.rewards.copy.pause_44f9bf2d' | translate) : ('web.features.rewards.copy.activate_3b8f0190' | translate) }}
+              {{
+                reward.active
+                  ? ('web.features.rewards.copy.pause_44f9bf2d' | translate)
+                  : ('web.features.rewards.copy.activate_3b8f0190' | translate)
+              }}
             </button>
           </div>
         </div>
@@ -273,16 +304,21 @@
   />
 }
 <p-dialog
-  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
-  [header]="('web.features.rewards.copy.something_to_look_forward_to_3fcfb537' | translate)"
+  [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
+  [header]="'web.features.rewards.copy.something_to_look_forward_to_3fcfb537' | translate"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '32rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
-    <lq-field id="reward-title" [label]="('web.features.rewards.copy.your_reward_6a198341' | translate)"
+    <lq-field
+      id="reward-title"
+      [label]="'web.features.rewards.copy.your_reward_6a198341' | translate"
       ><input id="reward-title" class="field" formControlName="title" /></lq-field
-    ><lq-field id="reward-description" [label]="('web.features.rewards.copy.make_it_personal_4f033e98' | translate)">
+    ><lq-field
+      id="reward-description"
+      [label]="'web.features.rewards.copy.make_it_personal_4f033e98' | translate"
+    >
       <textarea
         id="reward-description"
         class="field"
@@ -291,29 +327,54 @@
       ></textarea></lq-field
     ><lq-field
       id="reward-cost"
-      [label]="('web.features.rewards.copy.xp_cost_minimum_50_13da2406' | translate)"
+      [label]="'web.features.rewards.copy.xp_cost_minimum_50_13da2406' | translate"
       ><input id="reward-cost" class="field" type="number" min="50" formControlName="cost"
     /></lq-field>
-    <lq-field id="reward-category" [label]="('web.features.rewards.copy.what_kind_of_reward_327116fc' | translate)">
+    <lq-field
+      id="reward-category"
+      [label]="'web.features.rewards.copy.what_kind_of_reward_327116fc' | translate"
+    >
       <select id="reward-category" class="field" formControlName="category">
-        <option value="personal">{{ ('web.features.rewards.copy.personal_6e5a8cad' | translate) }}</option>
-        <option value="drinks">{{ ('web.features.rewards.copy.drinks_955bcde6' | translate) }}</option>
-        <option value="food">{{ ('web.features.rewards.copy.food_bd7cbfe9' | translate) }}</option>
-        <option value="movies">{{ ('web.features.rewards.copy.movies_f98e4414' | translate) }}</option>
-        <option value="gaming">{{ ('web.features.rewards.copy.gaming_c17bd710' | translate) }}</option>
-        <option value="books">{{ ('web.features.rewards.copy.books_d9d036b1' | translate) }}</option>
-        <option value="shopping">{{ ('web.features.rewards.copy.shopping_a130eb1d' | translate) }}</option>
-        <option value="outings">{{ ('web.features.rewards.copy.outings_d0bee23e' | translate) }}</option>
-        <option value="entertainment">{{ ('web.features.rewards.copy.entertainment_d4589659' | translate) }}</option>
-        <option value="relaxation">{{ ('web.features.rewards.copy.relaxation_f854edbe' | translate) }}</option>
-        <option value="experiences">{{ ('web.features.rewards.copy.experiences_6447104e' | translate) }}</option>
-        <option value="technology">{{ ('web.features.rewards.copy.technology_94fbdccf' | translate) }}</option>
-        <option value="fashion">{{ ('web.features.rewards.copy.fashion_9a5733df' | translate) }}</option>
+        <option value="personal">
+          {{ 'web.features.rewards.copy.personal_6e5a8cad' | translate }}
+        </option>
+        <option value="drinks">
+          {{ 'web.features.rewards.copy.drinks_955bcde6' | translate }}
+        </option>
+        <option value="food">{{ 'web.features.rewards.copy.food_bd7cbfe9' | translate }}</option>
+        <option value="movies">
+          {{ 'web.features.rewards.copy.movies_f98e4414' | translate }}
+        </option>
+        <option value="gaming">
+          {{ 'web.features.rewards.copy.gaming_c17bd710' | translate }}
+        </option>
+        <option value="books">{{ 'web.features.rewards.copy.books_d9d036b1' | translate }}</option>
+        <option value="shopping">
+          {{ 'web.features.rewards.copy.shopping_a130eb1d' | translate }}
+        </option>
+        <option value="outings">
+          {{ 'web.features.rewards.copy.outings_d0bee23e' | translate }}
+        </option>
+        <option value="entertainment">
+          {{ 'web.features.rewards.copy.entertainment_d4589659' | translate }}
+        </option>
+        <option value="relaxation">
+          {{ 'web.features.rewards.copy.relaxation_f854edbe' | translate }}
+        </option>
+        <option value="experiences">
+          {{ 'web.features.rewards.copy.experiences_6447104e' | translate }}
+        </option>
+        <option value="technology">
+          {{ 'web.features.rewards.copy.technology_94fbdccf' | translate }}
+        </option>
+        <option value="fashion">
+          {{ 'web.features.rewards.copy.fashion_9a5733df' | translate }}
+        </option>
       </select>
     </lq-field>
     <lq-field
       id="reward-cooldown"
-      [label]="('web.features.rewards.copy.days_before_you_can_choose_it_again_67c57bd6' | translate)"
+      [label]="'web.features.rewards.copy.days_before_you_can_choose_it_again_67c57bd6' | translate"
     >
       <input
         id="reward-cooldown"
@@ -328,7 +389,7 @@
       <p role="alert" class="mb-4 text-sm text-rose-600">{{ error() }}</p>
     }
     <button type="submit" class="btn btn-primary w-full" [disabled]="saving() || form.invalid">
-      {{ ('web.features.rewards.copy.save_reward_36f4972f' | translate) }}
+      {{ 'web.features.rewards.copy.save_reward_36f4972f' | translate }}
     </button>
   </form></p-dialog
 >

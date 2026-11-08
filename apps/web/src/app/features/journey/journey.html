@@ -36,7 +36,7 @@
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
 } @else if (resource.data(); as data) {
   @for (season of data.seasons; track season.id) {
-    <section class="mb-7 rounded-2xl bg-[#302943] p-6 text-white sm:p-8">
+    <section class="mb-7 rounded-2xl brand-panel p-6 sm:p-8">
       <div class="mb-7 flex flex-wrap items-center justify-between gap-3">
         <div>
           <p class="text-[10px] uppercase tracking-widest text-white/70">
@@ -47,7 +47,7 @@
             {{ 'web.features.journey.copy.a_little_more_you_every_month_1a1fdc6f' | translate }}
           </h2>
         </div>
-        <lq-icon name="map" [size]="30" class="text-[#c4b6f4]" />
+        <lq-icon name="map" [size]="30" class="text-brand-panel-muted" />
       </div>
       <ol class="grid gap-3 sm:grid-cols-5">
         @for (phase of season.phases; track phase.id) {
@@ -55,7 +55,7 @@
             class="rounded-xl border p-4"
             [class]="
               phase.month === now.getMonth() + 1 && phase.year === now.getFullYear()
-                ? 'border-[#c4b6f4] bg-white/10'
+                ? 'border-brand bg-white/10'
                 : 'border-white/10'
             "
           >

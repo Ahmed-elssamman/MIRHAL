@@ -13,18 +13,20 @@
 } @else if (resource.data(); as data) {
   <div class="animate-enter">
     <lq-page-header
-      [eyebrow]="('web.features.dashboard.copy.a_new_day_a_little_possibility_11a10e1a' | translate)"
+      [eyebrow]="'web.features.dashboard.copy.a_new_day_a_little_possibility_11a10e1a' | translate"
       [title]="('web.features.dashboard.copy.good_to_see_you_bf840251' | translate) + firstName()"
       [description]="
-        ('web.features.dashboard.copy.let_s_make_a_little_room_for_what_matters_an_overview_of_your_momentum_and_next_meaningful_steps_ee45d8ba' | translate)
+        'web.features.dashboard.copy.let_s_make_a_little_room_for_what_matters_an_overview_of_your_momentum_and_next_meaningful_steps_ee45d8ba'
+          | translate
       "
     >
       <a routerLink="/today" class="btn btn-secondary text-xs"
-        ><lq-icon name="calendar" [size]="15" />{{ ('web.features.dashboard.copy.my_daily_plan_24111ad5' | translate)
+        ><lq-icon name="calendar" [size]="15" />{{
+          'web.features.dashboard.copy.my_daily_plan_24111ad5' | translate
         }}<lq-icon name="arrow-up-right" [size]="15"
       /></a>
     </lq-page-header>
-    <section class="relative mb-6 overflow-hidden rounded-2xl bg-[#302943] p-6 text-white sm:p-8">
+    <section class="relative mb-6 overflow-hidden rounded-2xl brand-panel p-6 sm:p-8">
       <div
         class="pointer-events-none absolute -end-14 -top-32 size-[360px] rounded-full border border-white/[0.06]"
       ></div>
@@ -34,69 +36,79 @@
       <div class="relative flex items-center justify-between gap-6">
         <div>
           <span
-            class="mb-4 inline-flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.18em] text-[#c3b6f2]"
-            ><span class="size-1.5 rounded-full bg-[#bba8ff]"></span
-            >{{
-              ('web.features.dashboard.copy.your_journey_your_pace_8f8b4b09' | translate)
-            }}</span
+            class="mb-4 inline-flex items-center gap-2 text-[9px] font-medium uppercase tracking-[0.18em] text-brand-panel-muted"
+            ><span class="size-1.5 rounded-full bg-brand"></span
+            >{{ 'web.features.dashboard.copy.your_journey_your_pace_8f8b4b09' | translate }}</span
           >
           <h2 class="text-2xl font-medium leading-snug tracking-tight sm:text-[29px]">
-            {{ ('common.copy.small_steps_b15b84e3' | translate) }}
-            <span class="text-[#c8bafa]">{{ ('web.features.dashboard.copy.a_life_in_balance_42d77749' | translate) }}</span>
+            {{ 'common.copy.small_steps_b15b84e3' | translate }}
+            <span class="text-brand-panel-muted">{{
+              'web.features.dashboard.copy.a_life_in_balance_42d77749' | translate
+            }}</span>
           </h2>
-          <p class="mt-3 max-w-lg text-xs leading-6 text-white/55">
+          <p class="mt-3 max-w-lg text-xs leading-6 text-white/70">
             {{
-              ('web.features.dashboard.copy.you_don_t_have_to_do_it_all_today_just_take_the_next_meaningful_step_4bb26b20' | translate)
+              'web.features.dashboard.copy.you_don_t_have_to_do_it_all_today_just_take_the_next_meaningful_step_4bb26b20'
+                | translate
             }}
           </p>
           <a
             routerLink="/today"
-            class="mt-5 inline-flex min-h-9 items-center gap-2 rounded-lg bg-white px-4 py-2 text-[11px] font-semibold text-[#302943]"
-            >{{ ('web.features.dashboard.copy.let_s_start_today_7da661e7' | translate)
+            class="mt-5 inline-flex min-h-9 items-center gap-2 rounded-lg bg-surface px-4 py-2 text-[11px] font-semibold text-brand transition-colors hover:bg-brand-soft"
+            >{{ 'web.features.dashboard.copy.let_s_start_today_7da661e7' | translate
             }}<lq-icon name="arrow-right" [size]="14"
           /></a>
         </div>
         <div class="relative hidden size-36 shrink-0 items-center justify-center sm:flex">
           <svg viewBox="0 0 160 160" class="size-36" aria-hidden="true">
-            <circle cx="80" cy="80" r="64" fill="none" stroke="#5a4f72" stroke-width="1" />
+            <circle
+              cx="80"
+              cy="80"
+              r="64"
+              fill="none"
+              stroke="currentColor"
+              stroke-opacity="0.25"
+              stroke-width="1"
+            />
             <circle
               cx="80"
               cy="80"
               r="47"
               fill="none"
-              stroke="#5a4f72"
+              stroke="currentColor"
+              stroke-opacity="0.2"
               stroke-width="1"
               stroke-dasharray="3 6"
             />
             <path
               d="M80 111V63M80 89C49 89 47 67 47 67c27-4 33 22 33 22ZM80 75c27 0 34-29 34-29-26 0-34 29-34 29Z"
-              fill="#bfaef4"
-              stroke="#bfaef4"
+              fill="var(--mirhal-brand-panel-muted)"
+              stroke="var(--mirhal-brand-panel-muted)"
               stroke-width="3"
               stroke-linecap="round"
             />
-            <circle cx="128" cy="37" r="5" fill="#cfe8d9" />
-            <path d="m35 107 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z" fill="#d3c5f9" />
+            <circle cx="128" cy="37" r="5" fill="#86d7c2" />
+            <path d="m35 107 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z" fill="var(--mirhal-brand-panel-muted)" />
           </svg>
         </div>
       </div>
     </section>
     <div class="mb-7 grid gap-3 sm:grid-cols-3 sm:gap-5">
       <lq-stat
-        [label]="('web.features.dashboard.copy.your_journey_score_0f5dc1b0' | translate)"
+        [label]="'web.features.dashboard.copy.your_journey_score_0f5dc1b0' | translate"
         [value]="data.journey.score"
         suffix="/ 100"
         icon="compass"
       /><lq-stat
-        [label]="('web.features.dashboard.copy.xp_you_ve_earned_dbe6b487' | translate)"
+        [label]="'web.features.dashboard.copy.xp_you_ve_earned_dbe6b487' | translate"
         [value]="data.xp.earned"
         suffix="XP"
         icon="zap"
         tone="bg-amber-50 text-amber-700"
       /><lq-stat
-        [label]="('web.features.dashboard.copy.habits_today_56f133bf' | translate)"
+        [label]="'web.features.dashboard.copy.habits_today_56f133bf' | translate"
         [value]="data.completedHabits + ' / ' + data.habitCount"
-        [suffix]="('web.features.dashboard.copy.done_26f38071' | translate)"
+        [suffix]="'web.features.dashboard.copy.done_26f38071' | translate"
         icon="sprout"
         tone="bg-mint text-mint-ink"
       />
@@ -105,15 +117,16 @@
       <div class="min-w-0 space-y-6">
         <section class="card p-5 sm:p-6">
           <lq-section-title
-            [title]="('web.features.dashboard.copy.a_little_progress_today_ad0b6518' | translate)"
+            [title]="'web.features.dashboard.copy.a_little_progress_today_ad0b6518' | translate"
             link="/today"
-            [linkLabel]="('web.features.dashboard.copy.view_today_aadb3fd9' | translate)"
+            [linkLabel]="'web.features.dashboard.copy.view_today_aadb3fd9' | translate"
           />
           <div class="mb-2 flex items-center justify-between text-[10px] text-muted">
-            <span>{{ ('web.features.dashboard.copy.your_daily_rhythm_a56617cd' | translate) }}</span
+            <span>{{ 'web.features.dashboard.copy.your_daily_rhythm_a56617cd' | translate }}</span
             ><span
-              >{{ data.completedHabits }} {{ ('web.features.dashboard.copy.of_69343c68' | translate) }} {{ data.habitCount }}
-              {{ ('web.features.dashboard.copy.completed_f4748112' | translate) }}</span
+              >{{ data.completedHabits }}
+              {{ 'web.features.dashboard.copy.of_69343c68' | translate }} {{ data.habitCount }}
+              {{ 'web.features.dashboard.copy.completed_f4748112' | translate }}</span
             >
           </div>
           <lq-progress
@@ -130,10 +143,13 @@
             } @empty {
               <div class="py-8 text-center">
                 <p class="text-sm text-muted">
-                  {{ ('web.features.dashboard.copy.a_tiny_habit_is_a_good_place_to_begin_0baebcd9' | translate) }}
+                  {{
+                    'web.features.dashboard.copy.a_tiny_habit_is_a_good_place_to_begin_0baebcd9'
+                      | translate
+                  }}
                 </p>
                 <a routerLink="/habits" class="btn btn-primary mt-4 text-xs">{{
-                  ('web.features.dashboard.copy.build_my_first_habit_3e5b8913' | translate)
+                  'web.features.dashboard.copy.build_my_first_habit_3e5b8913' | translate
                 }}</a>
               </div>
             }
@@ -142,15 +158,16 @@
             routerLink="/habit-lab"
             class="mt-3 flex items-center gap-2 rounded-xl bg-canvas px-3 py-3 text-[10px] leading-5 text-muted"
             ><lq-icon name="leaf" [size]="15" /><span>{{
-              ('web.features.dashboard.copy.a_busy_day_the_smallest_version_of_your_habit_still_counts_198eb69e' | translate)
+              'web.features.dashboard.copy.a_busy_day_the_smallest_version_of_your_habit_still_counts_198eb69e'
+                | translate
             }}</span></a
           >
         </section>
         <section>
           <lq-section-title
-            [title]="('web.features.dashboard.copy.your_life_in_balance_19e94873' | translate)"
+            [title]="'web.features.dashboard.copy.your_life_in_balance_19e94873' | translate"
             link="/analytics"
-            [linkLabel]="('web.features.dashboard.copy.explore_insights_05b7ed31' | translate)"
+            [linkLabel]="'web.features.dashboard.copy.explore_insights_05b7ed31' | translate"
           />
           <div class="grid grid-cols-2 gap-3 sm:gap-4">
             @for (area of data.areas; track area.id) {
@@ -168,7 +185,8 @@
                 </div>
                 <p class="text-xs font-semibold">{{ i18n.t(area.name, area.nameAr) }}</p>
                 <p class="mb-4 mt-1 text-[10px] text-muted">
-                  {{ area.habits }} {{ ('web.features.dashboard.copy.habits_last_14_days_9ddd4f4d' | translate) }}
+                  {{ area.habits }}
+                  {{ 'web.features.dashboard.copy.habits_last_14_days_9ddd4f4d' | translate }}
                 </p>
                 <lq-progress
                   [value]="area.adherence ?? 0"
@@ -187,9 +205,9 @@
         </section>
         <section class="card p-5 sm:p-6">
           <lq-section-title
-            [title]="('web.features.dashboard.copy.the_bigger_picture_c6f75bae' | translate)"
+            [title]="'web.features.dashboard.copy.the_bigger_picture_c6f75bae' | translate"
             link="/goals"
-            [linkLabel]="('web.features.dashboard.copy.all_goals_bc35142c' | translate)"
+            [linkLabel]="'web.features.dashboard.copy.all_goals_bc35142c' | translate"
           />
           <div class="space-y-5">
             @for (goal of data.goals.slice(0, 2); track goal.id) {
@@ -209,11 +227,9 @@
               /></a>
             } @empty {
               <p class="text-sm text-muted">
-                {{
-                  ('common.copy.what_would_make_this_season_meaningful_803df70a' | translate)
-                }}
+                {{ 'common.copy.what_would_make_this_season_meaningful_803df70a' | translate }}
                 <a routerLink="/goals" class="text-brand">{{
-                  ('web.features.dashboard.copy.choose_a_goal_6abbc322' | translate)
+                  'web.features.dashboard.copy.choose_a_goal_6abbc322' | translate
                 }}</a>
               </p>
             }
@@ -223,12 +239,16 @@
       <div class="min-w-0 space-y-6">
         <section class="card p-5 sm:p-6">
           <div class="mb-5 flex items-center justify-between">
-            <p class="eyebrow">{{ ('web.features.dashboard.copy.your_next_chapter_b79e235e' | translate) }}</p>
+            <p class="eyebrow">
+              {{ 'web.features.dashboard.copy.your_next_chapter_b79e235e' | translate }}
+            </p>
             <lq-icon name="sparkles" class="text-brand" [size]="17" />
           </div>
           <div class="flex items-center gap-4">
             <lq-ring [value]="data.xp.level.progress" [size]="90"
-              ><span class="text-[10px] text-muted">{{ ('common.copy.level_7eecc6fd' | translate) }}</span
+              ><span class="text-[10px] text-muted">{{
+                'common.copy.level_7eecc6fd' | translate
+              }}</span
               ><span class="block text-3xl font-semibold leading-8">{{
                 data.xp.level.current.number
               }}</span></lq-ring
@@ -239,7 +259,7 @@
               </h2>
               <p class="mt-1.5 text-[11px] leading-5 text-muted">
                 {{ data.xp.level.remaining }} XP<br />{{
-                  ('web.features.dashboard.copy.to_your_next_level_935cef8e' | translate)
+                  'web.features.dashboard.copy.to_your_next_level_935cef8e' | translate
                 }}
               </p>
             </div>
@@ -247,7 +267,7 @@
           <a
             routerLink="/achievements"
             class="mt-5 flex items-center justify-between border-t border-line pt-4 text-[11px] font-medium text-brand"
-            >{{ ('web.features.dashboard.copy.see_your_achievements_4066efb5' | translate)
+            >{{ 'web.features.dashboard.copy.see_your_achievements_4066efb5' | translate
             }}<lq-icon name="arrow-right" [size]="14"
           /></a>
         </section>
@@ -255,7 +275,7 @@
           <section class="rounded-2xl border border-violet-200/60 bg-brand-soft p-5 sm:p-6">
             <div class="mb-4 flex items-center justify-between">
               <span class="eyebrow text-brand">{{
-                ('web.features.dashboard.copy.this_week_s_quest_82f0a64d' | translate)
+                'web.features.dashboard.copy.this_week_s_quest_82f0a64d' | translate
               }}</span
               ><lq-icon name="flag" class="text-brand" [size]="18" />
             </div>
@@ -264,13 +284,14 @@
             <div class="my-4"><lq-progress [value]="quest.progress" /></div>
             <div class="flex items-center justify-between text-[10px]">
               <span class="text-muted"
-                >{{ ('web.features.dashboard.copy.until_62eafbef' | translate) }} {{ quest.deadline | date: 'MMM d' }}</span
+                >{{ 'web.features.dashboard.copy.until_62eafbef' | translate }}
+                {{ quest.deadline | date: 'MMM d' }}</span
               ><span class="flex items-center gap-1 font-semibold text-brand"
                 ><lq-icon name="zap" [size]="13" />{{ quest.xpReward }} XP</span
               >
             </div>
             <a routerLink="/quests" class="btn btn-primary mt-5 w-full text-xs"
-              >{{ ('web.features.dashboard.copy.continue_my_quest_aa7dacf4' | translate)
+              >{{ 'web.features.dashboard.copy.continue_my_quest_aa7dacf4' | translate
               }}<lq-icon name="arrow-right" [size]="15"
             /></a>
           </section>
@@ -278,13 +299,17 @@
         <section class="card p-5 sm:p-6">
           <div class="mb-3 flex items-center gap-2">
             <lq-icon name="sun" class="text-amber-600" [size]="20" />
-            <h2 class="text-sm font-semibold">{{ ('web.features.dashboard.copy.a_moment_for_you_e01b0534' | translate) }}</h2>
+            <h2 class="text-sm font-semibold">
+              {{ 'web.features.dashboard.copy.a_moment_for_you_e01b0534' | translate }}
+            </h2>
           </div>
           <p class="text-xs leading-6 text-muted">
             {{
               data.checkedIn
-                ? ('web.features.dashboard.copy.you_made_space_to_reflect_today_that_matters_0a8086c9' | translate)
-                : ('web.features.dashboard.copy.how_are_you_really_check_in_with_yourself_it_only_takes_a_minute_10c4c567' | translate)
+                ? ('web.features.dashboard.copy.you_made_space_to_reflect_today_that_matters_0a8086c9'
+                  | translate)
+                : ('web.features.dashboard.copy.how_are_you_really_check_in_with_yourself_it_only_takes_a_minute_10c4c567'
+                  | translate)
             }}
           </p>
           <a routerLink="/today" fragment="check-in" class="btn btn-secondary mt-4 w-full text-xs"
@@ -297,7 +322,8 @@
         </section>
         <p class="px-5 text-center text-[10px] leading-5 text-muted">
           {{
-            ('web.features.dashboard.copy.you_are_allowed_to_be_both_a_masterpiece_and_a_work_in_progress_2b7d4d4a' | translate)
+            'web.features.dashboard.copy.you_are_allowed_to_be_both_a_masterpiece_and_a_work_in_progress_2b7d4d4a'
+              | translate
           }}
         </p>
       </div>

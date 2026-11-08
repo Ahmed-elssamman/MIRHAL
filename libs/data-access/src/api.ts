@@ -135,13 +135,10 @@ export class LoadingService {
       this.globalRequests().size > 0 || this.blockingRequests().size > 0 || this.navigating();
 
     if (hasGlobalWork) {
-      // Cancel pending hide timer if new work arrives
       if (this.hideTimer) {
         clearTimeout(this.hideTimer);
         this.hideTimer = null;
       }
-
-      // Schedule show timer if not already visible and not already scheduled
       if (!this.showOverlay() && !this.showTimer) {
         const delay = this.blockingRequests().size > 0 ? 50 : this.DISPLAY_DELAY_MS;
         this.showTimer = setTimeout(() => {
@@ -152,12 +149,10 @@ export class LoadingService {
         }, delay);
       }
     } else {
-      // No active global work
       if (this.showTimer) {
         clearTimeout(this.showTimer);
         this.showTimer = null;
       }
-
       if ((this.showOverlay() || this.showTopBar()) && !this.hideTimer) {
         const elapsed = Date.now() - this.visibleSince;
         const remaining = Math.max(0, this.MIN_VISIBLE_MS - elapsed);

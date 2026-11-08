@@ -48,7 +48,12 @@
             {{ i18n.t('You already responded to this invitation.', 'سبق أن رددت على هذه الدعوة.') }}
           }
           @default {
-            {{ i18n.t('This invitation is invalid or no longer available.', 'هذه الدعوة غير صالحة أو لم تعد متاحة.') }}
+            {{
+              i18n.t(
+                'This invitation is invalid or no longer available.',
+                'هذه الدعوة غير صالحة أو لم تعد متاحة.'
+              )
+            }}
           }
         }
       </h2>

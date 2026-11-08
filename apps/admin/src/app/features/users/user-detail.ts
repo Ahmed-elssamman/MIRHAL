@@ -3,10 +3,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { KeyValuePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
-import { Api, Toasts } from '@lifequest/data-access';
-import { AuthStore } from '@lifequest/auth';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, PageHeader } from '@lifequest/ui';
+import { Api, Toasts } from '@mirhal/data-access';
+import { AuthStore } from '@mirhal/auth';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { ErrorState, Icon, PageHeader } from '@mirhal/ui';
 import { AdminUser } from '../../models';
 const countLabels: Record<string, [string, string]> = {
   goals: ['Goals', 'الأهداف'],
@@ -21,17 +21,28 @@ const countLabels: Record<string, [string, string]> = {
 @Component({
   selector: 'lq-admin-user-detail',
   imports: [
-    TranslatePipe,RouterLink, LocalizedDatePipe, KeyValuePipe, PageHeader, ErrorState, Icon],
+    TranslatePipe,
+    RouterLink,
+    LocalizedDatePipe,
+    KeyValuePipe,
+    PageHeader,
+    ErrorState,
+    Icon,
+  ],
   template: `<lq-page-header
-      [eyebrow]="('admin.features.users.copy.privacy_respecting_support_07c4054f' | translate)"
+      [eyebrow]="'admin.features.users.copy.privacy_respecting_support_07c4054f' | translate"
       [title]="
-        resource.data()?.profile?.displayName ?? ('admin.features.users.copy.an_explorer_s_account_7ac92782' | translate)
+        resource.data()?.profile?.displayName ??
+        ('admin.features.users.copy.an_explorer_s_account_7ac92782' | translate)
       "
       [description]="
-        ('admin.features.users.copy.account_access_and_aggregate_activity_private_reflections_and_habit_details_are_not_included_bca5b700' | translate)
+        'admin.features.users.copy.account_access_and_aggregate_activity_private_reflections_and_habit_details_are_not_included_bca5b700'
+          | translate
       "
       ><a routerLink="/users" class="btn btn-secondary"
-        ><lq-icon name="arrow-left" [size]="16" />{{ ('admin.features.users.copy.all_people_0a28306f' | translate) }}</a
+        ><lq-icon name="arrow-left" [size]="16" />{{
+          'admin.features.users.copy.all_people_0a28306f' | translate
+        }}</a
       ></lq-page-header
     >
     @if (resource.error()) {
@@ -42,7 +53,8 @@ const countLabels: Record<string, [string, string]> = {
           <div>
             <p class="text-sm font-semibold">{{ user.email }}</p>
             <p class="mt-2 text-xs text-muted">
-              {{ ('admin.features.users.copy.joined_f8f2b670' | translate) }} {{ user.createdAt | date: 'longDate' }} ·
+              {{ 'admin.features.users.copy.joined_f8f2b670' | translate }}
+              {{ user.createdAt | date: 'longDate' }} ·
               {{ user.profile.timezone }}
             </p>
             <span class="badge mt-3 bg-brand-soft text-brand"
@@ -61,7 +73,7 @@ const countLabels: Record<string, [string, string]> = {
         </div>
         @if (auth.user()?.role === 'SUPER_ADMIN') {
           <label class="field-label mt-6" for="staff-role">{{
-            ('admin.features.users.copy.account_role_ce2a45fc' | translate)
+            'admin.features.users.copy.account_role_ce2a45fc' | translate
           }}</label
           ><select
             id="staff-role"

@@ -2,14 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { MessageService } from 'primeng/api';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { API_ERROR_TOAST, Api, apiErrorInterceptor } from '@lifequest/data-access';
-import { sessionInterceptor } from '@lifequest/auth';
+import { API_ERROR_TOAST, Api, apiErrorInterceptor } from '@mirhal/data-access';
+import { sessionInterceptor } from '@mirhal/auth';
 
 @Component({ standalone: true, template: '' })
 class LoginRoute {}
@@ -37,10 +34,7 @@ describe('API error toast policy', () => {
     const locallyHandled = api.get('local-error').catch((error: unknown) => error);
     const localRequest = http.match('/api/local-error')[0];
     if (!localRequest) throw await locallyHandled;
-    localRequest.flush(
-      { message: 'A local error.' },
-      { status: 503, statusText: 'Unavailable' },
-    );
+    localRequest.flush({ message: 'A local error.' }, { status: 503, statusText: 'Unavailable' });
     await locallyHandled;
     expect(add).not.toHaveBeenCalled();
 
@@ -50,10 +44,7 @@ describe('API error toast policy', () => {
     const request = http.match('/api/toast-error')[0];
     if (!request) throw await centrallyHandled;
     expect(request.request.context.get(API_ERROR_TOAST)).toBe(true);
-    request.flush(
-      { message: 'A centralized error.' },
-      { status: 503, statusText: 'Unavailable' },
-    );
+    request.flush({ message: 'A centralized error.' }, { status: 503, statusText: 'Unavailable' });
     await centrallyHandled;
     expect(add).toHaveBeenCalledTimes(1);
   });

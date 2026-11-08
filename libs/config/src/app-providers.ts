@@ -1,11 +1,20 @@
-import { sessionInterceptor } from '@lifequest/auth';
-import { apiErrorInterceptor, apiLoadingInterceptor } from '@lifequest/data-access';
-import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { sessionInterceptor } from '@mirhal/auth';
+import { apiErrorInterceptor, apiLoadingInterceptor } from '@mirhal/data-access';
+import {
+  ApplicationConfig,
+  inject,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
+import {
+  provideTranslateLoader,
+  provideTranslateService,
+  TranslateService,
+} from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
-import { Preferences } from '@lifequest/utilities';
-import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { Preferences } from '@mirhal/utilities';
+import { MirhalTranslationLoader } from '@mirhal/i18n';
 import { providePrimeNG } from 'primeng/config';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import type { ComponentsDesignTokens } from '@primeuix/themes/types';
@@ -26,14 +35,14 @@ const Aura = {
   },
 };
 import { definePreset } from '@primeuix/themes';
-const LifeQuest = definePreset(Aura, {
+const Mirhal = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '#e4f3ed',
-      100: '#c9e8dc',
-      200: '#a8d9c8',
-      300: '#a5e5d4',
-      400: '#86d7c2',
+      50: '#eefaf5',
+      100: '#cbf1e2',
+      200: '#a2e4c8',
+      300: '#6be0b5',
+      400: '#52d6a7',
       500: '#0e7165',
       600: '#0b5e55',
       700: '#084c45',
@@ -112,22 +121,22 @@ const LifeQuest = definePreset(Aura, {
       },
       dark: {
         surface: {
-          0: '#edf4f0',
-          50: '#c4d2cb',
-          100: '#a5b8af',
-          200: '#75877f',
-          300: '#4b5c55',
-          400: '#35443f',
-          500: '#293833',
-          600: '#25332f',
-          700: '#222e2b',
-          800: '#192321',
-          900: '#17211f',
-          950: '#111a19',
+          0: '#f3f8f5',
+          50: '#cce0d7',
+          100: '#9ab8ac',
+          200: '#6e877d',
+          300: '#4d6e60',
+          400: '#385247',
+          500: '#2e433a',
+          600: '#2d433b',
+          700: '#2d423b',
+          800: '#243630',
+          900: '#1e2f29',
+          950: '#1b2824',
         },
         primary: {
           color: '{primary.400}',
-          contrastColor: '#15332d',
+          contrastColor: '#0c261e',
           hoverColor: '{primary.300}',
           activeColor: '{primary.200}',
         },
@@ -139,7 +148,7 @@ const LifeQuest = definePreset(Aura, {
         },
         content: {
           background: '{surface.800}',
-          hoverBackground: '{surface.700}',
+          hoverBackground: '{surface.600}',
           borderColor: '{surface.600}',
           color: '{text.color}',
           hoverColor: '{text.hover.color}',
@@ -202,7 +211,7 @@ export const sharedConfig = (components: ComponentsDesignTokens = {}): Applicati
     }),
     providePrimeNG({
       theme: {
-        preset: definePreset(LifeQuest, { components }),
+        preset: definePreset(Mirhal, { components }),
         options: {
           darkModeSelector: '.dark',
           cssLayer: { name: 'primeng', order: 'theme, base, primeng, components, utilities' },

@@ -5,9 +5,13 @@ import { provideRouter } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TodayPage } from '../app/features/today/today';
 import { TasksPage } from '../app/features/tasks/tasks';
-import { Task } from '@lifequest/data-access';
-import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
-import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { Task } from '@mirhal/data-access';
+import {
+  provideTranslateLoader,
+  provideTranslateService,
+  TranslateService,
+} from '@ngx-translate/core';
+import { MirhalTranslationLoader } from '@mirhal/i18n';
 import { firstValueFrom } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
 
@@ -76,7 +80,9 @@ describe('Task Performance & Optimistic UI Updates', () => {
     expect(component.todayTasks().length).toBe(2);
     expect(component.pendingTaskIds().has('t-1')).toBe(true);
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toMatch(/Saving|الحفظ/);
+    expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toMatch(
+      /Saving|الحفظ/,
+    );
 
     // Duplicate submission prevention: Second click on same task is a no-op
     void component.completeTask('t-1');
@@ -198,8 +204,12 @@ describe('Task Performance & Optimistic UI Updates', () => {
   it('TodayPage: a list request started before completion cannot restore a completed task', async () => {
     const fixture = TestBed.createComponent(TodayPage);
     const component = fixture.componentInstance;
-    http.expectOne('/api/habits?today=true&limit=10').flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
-    http.expectOne('/api/tasks?today=true&limit=8').flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 8 });
+    http
+      .expectOne('/api/habits?today=true&limit=10')
+      .flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
+    http
+      .expectOne('/api/tasks?today=true&limit=8')
+      .flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 8 });
     http.expectOne('/api/check-ins').flush([]);
     await fixture.whenStable();
     const completion = component.completeTask('a');
@@ -221,25 +231,34 @@ describe('Task Performance & Optimistic UI Updates', () => {
   it('TodayPage: a network failure checks the server state because completion may have committed', async () => {
     const fixture = TestBed.createComponent(TodayPage);
     const component = fixture.componentInstance;
-    http.expectOne('/api/habits?today=true&limit=10').flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
-    http.expectOne('/api/tasks?today=true&limit=8').flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 8 });
+    http
+      .expectOne('/api/habits?today=true&limit=10')
+      .flush({ items: [], total: 0, date: '2026-10-29', completedCount: 0 });
+    http
+      .expectOne('/api/tasks?today=true&limit=8')
+      .flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 8 });
     http.expectOne('/api/check-ins').flush([]);
     await fixture.whenStable();
     const pending = component.completeTask('a');
     http.expectOne('/api/tasks/a').error(new ProgressEvent('error'));
     await pending;
     expect(component.pendingTaskIds().has('a')).toBe(false);
-    http.expectOne('/api/tasks?today=true&limit=8').flush({ items: [], total: 0, page: 1, limit: 8 });
+    http
+      .expectOne('/api/tasks?today=true&limit=8')
+      .flush({ items: [], total: 0, page: 1, limit: 8 });
     await fixture.whenStable();
     expect(component.todayTasks()).toEqual([]);
-    for (const request of http.match('/api/quests?limit=10')) request.flush({ items: [], total: 0, page: 1, limit: 10 });
+    for (const request of http.match('/api/quests?limit=10'))
+      request.flush({ items: [], total: 0, page: 1, limit: 10 });
     http.verify();
   });
 
   it('TasksPage: a stale list response cannot undo a confirmed toggle', async () => {
     const fixture = TestBed.createComponent(TasksPage);
     const component = fixture.componentInstance;
-    http.expectOne('/api/tasks').flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 20 });
+    http
+      .expectOne('/api/tasks')
+      .flush({ items: [createTask('a', 'A')], total: 1, page: 1, limit: 20 });
     http.expectOne('/api/goals?limit=100').flush({ items: [] });
     http.expectOne('/api/projects?limit=100').flush({ items: [] });
     await fixture.whenStable();

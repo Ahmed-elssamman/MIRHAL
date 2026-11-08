@@ -1,11 +1,14 @@
 <lq-page-header
-  [eyebrow]="('web.features.projects.copy.turn_intention_into_action_17aaa71a' | translate)"
-  [title]="('web.features.projects.copy.good_things_take_a_little_work_90450358' | translate)"
+  [eyebrow]="'web.features.projects.copy.turn_intention_into_action_17aaa71a' | translate"
+  [title]="'web.features.projects.copy.good_things_take_a_little_work_90450358' | translate"
   [description]="
-    ('web.features.projects.copy.organize_work_into_projects_link_them_to_goals_and_review_their_tasks_and_milestones_ee9d99c9' | translate)
+    'web.features.projects.copy.organize_work_into_projects_link_them_to_goals_and_review_their_tasks_and_milestones_ee9d99c9'
+      | translate
   "
   ><button class="btn btn-primary" (click)="create()">
-    <lq-icon name="plus" [size]="17" />{{ ('web.features.projects.copy.new_project_3459afc0' | translate) }}
+    <lq-icon name="plus" [size]="17" />{{
+      'web.features.projects.copy.new_project_3459afc0' | translate
+    }}
   </button></lq-page-header
 >
 @if (resource.error()) {
@@ -33,7 +36,9 @@
           </p>
         }
         <div class="mb-2 mt-5 flex justify-between text-xs">
-          <span class="text-muted">{{ project.tasks.length }} {{ ('web.features.projects.copy.tasks_ad2e48cd' | translate) }}</span
+          <span class="text-muted"
+            >{{ project.tasks.length }}
+            {{ 'web.features.projects.copy.tasks_ad2e48cd' | translate }}</span
           ><span class="font-semibold">{{ project.progress.toFixed(0) }}%</span>
         </div>
         <lq-progress [value]="project.progress" />
@@ -51,7 +56,7 @@
         </div>
         <details class="mt-4 border-t border-line pt-3">
           <summary class="min-h-11 cursor-pointer text-xs font-medium">
-            {{ ('web.features.projects.copy.project_milestones_f968a07d' | translate) }}
+            {{ 'web.features.projects.copy.project_milestones_f968a07d' | translate }}
           </summary>
           <lq-milestones
             [projectId]="project.id"
@@ -64,21 +69,21 @@
             routerLink="/tasks"
             [queryParams]="{ project: project.id }"
             class="btn btn-primary flex-1 text-xs"
-            >{{ ('web.features.projects.copy.view_tasks_3148153a' | translate) }}</a
+            >{{ 'web.features.projects.copy.view_tasks_3148153a' | translate }}</a
           ><button class="btn btn-secondary text-xs" (click)="edit(project)">
-            {{ ('common.copy.edit_c2c76cb1' | translate) }}</button
+            {{ 'common.copy.edit_c2c76cb1' | translate }}</button
           ><select
             class="field mt-2 !min-h-9 !py-2 !text-xs"
             [value]="project.status"
             #projectStatus
             (change)="status(project, projectStatus.value)"
-            [attr.aria-label]="('web.features.projects.copy.project_status_013c0904' | translate)"
+            [attr.aria-label]="'web.features.projects.copy.project_status_013c0904' | translate"
           >
-            <option value="PLANNED">{{ ('common.copy.planned_cf807545' | translate) }}</option>
-            <option value="ACTIVE">{{ ('common.copy.active_1f89134f' | translate) }}</option>
-            <option value="PAUSED">{{ ('common.copy.paused_de281feb' | translate) }}</option>
-            <option value="COMPLETED">{{ ('common.copy.completed_ec88aab2' | translate) }}</option>
-            <option value="ARCHIVED">{{ ('common.copy.archived_af5c5293' | translate) }}</option>
+            <option value="PLANNED">{{ 'common.copy.planned_cf807545' | translate }}</option>
+            <option value="ACTIVE">{{ 'common.copy.active_1f89134f' | translate }}</option>
+            <option value="PAUSED">{{ 'common.copy.paused_de281feb' | translate }}</option>
+            <option value="COMPLETED">{{ 'common.copy.completed_ec88aab2' | translate }}</option>
+            <option value="ARCHIVED">{{ 'common.copy.archived_af5c5293' | translate }}</option>
           </select>
         </div>
       </article>
@@ -86,12 +91,13 @@
       <div class="col-span-full">
         <lq-empty
           icon="folder"
-          [title]="('web.features.projects.copy.make_something_meaningful_ec11fb47' | translate)"
+          [title]="'web.features.projects.copy.make_something_meaningful_ec11fb47' | translate"
           [description]="
-            ('web.features.projects.copy.a_project_connects_your_bigger_goal_to_the_work_you_can_do_today_ddc02fb0' | translate)
+            'web.features.projects.copy.a_project_connects_your_bigger_goal_to_the_work_you_can_do_today_ddc02fb0'
+              | translate
           "
           ><button class="btn btn-primary" (click)="create()">
-            {{ ('web.features.projects.copy.start_a_project_abef2621' | translate) }}
+            {{ 'web.features.projects.copy.start_a_project_abef2621' | translate }}
           </button></lq-empty
         >
       </div>
@@ -100,52 +106,56 @@
   <lq-pagination [page]="data.page" [total]="data.total" (change)="page($event)" />
 }
 <p-dialog
-  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
-  [header]="('web.features.projects.copy.shape_your_project_5875d474' | translate)"
+  [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
+  [header]="'web.features.projects.copy.shape_your_project_5875d474' | translate"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '34rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
-    <lq-field id="project-title" [label]="('web.features.projects.copy.project_title_2e31fc2c' | translate)"
+    <lq-field
+      id="project-title"
+      [label]="'web.features.projects.copy.project_title_2e31fc2c' | translate"
       ><input id="project-title" class="field" formControlName="title" /></lq-field
-    ><lq-field id="project-description" [label]="('web.features.projects.copy.what_will_you_create_a68ebadb' | translate)">
+    ><lq-field
+      id="project-description"
+      [label]="'web.features.projects.copy.what_will_you_create_a68ebadb' | translate"
+    >
       <textarea
         id="project-description"
         class="field"
         rows="3"
         formControlName="description"
       ></textarea></lq-field
-    ><lq-field id="project-goal" [label]="('common.copy.linked_goal_optional_9072a9be' | translate)"
+    ><lq-field id="project-goal" [label]="'common.copy.linked_goal_optional_9072a9be' | translate"
       ><select id="project-goal" class="field" formControlName="goalId">
-        <option value="">{{ ('web.features.projects.copy.independent_project_90fc0d2c' | translate) }}</option>
+        <option value="">
+          {{ 'web.features.projects.copy.independent_project_90fc0d2c' | translate }}
+        </option>
         @for (goal of goals.data()?.items; track goal.id) {
           <option [value]="goal.id">{{ goal.title }}</option>
         }
       </select></lq-field
     ><lq-field
       id="project-deadline"
-      [label]="('web.features.projects.copy.deadline_optional_ede752b0' | translate)"
+      [label]="'web.features.projects.copy.deadline_optional_ede752b0' | translate"
       ><input id="project-deadline" type="date" class="field" formControlName="deadline"
     /></lq-field>
     <details class="mb-5 rounded-xl border border-line p-4">
       <summary class="min-h-11 cursor-pointer text-sm font-medium">
-        {{ ('common.copy.more_planning_options_d9145397' | translate) }}
+        {{ 'common.copy.more_planning_options_d9145397' | translate }}
       </summary>
-      <lq-field
-        id="project-start"
-        [label]="('common.copy.start_date_optional_69d4dbbc' | translate)"
-      >
+      <lq-field id="project-start" [label]="'common.copy.start_date_optional_69d4dbbc' | translate">
         <input id="project-start" class="field" type="date" formControlName="startDate" />
       </lq-field>
-      <lq-field id="project-priority" [label]="('common.copy.priority_e68d9f29' | translate)">
+      <lq-field id="project-priority" [label]="'common.copy.priority_e68d9f29' | translate">
         <select id="project-priority" class="field" formControlName="priority">
-          <option value="LOW">{{ ('common.copy.low_b1dd9521' | translate) }}</option>
-          <option value="MEDIUM">{{ ('common.copy.medium_09be5f96' | translate) }}</option>
-          <option value="HIGH">{{ ('common.copy.high_be0a061d' | translate) }}</option>
+          <option value="LOW">{{ 'common.copy.low_b1dd9521' | translate }}</option>
+          <option value="MEDIUM">{{ 'common.copy.medium_09be5f96' | translate }}</option>
+          <option value="HIGH">{{ 'common.copy.high_be0a061d' | translate }}</option>
         </select>
       </lq-field>
-      <lq-field id="project-notes" [label]="('common.copy.private_notes_8e70eb59' | translate)">
+      <lq-field id="project-notes" [label]="'common.copy.private_notes_8e70eb59' | translate">
         <textarea id="project-notes" class="field" rows="3" formControlName="notes"></textarea>
       </lq-field>
     </details>
@@ -154,9 +164,9 @@
     }
     <div class="flex justify-end gap-2 border-t border-line pt-4">
       <button type="button" class="btn btn-secondary" (click)="discard.close(false, open, form)">
-        {{ ('common.copy.cancel_35afca3b' | translate) }}</button
+        {{ 'common.copy.cancel_35afca3b' | translate }}</button
       ><button type="submit" class="btn btn-primary" [disabled]="saving() || form.invalid">
-        {{ ('web.features.projects.copy.save_project_e8c5d70d' | translate) }}
+        {{ 'web.features.projects.copy.save_project_e8c5d70d' | translate }}
       </button>
     </div>
   </form></p-dialog

@@ -3,11 +3,13 @@
     <a routerLink="/"><lq-logo /></a>
     <nav class="flex items-center gap-2 sm:gap-7">
       <a routerLink="/help" class="hidden text-sm text-muted sm:block">{{
-        ('web.features.landing.copy.how_it_works_d03ba450' | translate)
+        'web.features.landing.copy.how_it_works_d03ba450' | translate
       }}</a
       ><button class="icon-button text-sm" (click)="i18n.setLanguage(i18n.rtl() ? 'en' : 'ar')">
-        {{ ('web.features.landing.copy.copy_a76ce029' | translate) }}</button
-      ><a routerLink="/auth/login" class="btn btn-secondary">{{ ('common.copy.sign_in_744be623' | translate) }}</a>
+        {{ 'web.features.landing.copy.copy_a76ce029' | translate }}</button
+      ><a routerLink="/auth/login" class="btn btn-secondary">{{
+        'common.copy.sign_in_744be623' | translate
+      }}</a>
     </nav>
   </header>
   <main>
@@ -17,52 +19,58 @@
       <div class="animate-enter">
         <span class="badge mb-6 rounded-full bg-brand-soft px-4 py-2 text-brand"
           ><lq-icon name="sparkles" [size]="14" />{{
-            ('web.features.landing.copy.your_life_your_journey_ee4d500d' | translate)
+            'web.features.landing.copy.your_life_your_journey_ee4d500d' | translate
           }}</span
         >
         <h1 class="max-w-xl text-4xl font-semibold leading-[1.13] tracking-[-1.8px] sm:text-6xl">
-          {{ ('web.features.landing.copy.make_room_for_a_life_46a19bd4' | translate) }}
-          <span class="text-brand">{{ ('web.features.landing.copy.that_feels_like_you_2e03079f' | translate) }}</span>
+          {{ 'web.features.landing.copy.make_room_for_a_life_46a19bd4' | translate }}
+          <span class="text-brand">{{
+            'web.features.landing.copy.that_feels_like_you_2e03079f' | translate
+          }}</span>
         </h1>
         <p class="mt-6 max-w-md text-base leading-8 text-muted">
           {{
-            ('web.features.landing.copy.bring_your_goals_habits_and_everyday_wins_together_find_your_balance_one_small_meaningful_step_at_a_time_cc9e9097' | translate)
+            'web.features.landing.copy.bring_your_goals_habits_and_everyday_wins_together_find_your_balance_one_small_meaningful_step_at_a_time_cc9e9097'
+              | translate
           }}
         </p>
         <div class="mt-8 flex flex-wrap items-center gap-4">
           <a routerLink="/auth/register" class="btn btn-primary px-6"
-            >{{ ('web.features.landing.copy.begin_your_journey_55d0b609' | translate)
+            >{{ 'web.features.landing.copy.begin_your_journey_55d0b609' | translate
             }}<lq-icon name="arrow-right" [size]="18" /></a
           ><a routerLink="/help" class="btn btn-quiet"
-            >{{ ('web.features.landing.copy.take_a_look_around_a9fa7551' | translate) }}<lq-icon name="compass" [size]="18"
+            >{{ 'web.features.landing.copy.take_a_look_around_a9fa7551' | translate
+            }}<lq-icon name="compass" [size]="18"
           /></a>
         </div>
         <p class="mt-5 flex items-center gap-2 text-xs text-muted">
           <lq-icon name="shield" [size]="14" />{{
-            ('web.features.landing.copy.your_pace_your_privacy_your_kind_of_progress_15e07050' | translate)
+            'web.features.landing.copy.your_pace_your_privacy_your_kind_of_progress_15e07050'
+              | translate
           }}
         </p>
       </div>
-      <div class="relative rounded-[2rem] bg-[#f0edf8] p-5 sm:p-8 dark:bg-[#28233a]">
-        <div
-          class="rounded-2xl border border-white/70 bg-surface p-5 shadow-[0_20px_70px_-30px_rgba(60,40,110,0.3)] sm:p-7"
-        >
+      <div class="relative rounded-[2rem] bg-brand-soft/60 p-5 sm:p-8 dark:bg-brand-soft/20">
+        <div class="rounded-2xl border border-line bg-surface p-5 shadow-lg sm:p-7">
           <div class="mb-6 flex items-center justify-between">
             <span class="text-sm font-semibold">{{
-              ('web.features.landing.copy.your_life_in_balance_f2680fa1' | translate)
+              'web.features.landing.copy.your_life_in_balance_f2680fa1' | translate
             }}</span
             ><span class="badge bg-mint text-mint-ink"
-              ><lq-icon name="leaf" [size]="13" />{{ ('web.features.landing.copy.growing_5eb1c946' | translate) }}</span
+              ><lq-icon name="leaf" [size]="13" />{{
+                'web.features.landing.copy.growing_5eb1c946' | translate
+              }}</span
             >
           </div>
-          <div class="rounded-2xl bg-[#302845] p-6 text-white">
-            <p class="text-[10px] uppercase tracking-widest text-white/50">
-              {{ ('web.features.landing.copy.today_is_a_good_day_to_begin_2ebd10a0' | translate) }}
+          <div class="rounded-2xl brand-panel p-6">
+            <p class="text-[10px] uppercase tracking-widest text-brand-panel-muted">
+              {{ 'web.features.landing.copy.today_is_a_good_day_to_begin_2ebd10a0' | translate }}
             </p>
             <p class="mt-3 text-2xl font-medium">
-              {{ ('common.copy.small_steps_b15b84e3' | translate) }}<br /><span class="text-[#c4b8f7]">{{
-                ('web.features.landing.copy.meaningful_change_13411411' | translate)
-              }}</span>
+              {{ 'common.copy.small_steps_b15b84e3' | translate }}<br /><span
+                class="text-brand-panel-muted"
+                >{{ 'web.features.landing.copy.meaningful_change_13411411' | translate }}</span
+              >
             </p>
             <div class="mt-5 flex gap-2">
               <span class="rounded-lg bg-white/10 p-2"><lq-icon name="heart" [size]="18" /></span
@@ -106,7 +114,9 @@
             }
           </div>
           <p class="mt-5 text-center text-[10px] text-muted">
-            {{ ('web.features.landing.copy.an_example_of_your_everyday_journey_2710920f' | translate) }}
+            {{
+              'web.features.landing.copy.an_example_of_your_everyday_journey_2710920f' | translate
+            }}
           </p>
         </div>
         <div
@@ -118,10 +128,10 @@
           /></span>
           <div>
             <p class="text-xs font-semibold">
-              {{ ('web.features.landing.copy.progress_beats_perfection_90155be6' | translate) }}
+              {{ 'web.features.landing.copy.progress_beats_perfection_90155be6' | translate }}
             </p>
             <p class="mt-1 text-[10px] text-muted">
-              {{ ('common.copy.every_small_action_counts_7691fadd' | translate) }}
+              {{ 'common.copy.every_small_action_counts_7691fadd' | translate }}
             </p>
           </div>
         </div>
@@ -133,7 +143,8 @@
           <p class="eyebrow text-brand">{{ 'common.productName' | translate }}</p>
           <h2 class="mt-3 text-3xl font-semibold tracking-tight">
             {{
-              ('web.features.landing.copy.more_than_a_habit_tracker_a_little_more_you_f12ed311' | translate)
+              'web.features.landing.copy.more_than_a_habit_tracker_a_little_more_you_f12ed311'
+                | translate
             }}
           </h2>
         </div>
@@ -159,15 +170,16 @@
         ><lq-icon name="sprout" [size]="26"
       /></span>
       <h2 class="text-3xl font-semibold tracking-tight">
-        {{ ('web.features.landing.copy.you_don_t_need_a_perfect_plan_529f4b59' | translate) }}
+        {{ 'web.features.landing.copy.you_don_t_need_a_perfect_plan_529f4b59' | translate }}
       </h2>
       <p class="mx-auto mb-7 mt-4 max-w-lg text-sm leading-7 text-muted">
         {{
-          ('web.features.landing.copy.just_one_thing_that_matters_to_you_and_a_small_step_you_can_take_today_we_ll_help_you_find_the_next_one_d48bfd25' | translate)
+          'web.features.landing.copy.just_one_thing_that_matters_to_you_and_a_small_step_you_can_take_today_we_ll_help_you_find_the_next_one_d48bfd25'
+            | translate
         }}
       </p>
       <a routerLink="/auth/register" class="btn btn-primary px-7"
-        >{{ ('web.features.landing.copy.find_my_first_step_4aafd428' | translate)
+        >{{ 'web.features.landing.copy.find_my_first_step_4aafd428' | translate
         }}<lq-icon name="arrow-right" [size]="17"
       /></a>
     </section>
@@ -175,7 +187,11 @@
   <footer
     class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-5 border-t border-line px-5 py-8 text-xs text-muted sm:px-10"
   >
-    <lq-logo /><span>{{ ('web.features.landing.copy.made_for_a_life_in_balance_3023def9' | translate) }}</span
-    ><a routerLink="/help">{{ ('web.features.landing.copy.help_philosophy_1ed7a2bb' | translate) }}</a>
+    <lq-logo /><span>{{
+      'web.features.landing.copy.made_for_a_life_in_balance_3023def9' | translate
+    }}</span
+    ><a routerLink="/help">{{
+      'web.features.landing.copy.help_philosophy_1ed7a2bb' | translate
+    }}</a>
   </footer>
 </div>

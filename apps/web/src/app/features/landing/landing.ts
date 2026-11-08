@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
-import { Icon, Logo } from '@lifequest/ui';
-import { Preferences } from '@lifequest/utilities';
+import { Icon, Logo } from '@mirhal/ui';
+import { Preferences } from '@mirhal/utilities';
 @Component({
   selector: 'lq-landing',
-  imports: [
-    TranslatePipe,RouterLink, Icon, Logo],
+  imports: [TranslatePipe, RouterLink, Icon, Logo],
   templateUrl: './landing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

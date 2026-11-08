@@ -2,7 +2,7 @@ import { Component, signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn, Router, provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
-import { LoadingService } from '@lifequest/data-access';
+import { LoadingService } from '@mirhal/data-access';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../app/app';
 
