@@ -9,7 +9,7 @@ import { AppModule } from '../../apps/api/src/app.module';
 import { configureApp } from '../../apps/api/src/bootstrap';
 import { Database } from '../../apps/api/src/common/database';
 import { habitStreaks } from '../../apps/api/src/core/habit-streaks';
-import { currentStreak, addDays, localDate, dateOnly } from '@lifequest/domain';
+import { currentStreak, addDays, localDate, dateOnly } from '@mirhal/domain';
 import { PlanningService } from '../../apps/api/src/core/planning.service';
 import { AttachmentStorage } from '../../apps/api/src/core/attachment-storage';
 import { AdminService } from '../../apps/api/src/admin/admin.service';

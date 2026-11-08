@@ -1,16 +1,21 @@
 <section class="card mt-6 p-6">
   <div class="mb-5 flex items-center gap-3">
     <lq-icon name="shield" class="text-brand" />
-    <h2 class="text-lg font-semibold">{{ ('web.features.settings.copy.your_account_kept_safe_2a62e9b6' | translate) }}</h2>
+    <h2 class="text-lg font-semibold">
+      {{ 'web.features.settings.copy.your_account_kept_safe_2a62e9b6' | translate }}
+    </h2>
   </div>
   <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-5">
     <div>
-      <p class="text-sm font-medium">{{ ('web.features.settings.copy.email_verification_2382dfde' | translate) }}</p>
+      <p class="text-sm font-medium">
+        {{ 'web.features.settings.copy.email_verification_2382dfde' | translate }}
+      </p>
       <p class="mt-1 text-xs text-muted">
         {{
           auth.user()?.emailVerifiedAt
             ? ('web.features.settings.copy.your_email_is_verified_263c4c18' | translate)
-            : ('web.features.settings.copy.confirm_your_email_to_keep_your_account_secure_fd2d4cf1' | translate)
+            : ('web.features.settings.copy.confirm_your_email_to_keep_your_account_secure_fd2d4cf1'
+              | translate)
         }}
       </p>
     </div>
@@ -28,26 +33,36 @@
       </button>
       @if (capabilities.data()?.emailDelivery === false) {
         <p class="text-xs text-muted">
-          {{ ('web.features.settings.copy.email_delivery_is_currently_unavailable_541c25ef' | translate) }}
+          {{
+            'web.features.settings.copy.email_delivery_is_currently_unavailable_541c25ef'
+              | translate
+          }}
         </p>
       }
     } @else {
       <span class="badge bg-mint text-mint-ink"
-        ><lq-icon name="check" [size]="13" />{{ ('web.features.settings.copy.verified_c89721e5' | translate) }}</span
+        ><lq-icon name="check" [size]="13" />{{
+          'web.features.settings.copy.verified_c89721e5' | translate
+        }}</span
       >
     }
   </div>
   <div class="py-5">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <h3 class="text-sm font-medium">{{ ('web.features.settings.copy.active_sessions_3298f0f4' | translate) }}</h3>
+      <h3 class="text-sm font-medium">
+        {{ 'web.features.settings.copy.active_sessions_3298f0f4' | translate }}
+      </h3>
       <button class="btn btn-secondary text-xs" (click)="logoutAll()">
-        {{ ('web.features.settings.copy.sign_out_everywhere_b34bf79a' | translate) }}
+        {{ 'web.features.settings.copy.sign_out_everywhere_b34bf79a' | translate }}
       </button>
     </div>
     @for (session of sessions.data(); track session.id) {
       <p class="mt-3 flex items-center gap-2 text-xs text-muted">
-        <lq-icon name="lock" [size]="13" />{{ ('web.features.settings.copy.started_97b5823e' | translate) }}
-        {{ session.createdAt | date: 'MMM d, h:mm a' }} · {{ ('web.features.settings.copy.expires_c7aa0523' | translate) }}
+        <lq-icon name="lock" [size]="13" />{{
+          'web.features.settings.copy.started_97b5823e' | translate
+        }}
+        {{ session.createdAt | date: 'MMM d, h:mm a' }} ·
+        {{ 'web.features.settings.copy.expires_c7aa0523' | translate }}
         {{ session.expiresAt | date: 'h:mm a' }}
       </p>
     }
@@ -55,31 +70,38 @@
   <div class="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5">
     <div>
       <h3 class="text-sm font-medium">
-        {{ ('web.features.settings.copy.take_your_journey_with_you_ece77ae0' | translate) }}
+        {{ 'web.features.settings.copy.take_your_journey_with_you_ece77ae0' | translate }}
       </h3>
       <p class="mt-1 text-xs text-muted">
-        {{ ('web.features.settings.copy.download_a_copy_of_your_personal_data_fec40daf' | translate) }}
+        {{
+          'web.features.settings.copy.download_a_copy_of_your_personal_data_fec40daf' | translate
+        }}
       </p>
     </div>
     <button class="btn btn-secondary text-xs" [disabled]="busy()" (click)="export()">
-      <lq-icon name="download" [size]="15" />{{ ('web.features.settings.copy.export_my_data_4322f4fd' | translate) }}
+      <lq-icon name="download" [size]="15" />{{
+        'web.features.settings.copy.export_my_data_4322f4fd' | translate
+      }}
     </button>
   </div>
 </section>
 <section class="card mt-6 p-6">
-  <h2 class="text-sm font-semibold">{{ ('web.features.settings.copy.leave_when_you_need_to_9f55a1ee' | translate) }}</h2>
+  <h2 class="text-sm font-semibold">
+    {{ 'web.features.settings.copy.leave_when_you_need_to_9f55a1ee' | translate }}
+  </h2>
   <p class="my-3 text-xs leading-6 text-muted">
     {{
-      ('web.features.settings.copy.you_are_in_control_of_your_account_deleting_it_ends_all_sessions_and_removes_your_profile_identity_and_private_reflections_auditable_transaction_records_are_retained_f588daf0' | translate)
+      'web.features.settings.copy.you_are_in_control_of_your_account_deleting_it_ends_all_sessions_and_removes_your_profile_identity_and_private_reflections_auditable_transaction_records_are_retained_f588daf0'
+        | translate
     }}
   </p>
   <button class="btn btn-secondary text-xs text-rose-600" (click)="deleting.set(true)">
-    {{ ('web.features.settings.copy.delete_my_account_0498d7af' | translate) }}
+    {{ 'web.features.settings.copy.delete_my_account_0498d7af' | translate }}
   </button>
 </section>
 <p-dialog
-  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
-  [header]="('web.features.settings.copy.delete_your_account_190e562e' | translate)"
+  [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
+  [header]="'web.features.settings.copy.delete_your_account_190e562e' | translate"
   [visible]="deleting()"
   (visibleChange)="deleting.set($event)"
   [modal]="true"
@@ -87,10 +109,13 @@
   ><form [formGroup]="form" (ngSubmit)="remove()">
     <p class="mb-5 text-xs leading-6 text-muted">
       {{
-        ('web.features.settings.copy.this_cannot_be_undone_export_your_data_first_if_you_want_to_keep_a_copy_a0a2eaed' | translate)
+        'web.features.settings.copy.this_cannot_be_undone_export_your_data_first_if_you_want_to_keep_a_copy_a0a2eaed'
+          | translate
       }}
     </p>
-    <lq-field id="delete-password" [label]="('web.features.settings.copy.your_password_15253243' | translate)"
+    <lq-field
+      id="delete-password"
+      [label]="'web.features.settings.copy.your_password_15253243' | translate"
       ><input
         id="delete-password"
         type="password"
@@ -99,7 +124,7 @@
         autocomplete="current-password" /></lq-field
     ><lq-field
       id="delete-confirmation"
-      [label]="('web.features.settings.copy.type_delete_to_confirm_ed381e69' | translate)"
+      [label]="'web.features.settings.copy.type_delete_to_confirm_ed381e69' | translate"
       ><input id="delete-confirmation" class="field" formControlName="confirmation"
     /></lq-field>
     @if (error()) {
@@ -110,7 +135,7 @@
       type="submit"
       [disabled]="busy() || form.invalid"
     >
-      {{ ('web.features.settings.copy.permanently_delete_account_ffbdcae2' | translate) }}
+      {{ 'web.features.settings.copy.permanently_delete_account_ffbdcae2' | translate }}
     </button>
   </form></p-dialog
 >

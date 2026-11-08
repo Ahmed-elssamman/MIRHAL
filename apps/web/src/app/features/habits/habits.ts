@@ -4,24 +4,16 @@ import { RouterLink } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Area, Goal, Habit, Page, Toasts } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
-import {
-  EmptyState,
-  ErrorState,
-  Icon,
-  PageHeader,
-  Pagination,
-  Progress,
-  Skeleton,
-} from '@lifequest/ui';
+import { Api, Area, Goal, Habit, Page, Toasts } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
+import { EmptyState, ErrorState, Icon, PageHeader, Pagination, Progress } from '@mirhal/ui';
 import {
   applyServerValidation,
   FormField,
   DiscardChanges,
   UnsavedForm,
   HabitScheduleFields,
-} from '@lifequest/forms';
+} from '@mirhal/forms';
 @Component({
   selector: 'lq-habits',
   imports: [
@@ -32,7 +24,6 @@ import {
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     Pagination,

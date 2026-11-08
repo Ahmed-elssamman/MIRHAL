@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Api, Profile } from '@lifequest/data-access';
-import { AuthStore } from '@lifequest/auth';
-import { Preferences } from '@lifequest/utilities';
-import { Icon, PageHeader, Skeleton } from '@lifequest/ui';
-import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms';
+import { Api, Profile } from '@mirhal/data-access';
+import { AuthStore } from '@mirhal/auth';
+import { Preferences } from '@mirhal/utilities';
+import { Icon, PageHeader } from '@mirhal/ui';
+import { UnsavedForm, applyServerValidation, FormField } from '@mirhal/forms';
 import { SecuritySettings } from './security';
 @Component({
   selector: 'lq-settings',
@@ -17,7 +17,6 @@ import { SecuritySettings } from './security';
     Icon,
     FormField,
     SecuritySettings,
-    Skeleton,
   ],
   templateUrl: './settings.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

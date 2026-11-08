@@ -3,24 +3,16 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Habit, Page, Toasts } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
-import {
-  EmptyState,
-  ErrorState,
-  Icon,
-  PageHeader,
-  Pagination,
-  Progress,
-  Skeleton,
-} from '@lifequest/ui';
+import { Api, Habit, Page, Toasts } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
+import { EmptyState, ErrorState, Icon, PageHeader, Pagination, Progress } from '@mirhal/ui';
 import {
   applyServerValidation,
   FormField,
   HabitScheduleFields,
   DiscardChanges,
   UnsavedForm,
-} from '@lifequest/forms';
+} from '@mirhal/forms';
 @Component({
   selector: 'lq-habit-lab',
   imports: [
@@ -32,7 +24,6 @@ import {
     Pagination,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     FormField,
@@ -50,9 +41,21 @@ export class HabitLabPage {
   readonly open = signal(false);
   readonly i18n = inject(Preferences);
   readonly guidance = [
-    { icon: 'search', titleKey: 'web.habitLab.guidance.notice.title', textKey: 'web.habitLab.guidance.notice.text' },
-    { icon: 'flask', titleKey: 'web.habitLab.guidance.experiment.title', textKey: 'web.habitLab.guidance.experiment.text' },
-    { icon: 'sprout', titleKey: 'web.habitLab.guidance.keep.title', textKey: 'web.habitLab.guidance.keep.text' },
+    {
+      icon: 'search',
+      titleKey: 'web.habitLab.guidance.notice.title',
+      textKey: 'web.habitLab.guidance.notice.text',
+    },
+    {
+      icon: 'flask',
+      titleKey: 'web.habitLab.guidance.experiment.title',
+      textKey: 'web.habitLab.guidance.experiment.text',
+    },
+    {
+      icon: 'sprout',
+      titleKey: 'web.habitLab.guidance.keep.title',
+      textKey: 'web.habitLab.guidance.keep.text',
+    },
   ];
   readonly resource = this.api.resource<Page<Habit>>('habits');
   readonly selected = signal<Habit | null>(null);

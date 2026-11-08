@@ -116,7 +116,7 @@ const icons = {
   leaf: Leaf,
 };
 @Component({
-  selector: 'lq-icon',
+  selector: 'mirhal-icon, lq-icon',
   imports: [LucideAngularModule],
   template:
     '<lucide-icon [img]="icon()" [size]="size()" [strokeWidth]="1.7" aria-hidden="true" [class]="horizontal() ? \'block rtl:rotate-180\' : \'block\'" />',

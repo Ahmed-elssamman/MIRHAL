@@ -2,7 +2,7 @@ import { Component, signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn, Router, provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
-import { LoadingService } from '@lifequest/data-access';
+import { LoadingService } from '@mirhal/data-access';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../app/app';
 
@@ -26,7 +26,15 @@ describe('Admin shared loading experience', () => {
       providers: [
         provideRouter([]),
         provideTranslateService({ fallbackLang: 'en' }),
-        { provide: LoadingService, useValue: { isLoading, setNavigating } },
+        {
+          provide: LoadingService,
+          useValue: {
+            isLoading,
+            setNavigating,
+            showOverlay: signal(false),
+            showTopBar: isLoading,
+          },
+        },
       ],
     });
     await TestBed.compileComponents();
@@ -56,7 +64,15 @@ describe('Admin shared loading experience', () => {
           { path: 'destination', component: Destination, canActivate: [waitForNavigation] },
         ]),
         provideTranslateService({ fallbackLang: 'en' }),
-        { provide: LoadingService, useValue: { isLoading, setNavigating } },
+        {
+          provide: LoadingService,
+          useValue: {
+            isLoading,
+            setNavigating,
+            showOverlay: signal(false),
+            showTopBar: isLoading,
+          },
+        },
       ],
     });
     await TestBed.compileComponents();

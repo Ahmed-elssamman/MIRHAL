@@ -1,11 +1,14 @@
 <lq-page-header
-  [eyebrow]="('web.features.habit-lab.copy.curiosity_not_criticism_3c5902f0' | translate)"
-  [title]="('web.features.habit-lab.copy.your_habits_are_an_experiment_d8063a11' | translate)"
+  [eyebrow]="'web.features.habit-lab.copy.curiosity_not_criticism_3c5902f0' | translate"
+  [title]="'web.features.habit-lab.copy.your_habits_are_an_experiment_d8063a11' | translate"
   [description]="
-    ('web.features.habit-lab.copy.explore_your_habits_and_record_experiments_to_learn_what_helps_you_stay_consistent_bedb92b7' | translate)
+    'web.features.habit-lab.copy.explore_your_habits_and_record_experiments_to_learn_what_helps_you_stay_consistent_bedb92b7'
+      | translate
   "
   ><a routerLink="/habits" class="btn btn-secondary"
-    ><lq-icon name="arrow-left" [size]="16" />{{ ('web.features.habit-lab.copy.my_habits_e0189716' | translate) }}</a
+    ><lq-icon name="arrow-left" [size]="16" />{{
+      'web.features.habit-lab.copy.my_habits_e0189716' | translate
+    }}</a
   ></lq-page-header
 >
 <div class="mb-7 grid gap-4 sm:grid-cols-3">
@@ -17,11 +20,9 @@
     </div>
   }
 </div>
-@if (resource.loading() && !resource.data()) {
-  <lq-skeleton />
-} @else if (resource.error()) {
+@if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
-} @else {
+} @else if (resource.data()) {
   <div class="grid gap-5 md:grid-cols-2">
     @for (habit of resource.data()?.items; track habit.id) {
       <article class="card p-6">
@@ -40,37 +41,41 @@
         <p class="mt-4 text-xs leading-6 text-muted">
           {{
             habit.failureReason ||
-              ('web.features.habit-lab.copy.every_pattern_has_a_reason_let_s_find_yours_24663029' | translate)
+              ('web.features.habit-lab.copy.every_pattern_has_a_reason_let_s_find_yours_24663029'
+                | translate)
           }}
         </p>
         @if (habit.nextExperiment) {
           <div class="mt-4 rounded-xl bg-mint p-4 text-xs leading-6 text-mint-ink">
-            <span class="font-semibold">{{ ('web.features.habit-lab.copy.trying_now_abcc1f3c' | translate) }}</span
+            <span class="font-semibold">{{
+              'web.features.habit-lab.copy.trying_now_abcc1f3c' | translate
+            }}</span
             >{{ habit.nextExperiment }}
           </div>
         }
         @if (habit.recoveryPattern) {
           <div class="mt-4 rounded-xl bg-mint p-4 text-xs leading-6 text-mint-ink">
             {{
-              ('web.features.habit-lab.copy.several_planned_days_did_not_happen_could_a_smaller_step_fit_better_87a80d52' | translate)
+              'web.features.habit-lab.copy.several_planned_days_did_not_happen_could_a_smaller_step_fit_better_87a80d52'
+                | translate
             }}
           </div>
           <button class="btn btn-secondary mt-3 w-full text-xs" (click)="diagnose(habit, true)">
             <lq-icon name="flask" [size]="16" />{{
-              ('web.features.habit-lab.copy.try_a_smaller_experiment_cde4db5c' | translate)
+              'web.features.habit-lab.copy.try_a_smaller_experiment_cde4db5c' | translate
             }}
           </button>
         } @else {
           <button class="btn btn-secondary mt-5 w-full text-xs" (click)="diagnose(habit)">
             <lq-icon name="flask" [size]="16" />{{
-              ('web.features.habit-lab.copy.explore_an_adjustment_817d720a' | translate)
+              'web.features.habit-lab.copy.explore_an_adjustment_817d720a' | translate
             }}
           </button>
         }
         @if (habit.experiments.length) {
           <details class="mt-4">
             <summary class="min-h-10 cursor-pointer text-xs text-muted">
-              {{ ('web.features.habit-lab.copy.previous_experiments_f501c7e0' | translate) }} ({{
+              {{ 'web.features.habit-lab.copy.previous_experiments_f501c7e0' | translate }} ({{
                 habit.experiments.length
               }})
             </summary>
@@ -87,12 +92,15 @@
       <div class="col-span-full">
         <lq-empty
           icon="flask"
-          [title]="('web.features.habit-lab.copy.room_to_learn_whenever_you_need_it_0b6e720b' | translate)"
+          [title]="
+            'web.features.habit-lab.copy.room_to_learn_whenever_you_need_it_0b6e720b' | translate
+          "
           [description]="
-            ('web.features.habit-lab.copy.create_a_habit_first_habit_lab_will_be_here_when_you_want_to_make_it_fit_a_little_better_09d49d3b' | translate)
+            'web.features.habit-lab.copy.create_a_habit_first_habit_lab_will_be_here_when_you_want_to_make_it_fit_a_little_better_09d49d3b'
+              | translate
           "
           ><a routerLink="/habits" class="btn btn-primary">{{
-            ('web.features.habit-lab.copy.explore_habits_f7d2173b' | translate)
+            'web.features.habit-lab.copy.explore_habits_f7d2173b' | translate
           }}</a></lq-empty
         >
       </div>
@@ -108,44 +116,52 @@
   />
 }
 <p-dialog
-  [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
-  [header]="('web.features.habit-lab.copy.a_kinder_way_forward_a697ce23' | translate)"
+  [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
+  [header]="'web.features.habit-lab.copy.a_kinder_way_forward_a697ce23' | translate"
   [visible]="open()"
   (visibleChange)="discard.close($event, open, form)"
   [modal]="true"
   [style]="{ width: '36rem' }"
   ><form [formGroup]="form" [lqUnsavedForm]="form" [unsavedActive]="open()" (ngSubmit)="save()">
     <p class="mb-5 text-sm text-muted">{{ selected()?.name }}</p>
-    <lq-field id="lab-reason" [label]="('common.copy.what_got_in_the_way_5ac58329' | translate)"
+    <lq-field id="lab-reason" [label]="'common.copy.what_got_in_the_way_5ac58329' | translate"
       ><input
         id="lab-reason"
         class="field"
         formControlName="reason"
         [placeholder]="
-          ('web.features.habit-lab.copy.too_big_too_late_too_tired_6910f8d7' | translate)
+          'web.features.habit-lab.copy.too_big_too_late_too_tired_6910f8d7' | translate
         " /></lq-field
-    ><lq-field id="lab-hypothesis" [label]="('web.features.habit-lab.copy.what_might_help_d032fca4' | translate)"
+    ><lq-field
+      id="lab-hypothesis"
+      [label]="'web.features.habit-lab.copy.what_might_help_d032fca4' | translate"
       ><input id="lab-hypothesis" class="field" formControlName="hypothesis" /></lq-field
-    ><lq-field id="lab-adjustment" [label]="('web.features.habit-lab.copy.my_next_experiment_5a53dd57' | translate)"
+    ><lq-field
+      id="lab-adjustment"
+      [label]="'web.features.habit-lab.copy.my_next_experiment_5a53dd57' | translate"
       ><input
         id="lab-adjustment"
         class="field"
         formControlName="adjustment"
-        [placeholder]="('web.features.habit-lab.copy.20_minutes_instead_of_60_1a438ccd' | translate)"
+        [placeholder]="'web.features.habit-lab.copy.20_minutes_instead_of_60_1a438ccd' | translate"
     /></lq-field>
     <div class="grid gap-4 sm:grid-cols-2">
-      <lq-field id="lab-target" [label]="('web.features.habit-lab.copy.new_target_fc03e246' | translate)"
+      <lq-field
+        id="lab-target"
+        [label]="'web.features.habit-lab.copy.new_target_fc03e246' | translate"
         ><input
           id="lab-target"
           type="number"
           class="field"
           min="0.01"
           formControlName="target" /></lq-field
-      ><lq-field id="lab-time" [label]="('web.features.habit-lab.copy.a_better_time_09992423' | translate)"
+      ><lq-field
+        id="lab-time"
+        [label]="'web.features.habit-lab.copy.a_better_time_09992423' | translate"
         ><select id="lab-time" class="field" formControlName="preferredTime">
-          <option value="morning">{{ ('common.copy.morning_02e055cf' | translate) }}</option>
-          <option value="afternoon">{{ ('common.copy.afternoon_0cc20db7' | translate) }}</option>
-          <option value="evening">{{ ('common.copy.evening_4a5908cf' | translate) }}</option>
+          <option value="morning">{{ 'common.copy.morning_02e055cf' | translate }}</option>
+          <option value="afternoon">{{ 'common.copy.afternoon_0cc20db7' | translate }}</option>
+          <option value="evening">{{ 'common.copy.evening_4a5908cf' | translate }}</option>
         </select></lq-field
       >
     </div>
@@ -155,27 +171,35 @@
       [scheduleDays]="form.controls.scheduleDays"
       [weeklyTarget]="form.controls.weeklyTarget"
     />
-    <lq-field id="lab-commitment" [label]="('common.copy.my_commitment_4d73bc24' | translate)">
+    <lq-field id="lab-commitment" [label]="'common.copy.my_commitment_4d73bc24' | translate">
       <select id="lab-commitment" class="field" formControlName="commitment">
         <option value="flexible">
-          {{ ('common.copy.flexible_with_room_to_adapt_85d93ce6' | translate) }}
+          {{ 'common.copy.flexible_with_room_to_adapt_85d93ce6' | translate }}
         </option>
         <option value="committed">
-          {{ ('common.copy.a_firm_promise_to_myself_e5549bee' | translate) }}
+          {{ 'common.copy.a_firm_promise_to_myself_e5549bee' | translate }}
         </option>
       </select>
     </lq-field>
-    <lq-field id="lab-minimum" [label]="('web.features.habit-lab.copy.smallest_possible_step_79310523' | translate)"
+    <lq-field
+      id="lab-minimum"
+      [label]="'web.features.habit-lab.copy.smallest_possible_step_79310523' | translate"
       ><input id="lab-minimum" class="field" formControlName="minimumAction" /></lq-field
-    ><lq-field id="lab-action" [label]="('web.features.habit-lab.copy.what_feels_right_6b2f6869' | translate)"
+    ><lq-field
+      id="lab-action"
+      [label]="'web.features.habit-lab.copy.what_feels_right_6b2f6869' | translate"
       ><select id="lab-action" class="field" formControlName="action">
-        <option value="ADJUST">{{ ('web.features.habit-lab.copy.adjust_and_experiment_1beaf58e' | translate) }}</option>
-        <option value="KEEP">
-          {{ ('web.features.habit-lab.copy.keep_going_with_what_i_learned_d94d66b4' | translate) }}
+        <option value="ADJUST">
+          {{ 'web.features.habit-lab.copy.adjust_and_experiment_1beaf58e' | translate }}
         </option>
-        <option value="PAUSE">{{ ('web.features.habit-lab.copy.take_a_thoughtful_pause_c806f18d' | translate) }}</option>
+        <option value="KEEP">
+          {{ 'web.features.habit-lab.copy.keep_going_with_what_i_learned_d94d66b4' | translate }}
+        </option>
+        <option value="PAUSE">
+          {{ 'web.features.habit-lab.copy.take_a_thoughtful_pause_c806f18d' | translate }}
+        </option>
         <option value="ARCHIVE">
-          {{ ('web.features.habit-lab.copy.make_room_for_something_else_d0951b92' | translate) }}
+          {{ 'web.features.habit-lab.copy.make_room_for_something_else_d0951b92' | translate }}
         </option>
       </select></lq-field
     >
@@ -191,7 +215,7 @@
         (form.controls.frequency.value === 'CUSTOM' && !form.controls.scheduleDays.value.length)
       "
     >
-      {{ ('web.features.habit-lab.copy.start_this_experiment_1a6d8e08' | translate) }}
+      {{ 'web.features.habit-lab.copy.start_this_experiment_1a6d8e08' | translate }}
     </button>
   </form></p-dialog
 >

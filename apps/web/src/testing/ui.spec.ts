@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ErrorState, GlobalLoader, Pagination, Progress, Skeleton } from '@lifequest/ui';
-import { FormField } from '@lifequest/forms';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Celebrations, LoadingService } from '@lifequest/data-access';
-import { LevelCelebration } from '@lifequest/ui/level-celebration';
+import { ErrorState, GlobalLoader, Pagination, Progress, Skeleton } from '@mirhal/ui';
+import { FormField } from '@mirhal/forms';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { Celebrations, LoadingService } from '@mirhal/data-access';
+import { LevelCelebration } from '@mirhal/ui/level-celebration';
 import { ActivityChart } from '../app/features/analytics/activity-chart';
 import { provideRouter } from '@angular/router';
 import {
@@ -12,7 +12,7 @@ import {
   provideTranslateService,
   TranslateService,
 } from '@ngx-translate/core';
-import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { MirhalTranslationLoader } from '@mirhal/i18n';
 import { firstValueFrom } from 'rxjs';
 
 describe('Accessible shared components', () => {
@@ -229,6 +229,13 @@ describe('Accessible shared components', () => {
     expect(fixture.nativeElement.querySelector('[aria-busy=true]')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('button')).toBeNull();
   });
+  it('supports disabling skeleton animation via input or static class', () => {
+    const fixture = TestBed.createComponent(Skeleton);
+    fixture.componentRef.setInput('animate', false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.skeleton-static')).toBeTruthy();
+    expect(fixture.nativeElement.querySelectorAll('.skeleton').length).toBeGreaterThan(0);
+  });
   it('applies Arabic direction, theme and reduced motion', () => {
     vi.stubGlobal('matchMedia', () => ({
       matches: false,
@@ -299,7 +306,7 @@ describe('Accessible shared components', () => {
     const element: HTMLElement = fixture.nativeElement;
     const overlay = element.querySelector('[role="status"]');
     expect(overlay).toBeTruthy();
-    expect(element.querySelector('svg')).toBeTruthy();
+    expect(element.querySelector('img[src="/mirhal-mark.svg"]')).toBeTruthy();
     expect(element.textContent).toContain('MIRHAL');
     expect(element.textContent).toContain('مِرحال');
 

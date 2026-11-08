@@ -1,4 +1,4 @@
-import { Avatar } from '@lifequest/ui';
+import { Avatar } from '@mirhal/ui';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,10 +15,10 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DrawerModule } from 'primeng/drawer';
-import { Toasts } from '@lifequest/data-access';
-import { AuthStore } from '@lifequest/auth';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Icon, Logo } from '@lifequest/ui';
+import { Toasts } from '@mirhal/data-access';
+import { AuthStore } from '@mirhal/auth';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { Icon, Logo } from '@mirhal/ui';
 import { NotificationOverlay } from '../features/notifications/notification-overlay';
 import { InstallExperience } from '../pwa/install-experience';
 import { PwaInstallation } from '../pwa/install';

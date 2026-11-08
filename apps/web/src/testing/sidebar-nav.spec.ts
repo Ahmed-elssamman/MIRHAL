@@ -3,10 +3,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, Router } from '@angular/router';
 import { Shell } from '../app/layout/shell';
-import { Preferences } from '@lifequest/utilities';
+import { Preferences } from '@mirhal/utilities';
 import { MessageService } from 'primeng/api';
-import { provideTranslateLoader, provideTranslateService, TranslateService } from '@ngx-translate/core';
-import { MirhalTranslationLoader } from '@lifequest/i18n';
+import {
+  provideTranslateLoader,
+  provideTranslateService,
+  TranslateService,
+} from '@ngx-translate/core';
+import { MirhalTranslationLoader } from '@mirhal/i18n';
 import { firstValueFrom } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 

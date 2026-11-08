@@ -1,7 +1,7 @@
 import { notify } from '../common/notifications';
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { InputOf, questSchema, paginationSchema } from '@lifequest/contracts';
-import { percent } from '@lifequest/domain';
+import { InputOf, questSchema, paginationSchema } from '@mirhal/contracts';
+import { percent } from '@mirhal/domain';
 import { Database } from '../common/database';
 import { XpService } from '../gamification/xp.service';
 import { assertReferences, pageArgs, pageResult } from './ownership';

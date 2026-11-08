@@ -1,6 +1,6 @@
 import { Body, Controller, Inject, Param, Patch, Post } from '@nestjs/common';
 import { z } from 'zod';
-import { InputOf, patchSchema, rewardSchema, rewardUpdateSchema } from '@lifequest/contracts';
+import { InputOf, patchSchema, rewardSchema, rewardUpdateSchema } from '@mirhal/contracts';
 import { Database } from '../common/database';
 import { CurrentUser, Identity, Roles, Validate } from '../common/http';
 const articleSchema = z

@@ -33,9 +33,7 @@ import { FormField } from './field';
         </div>
         @if (!scheduleDays().value.length) {
           <p role="status" class="mt-2 text-xs text-muted">
-            {{
-              'forms.habitSchedule.chooseOneDay' | translate
-            }}
+            {{ 'forms.habitSchedule.chooseOneDay' | translate }}
           </p>
         }
       </fieldset>

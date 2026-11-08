@@ -9,7 +9,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma, Role, UserStatus } from '@prisma/client';
-import { feedbackAdminSchema, InputOf, paginationSchema } from '@lifequest/contracts';
+import { feedbackAdminSchema, InputOf, paginationSchema } from '@mirhal/contracts';
 import { Database } from '../common/database';
 import { Identity } from '../common/http';
 import { pageArgs, pageResult } from '../core/ownership';

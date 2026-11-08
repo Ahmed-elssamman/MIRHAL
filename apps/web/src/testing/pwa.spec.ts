@@ -8,7 +8,11 @@ import { PwaUpdates } from '../app/pwa/updates';
 describe('PWA lifecycle', () => {
   beforeEach(() => {
     localStorage.removeItem('mirhal-install-dismissed-v1');
-    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
+    vi.stubGlobal('matchMedia', () => ({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }));
   });
   afterEach(() => vi.unstubAllGlobals());
 
@@ -41,7 +45,11 @@ describe('PWA lifecycle', () => {
   it('notifies when an update is ready or a reload is required', () => {
     const versionUpdates = new Subject<{ type: string }>();
     const unrecoverable = new Subject<void>();
-    TestBed.configureTestingModule({ providers: [{ provide: SwUpdate, useValue: { isEnabled: true, versionUpdates, unrecoverable } }] });
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: SwUpdate, useValue: { isEnabled: true, versionUpdates, unrecoverable } },
+      ],
+    });
     const updates = TestBed.inject(PwaUpdates);
     versionUpdates.next({ type: 'VERSION_DETECTED' });
     expect(updates.ready()).toBe(false);

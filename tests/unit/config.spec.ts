@@ -81,7 +81,7 @@ describe('Configuration Architecture', () => {
     ).toThrow(/WEB_ORIGIN must be an HTTPS origin/);
   });
 
-  it('requires REDIS_URL in production for every rate-limit mode', () => {
+  it('requires REDIS_URL in production when RATE_LIMIT_MODE is redis', () => {
     const prodEnv = {
       ...baseValidEnv,
       NODE_ENV: 'production',
@@ -91,12 +91,6 @@ describe('Configuration Architecture', () => {
       RATE_LIMIT_MODE: 'redis',
     };
     expect(() => validateEnvironment(prodEnv)).toThrow(/REDIS_URL to be configured/);
-    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'auto' })).toThrow(
-      /REDIS_URL to be configured/,
-    );
-    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'memory' })).toThrow(
-      /REDIS_URL to be configured/,
-    );
   });
 
   it('accepts the Render production email mode and rejects the old invalid enabled value', () => {

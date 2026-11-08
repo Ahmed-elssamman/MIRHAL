@@ -6,7 +6,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InputOf, rewardSchema, rewardUpdateSchema, paginationSchema } from '@lifequest/contracts';
+import { InputOf, rewardSchema, rewardUpdateSchema, paginationSchema } from '@mirhal/contracts';
 import { pageArgs, pageResult } from '../core/ownership';
 import { Database } from '../common/database';
 import { XpService } from './xp.service';

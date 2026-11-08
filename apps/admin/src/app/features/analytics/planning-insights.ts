@@ -1,8 +1,8 @@
-﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Api } from '@lifequest/data-access';
-import { ErrorState, Progress, Skeleton } from '@lifequest/ui';
-import { Preferences } from '@lifequest/utilities';
+import { Api } from '@mirhal/data-access';
+import { ErrorState, Progress } from '@mirhal/ui';
+import { Preferences } from '@mirhal/utilities';
 interface StatusCount {
   status: string;
   _count: number;
@@ -18,30 +18,32 @@ interface Insights {
 }
 @Component({
   selector: 'lq-planning-insights',
-  imports: [
-    TranslatePipe,ErrorState, Progress, Skeleton],
+  imports: [TranslatePipe, ErrorState, Progress],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `@if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+  template: `@if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
     } @else if (resource.data(); as data) {
       <section class="card mt-6 p-6">
         <h2 class="text-lg font-semibold">
-          {{ ('admin.features.analytics.copy.small_actions_healthier_routines_8504e504' | translate) }}
+          {{
+            'admin.features.analytics.copy.small_actions_healthier_routines_8504e504' | translate
+          }}
         </h2>
         <p class="my-4 text-xs leading-6 text-muted">
           {{
-            ('admin.features.analytics.copy.completion_across_current_active_schedules_in_the_last_30_days_a_pause_is_a_useful_adjustment_not_a_failure_b3cf2830' | translate)
+            'admin.features.analytics.copy.completion_across_current_active_schedules_in_the_last_30_days_a_pause_is_a_useful_adjustment_not_a_failure_b3cf2830'
+              | translate
           }}
         </p>
         <div class="mb-3 flex justify-between text-sm">
-          <span>{{ ('admin.features.analytics.copy.scheduled_habit_adherence_8af8cde5' | translate) }}</span
+          <span>{{
+            'admin.features.analytics.copy.scheduled_habit_adherence_8af8cde5' | translate
+          }}</span
           ><strong>{{ data.habitCompletionRate }}%</strong>
         </div>
         <lq-progress
           [value]="data.habitCompletionRate"
-          [label]="('admin.features.analytics.copy.habit_adherence_3a12f796' | translate)"
+          [label]="'admin.features.analytics.copy.habit_adherence_3a12f796' | translate"
         />
         <div class="mt-5 flex flex-wrap gap-3">
           @for (item of data.habits; track item.status) {
@@ -53,13 +55,14 @@ interface Insights {
         <p class="mt-5 text-xs text-muted">
           {{ data.experiments }}
           {{
-            ('admin.features.analytics.copy.habit_lab_experiments_in_the_last_30_days_89d5bb64' | translate)
+            'admin.features.analytics.copy.habit_lab_experiments_in_the_last_30_days_89d5bb64'
+              | translate
           }}
         </p>
       </section>
       <section class="mt-6">
         <h2 class="mb-4 text-lg font-semibold">
-          {{ ('admin.features.analytics.copy.from_intentions_to_outcomes_793b1004' | translate) }}
+          {{ 'admin.features.analytics.copy.from_intentions_to_outcomes_793b1004' | translate }}
         </h2>
         <div class="grid gap-4 md:grid-cols-3">
           @for (group of data.planning; track group.kind) {
@@ -83,7 +86,10 @@ interface Insights {
                 </div>
               } @empty {
                 <p class="text-xs leading-6 text-muted">
-                  {{ ('admin.features.analytics.copy.new_intentions_will_appear_here_babb72fb' | translate) }}
+                  {{
+                    'admin.features.analytics.copy.new_intentions_will_appear_here_babb72fb'
+                      | translate
+                  }}
                 </p>
               }
             </article>

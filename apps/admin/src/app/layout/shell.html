@@ -1,10 +1,13 @@
 ﻿<a
   href="#admin-main"
   class="sr-only fixed start-4 top-4 z-50 rounded-xl bg-brand p-3 text-white focus:not-sr-only"
->{{ 'admin.navigation.skipToContent' | translate }}</a>
+  >{{ 'admin.navigation.skipToContent' | translate }}</a
+>
 <ng-template #nav>
   <a routerLink="/overview" class="mb-2 block px-3"><lq-logo /></a>
-  <span class="badge mb-8 ms-14 bg-brand-soft text-[9px] text-brand">{{ 'admin.navigation.controlRoom' | translate }}</span>
+  <span class="badge mb-8 ms-14 bg-brand-soft text-[9px] text-brand">{{
+    'admin.navigation.controlRoom' | translate
+  }}</span>
   <nav class="space-y-7" [attr.aria-label]="'admin.navigation.ariaLabel' | translate">
     @for (group of groups; track group.titleKey) {
       <div>
@@ -17,7 +20,8 @@
                 routerLinkActive="bg-brand-soft !text-brand"
                 (click)="open.set(false)"
                 class="flex min-h-11 items-center gap-3 rounded-xl px-3 text-xs font-medium text-muted hover:bg-brand-soft"
-              ><lq-icon [name]="item.icon" [size]="18" />{{ item.labelKey | translate }}</a>
+                ><lq-icon [name]="item.icon" [size]="18" />{{ item.labelKey | translate }}</a
+              >
             }
           }
         </div>
@@ -32,7 +36,9 @@
     </button>
   </div>
 </ng-template>
-<aside class="fixed inset-y-0 start-0 z-30 hidden w-60 overflow-y-auto border-e border-line bg-surface px-4 py-7 lg:block">
+<aside
+  class="fixed inset-y-0 start-0 z-30 hidden w-60 overflow-y-auto border-e border-line bg-surface px-4 py-7 lg:block"
+>
   <ng-container *ngTemplateOutlet="nav" />
 </aside>
 <p-drawer
@@ -40,23 +46,35 @@
   (visibleChange)="open.set($event)"
   [position]="i18n.rtl() ? 'right' : 'left'"
   [style]="{ width: '18rem' }"
-><ng-container *ngTemplateOutlet="nav" /></p-drawer>
+  ><ng-container *ngTemplateOutlet="nav"
+/></p-drawer>
 <div class="min-h-screen lg:ps-60">
-  <header class="flex h-20 items-center justify-between border-b border-line bg-surface px-5 sm:px-8">
+  <header
+    class="flex h-20 items-center justify-between border-b border-line bg-surface px-5 sm:px-8"
+  >
     <div class="flex items-center gap-3">
       <button
         class="icon-button lg:hidden"
         (click)="open.set(true)"
         [attr.aria-label]="'admin.navigation.openNavigation' | translate"
-      ><lq-icon name="menu" /></button>
+      >
+        <lq-icon name="menu" />
+      </button>
       <span class="text-xs text-muted">{{ 'admin.navigation.headerMessage' | translate }}</span>
     </div>
     <button
       class="icon-button text-xs"
       (click)="auth.changeLanguage()"
       [disabled]="auth.languageSaving()"
-      [attr.aria-label]="(i18n.rtl() ? 'admin.navigation.switchToEnglish' : 'admin.navigation.switchToArabic') | translate"
-    >{{ (i18n.rtl() ? 'admin.navigation.englishShort' : 'admin.navigation.arabicShort') | translate }}</button>
+      [attr.aria-label]="
+        (i18n.rtl() ? 'admin.navigation.switchToEnglish' : 'admin.navigation.switchToArabic')
+          | translate
+      "
+    >
+      {{
+        (i18n.rtl() ? 'admin.navigation.englishShort' : 'admin.navigation.arabicShort') | translate
+      }}
+    </button>
   </header>
   @if (auth.languageError()) {
     <p role="alert" class="mx-5 mt-3 rounded-xl bg-coral p-3 text-sm text-orange-900">

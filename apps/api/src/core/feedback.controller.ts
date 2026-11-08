@@ -1,7 +1,7 @@
 import { attachmentSelect } from './attachment-storage';
 import { Body, Controller, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { feedbackSchema, InputOf, paginationSchema } from '@lifequest/contracts';
+import { feedbackSchema, InputOf, paginationSchema } from '@mirhal/contracts';
 import { pageArgs, pageResult } from './ownership';
 import { Database } from '../common/database';
 import { CurrentUser, Identity, Public, Validate } from '../common/http';

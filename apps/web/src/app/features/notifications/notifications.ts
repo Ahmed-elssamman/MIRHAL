@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
-import { Api, Page, Notification, Toasts } from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '@lifequest/ui';
+import { Api, Page, Notification, Toasts } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { Pagination, EmptyState, ErrorState, Icon, PageHeader } from '@mirhal/ui';
 @Component({
   selector: 'lq-notifications',
   imports: [
@@ -15,24 +15,24 @@ import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '
     Pagination,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
   ],
   template: `<lq-page-header
-      [eyebrow]="('web.features.notifications.copy.little_updates_from_your_journey_947cd12c' | translate)"
-      [title]="('web.features.notifications.copy.a_few_things_to_know_9a51a76b' | translate)"
+      [eyebrow]="
+        'web.features.notifications.copy.little_updates_from_your_journey_947cd12c' | translate
+      "
+      [title]="'web.features.notifications.copy.a_few_things_to_know_9a51a76b' | translate"
       [description]="
-        ('web.features.notifications.copy.review_your_notifications_open_related_updates_and_mark_them_as_read_2f485fb7' | translate)
+        'web.features.notifications.copy.review_your_notifications_open_related_updates_and_mark_them_as_read_2f485fb7'
+          | translate
       "
       ><button class="btn btn-secondary" (click)="readAll()">
-        {{ ('web.features.notifications.copy.mark_all_as_read_6d267c97' | translate) }}
+        {{ 'web.features.notifications.copy.mark_all_as_read_6d267c97' | translate }}
       </button></lq-page-header
     >
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
-    } @else {
+    } @else if (resource.data()) {
       <div class="space-y-3">
         @for (item of resource.data()?.items; track item.id) {
           <a
@@ -63,16 +63,19 @@ import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '
             @if (!item.readAt) {
               <span
                 class="mt-2 size-2 shrink-0 rounded-full bg-brand"
-                [attr.aria-label]="('web.features.notifications.copy.unread_0eb8c982' | translate)"
+                [attr.aria-label]="'web.features.notifications.copy.unread_0eb8c982' | translate"
               ></span>
             }
           </a>
         } @empty {
           <lq-empty
             icon="bell"
-            [title]="('web.features.notifications.copy.a_little_quiet_is_good_too_a9b1cbb1' | translate)"
+            [title]="
+              'web.features.notifications.copy.a_little_quiet_is_good_too_a9b1cbb1' | translate
+            "
             [description]="
-              ('web.features.notifications.copy.your_invitations_and_milestones_will_find_a_home_here_7fca0749' | translate)
+              'web.features.notifications.copy.your_invitations_and_milestones_will_find_a_home_here_7fca0749'
+                | translate
             "
           />
         }

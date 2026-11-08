@@ -3,10 +3,10 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthPage } from '@lifequest/auth-page';
-import { AuthStore } from '@lifequest/auth';
-import { Api, Toasts } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
+import { AuthPage } from '@mirhal/auth-page';
+import { AuthStore } from '@mirhal/auth';
+import { Api, Toasts } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
 
 describe('invitation sign-in', () => {
   const post = vi.fn();

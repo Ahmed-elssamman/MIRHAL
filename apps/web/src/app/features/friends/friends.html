@@ -48,7 +48,12 @@
             {{ i18n.t('You already responded to this invitation.', 'سبق أن رددت على هذه الدعوة.') }}
           }
           @default {
-            {{ i18n.t('This invitation is invalid or no longer available.', 'هذه الدعوة غير صالحة أو لم تعد متاحة.') }}
+            {{
+              i18n.t(
+                'This invitation is invalid or no longer available.',
+                'هذه الدعوة غير صالحة أو لم تعد متاحة.'
+              )
+            }}
           }
         }
       </h2>
@@ -64,11 +69,9 @@
     }}
   </p>
 </div>
-@if (resource.loading() && !resource.data()) {
-  <lq-skeleton />
-} @else if (resource.error()) {
+@if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
-} @else {
+} @else if (resource.data()) {
   <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
     @for (connection of resource.data()?.items; track connection.id) {
       <article class="card p-6">

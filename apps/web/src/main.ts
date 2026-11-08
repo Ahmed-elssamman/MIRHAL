@@ -5,7 +5,7 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { App } from './app/app';
 import { routes } from './app/app.routes';
-import { sharedConfig } from '@lifequest/config';
+import { sharedConfig } from '@mirhal/config';
 export const webConfig = mergeApplicationConfig(sharedConfig(), {
   providers: [
     provideServiceWorker('ngsw-worker.js', {

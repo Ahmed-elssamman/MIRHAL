@@ -42,7 +42,7 @@ Date: 2 October 2026. This is a snapshot of the **existing working tree**, which
 ## Risks, debt and conflicts
 
 - Working tree is substantially dirty, including security, database and test files. Do not reset, overwrite or commit user work as a migration checkpoint.
-- `@lifequest/*` TypeScript aliases, `lq-` selectors, local database names, test filenames, deployed URLs and old migration function names are technical contracts. Cosmetic renaming would create unnecessary risk. User-visible brand strings and metadata can change safely without changing them.
+- `@mirhal/*` TypeScript aliases, `lq-` selectors, local database names, test filenames, deployed URLs and old migration function names are technical contracts. Cosmetic renaming would create unnecessary risk. User-visible brand strings and metadata can change safely without changing them.
 - Existing Today and Habit Lab already solve part of the target product. The largest UX gap is navigation and a single clear next action, rather than missing domains.
 - The current onboarding has seven steps; shorten only after checking completion semantics and existing E2E assertions.
 - Reward personalization needs an additive schema migration and clear ownership/privacy behavior. No need for ML or an external queue.

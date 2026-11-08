@@ -5,8 +5,8 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
-import { MirhalTranslationLoader } from '@lifequest/i18n';
-import { Preferences } from '@lifequest/utilities';
+import { MirhalTranslationLoader } from '@mirhal/i18n';
+import { Preferences } from '@mirhal/utilities';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 function translationKeys(value: unknown, prefix = ''): string[] {

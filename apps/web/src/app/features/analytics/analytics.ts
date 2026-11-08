@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
-import { Api, Dashboard } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
+import { Api, Dashboard } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
 import {
   ErrorState,
   Icon,
@@ -10,9 +10,8 @@ import {
   Progress,
   ProgressRing,
   SectionTitle,
-  Skeleton,
   StatCard,
-} from '@lifequest/ui';
+} from '@mirhal/ui';
 import { ActivityChart } from './activity-chart';
 @Component({
   selector: 'lq-analytics',
@@ -21,7 +20,6 @@ import { ActivityChart } from './activity-chart';
     RouterLink,
     PageHeader,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     ProgressRing,

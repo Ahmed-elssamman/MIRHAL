@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { LoadingService } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
+import { LoadingService } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -12,10 +12,10 @@ import {
 } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
-import { GlobalLoader } from '@lifequest/ui/loader';
-import { Overlays } from '@lifequest/ui/overlays';
+import { GlobalLoader } from '@mirhal/ui/loader';
+import { Overlays } from '@mirhal/ui/overlays';
 @Component({
-  selector: 'lq-root',
+  selector: 'mirhal-root, lq-root',
   imports: [RouterOutlet, Overlays, GlobalLoader],
   template: '<lq-global-loader /><router-outlet />@defer (on idle) { <lq-overlays /> }',
   changeDetection: ChangeDetectionStrategy.OnPush,

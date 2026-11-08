@@ -20,7 +20,7 @@ Verified on 26 September 2026 against production builds, isolated local PostgreS
 | Configured-secret source scan                            | Passing                     |
 | Running customer/admin/database smoke checks             | Passing                     |
 
-Six versioned migrations are deployed to the configured Neon database. Integration fixtures use a local database ending in `_test`; browser tests reset the separate `lifequest_e2e_test` database. Neither resets Neon data. The live smoke check signs in with environment-configured development accounts and reads seven customer routes and six admin routes. It checks database health, browser errors and 320px overflow.
+Six versioned migrations are deployed to the configured Neon database. Integration fixtures use a local database ending in `_test`; browser tests create a separate random `mirhal_e2e_*_test` database. Neither resets Neon data. The live smoke check signs in with environment-configured development accounts and reads seven customer routes and six admin routes. It checks database health, browser errors and 320px overflow.
 
 ## Coverage
 

@@ -10,7 +10,7 @@ import {
   projectUpdateSchema,
   taskSchema,
   taskUpdateSchema,
-} from '@lifequest/contracts';
+} from '@mirhal/contracts';
 import { CurrentUser, Identity, Validate } from '../common/http';
 import { milestoneSchema, PlanningService } from './planning.service';
 @ApiTags('Goals, projects and tasks')

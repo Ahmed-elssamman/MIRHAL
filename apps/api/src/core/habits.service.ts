@@ -8,7 +8,7 @@ import {
   habitUpdateSchema,
   InputOf,
   paginationSchema,
-} from '@lifequest/contracts';
+} from '@mirhal/contracts';
 import {
   addDays,
   dateOnly,
@@ -18,7 +18,7 @@ import {
   localDate,
   needsRecovery,
   repeatedMisses,
-} from '@lifequest/domain';
+} from '@mirhal/domain';
 import { Database } from '../common/database';
 import { Identity } from '../common/http';
 import { XpService } from '../gamification/xp.service';

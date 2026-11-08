@@ -15,7 +15,9 @@ export default defineConfig({
       })),
     },
     browserName: 'chromium',
-    ...(process.env['MIRHAL_CHROME_PATH'] ? { launchOptions: { executablePath: process.env['MIRHAL_CHROME_PATH'] } } : {}),
+    ...(process.env['MIRHAL_CHROME_PATH']
+      ? { launchOptions: { executablePath: process.env['MIRHAL_CHROME_PATH'] } }
+      : {}),
     headless: true,
     // Route fixtures must reach the API instead of a previous PWA worker.
     serviceWorkers: 'block',

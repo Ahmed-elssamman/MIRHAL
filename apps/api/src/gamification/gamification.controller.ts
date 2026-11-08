@@ -20,7 +20,7 @@ import {
   rewardRatingSchema,
   rewardSavingsSchema,
   paginationSchema,
-} from '@lifequest/contracts';
+} from '@mirhal/contracts';
 import { pageArgs, pageResult } from '../core/ownership';
 import { Database } from '../common/database';
 import { CurrentUser, Identity, Validate } from '../common/http';

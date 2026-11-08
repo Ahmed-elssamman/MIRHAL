@@ -1,9 +1,9 @@
-﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TableModule } from 'primeng/table';
-import { Api, Page } from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { AccessibleTable, ErrorState, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
+import { Api, Page } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { AccessibleTable, ErrorState, PageHeader, Pagination } from '@mirhal/ui';
 import { Audit } from '../../models';
 const actionLabels: Record<string, [string, string]> = {
   REWARD_CREATED: ['Reward created', 'إنشاء مكافأة'],
@@ -49,33 +49,31 @@ const entityLabels: Record<string, [string, string]> = {
     AccessibleTable,
     PageHeader,
     ErrorState,
-    Skeleton,
     Pagination,
   ],
   template: `<lq-page-header
-      [eyebrow]="('admin.features.audit.copy.accountability_by_design_e4fa10ff' | translate)"
-      [title]="('admin.features.audit.copy.a_history_that_stays_honest_7b051174' | translate)"
+      [eyebrow]="'admin.features.audit.copy.accountability_by_design_e4fa10ff' | translate"
+      [title]="'admin.features.audit.copy.a_history_that_stays_honest_7b051174' | translate"
       [description]="
-        ('admin.features.audit.copy.sensitive_actions_are_recorded_here_permanently_this_history_cannot_be_silently_edited_fb00d6da' | translate)
+        'admin.features.audit.copy.sensitive_actions_are_recorded_here_permanently_this_history_cannot_be_silently_edited_fb00d6da'
+          | translate
       "
     />
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
     } @else if (resource.data(); as data) {
       <div class="card overflow-hidden">
         <p-table
-          [lqTableLabel]="('common.copy.scrollable_records_222ef37e' | translate)"
+          [lqTableLabel]="'common.copy.scrollable_records_222ef37e' | translate"
           [value]="data.items"
           [scrollable]="true"
           [tableStyle]="{ 'min-width': '42rem' }"
           ><ng-template #header
             ><tr>
-              <th>{{ ('admin.features.audit.copy.when_021e3a39' | translate) }}</th>
-              <th>{{ ('admin.features.audit.copy.action_0a77a91f' | translate) }}</th>
-              <th>{{ ('admin.features.audit.copy.record_9f4565ec' | translate) }}</th>
-              <th>{{ ('admin.features.audit.copy.actor_b449dc5a' | translate) }}</th>
+              <th>{{ 'admin.features.audit.copy.when_021e3a39' | translate }}</th>
+              <th>{{ 'admin.features.audit.copy.action_0a77a91f' | translate }}</th>
+              <th>{{ 'admin.features.audit.copy.record_9f4565ec' | translate }}</th>
+              <th>{{ 'admin.features.audit.copy.actor_b449dc5a' | translate }}</th>
             </tr></ng-template
           ><ng-template #body let-item
             ><tr>
@@ -97,7 +95,8 @@ const entityLabels: Record<string, [string, string]> = {
             ><tr>
               <td colspan="4" class="!p-10 text-center text-sm text-muted">
                 {{
-                  ('admin.features.audit.copy.sensitive_actions_will_appear_here_as_the_product_is_managed_efbd40f6' | translate)
+                  'admin.features.audit.copy.sensitive_actions_will_appear_here_as_the_product_is_managed_efbd40f6'
+                    | translate
                 }}
               </td>
             </tr></ng-template

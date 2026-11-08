@@ -1,6 +1,6 @@
 import { habitStreaks } from '../core/habit-streaks';
 import { Prisma } from '@prisma/client';
-import { dateOnly, localDate } from '@lifequest/domain';
+import { dateOnly, localDate } from '@mirhal/domain';
 
 /** Shared authority for both unlock decisions and progress displayed by the API. */
 export async function achievementProgress(

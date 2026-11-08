@@ -1,6 +1,6 @@
-import { unsavedChangesGuard } from '@lifequest/forms';
+import { unsavedChangesGuard } from '@mirhal/forms';
 import { Routes } from '@angular/router';
-import { authGuard, onboardingCompleteGuard, unauthGuard } from '@lifequest/auth';
+import { authGuard, onboardingCompleteGuard, unauthGuard } from '@mirhal/auth';
 import { NotFoundPage } from './features/not-found/not-found';
 export const routes: Routes = [
   {
@@ -18,7 +18,7 @@ export const routes: Routes = [
   {
     path: 'auth/:mode',
     canActivate: [unauthGuard],
-    loadComponent: () => import('@lifequest/auth-page').then((m) => m.AuthPage),
+    loadComponent: () => import('@mirhal/auth-page').then((m) => m.AuthPage),
   },
   {
     path: '',

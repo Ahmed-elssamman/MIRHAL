@@ -95,7 +95,7 @@ The seed creates reference data. To create development accounts, set the optiona
 | Setting                                                      | Purpose                                                                                                                                   |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `DATABASE_URL` / `DIRECT_URL`                                | Runtime and migration connections. With Neon, use a pooled runtime URL and a direct migration URL. These never belong in browser bundles. |
-| `TEST_DATABASE_URL`                                          | A dedicated **local** database ending in `_test`. Integration tests reset it; E2E resets its separate `lifequest_e2e_test` database.      |
+| `TEST_DATABASE_URL`                                          | A dedicated **local** database ending in `_test`. Integration tests reset it; E2E creates a separate random `mirhal_e2e_*_test` database. |
 | `WEB_ORIGIN` / `ADMIN_ORIGIN` / `APP_URL`                    | Allowed browser origins and links in email.                                                                                               |
 | `PORT` / `SSR_ALLOWED_HOSTS`                                 | API port and explicit public SSR host allowlist.                                                                                          |
 | `MAIL_MODE` / `EMAIL_PROVIDER` / `SMTP_*` / `RESEND_API_KEY` | Local file/Gmail SMTP or production Resend API delivery; see the [email guide](docs/deployment/email-provider.md).                        |

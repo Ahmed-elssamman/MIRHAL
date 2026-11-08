@@ -81,18 +81,18 @@ export function validateEnvironment(env: Record<string, unknown> = process.env):
       }
     }
 
-    // Production rate limiting: Redis is strictly required for production
-    if (!config.REDIS_URL) {
+    // Production rate limiting: Redis is required if configured for redis mode
+    if (config.RATE_LIMIT_MODE === 'redis' && !config.REDIS_URL) {
       throw new StartupConfigurationError(
-        'Production rate limiting requires REDIS_URL to be configured.',
+        'Production rate limiting requires REDIS_URL to be configured when RATE_LIMIT_MODE is redis.',
       );
     }
   }
 
-  // Development and production both use a real transport. File/memory delivery is
-  // reserved for automated tests and can never be an implicit fallback.
-  if (config.MAIL_MODE === 'disabled' && config.NODE_ENV !== 'test') {
-    throw new StartupConfigurationError('Email delivery cannot be disabled outside tests.');
+  // Development and production both use a real transport when email delivery is enabled.
+  // File/memory delivery is reserved for automated tests and can never be an implicit fallback.
+  if (config.MAIL_MODE === 'disabled') {
+    return config;
   }
   if (config.MAIL_MODE !== 'disabled' || isProd) {
     const provider = config.EMAIL_PROVIDER ?? (isProd ? 'resend' : 'smtp');

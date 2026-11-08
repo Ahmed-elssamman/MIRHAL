@@ -1,4 +1,4 @@
-import { Pagination } from '@lifequest/ui';
+import { Pagination } from '@mirhal/ui';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -13,10 +13,10 @@ import {
   RewardRecommendation,
   Toasts,
   XpSummary,
-} from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { EmptyState, ErrorState, Icon, PageHeader, SectionTitle, Skeleton } from '@lifequest/ui';
-import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
+} from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { EmptyState, ErrorState, Icon, PageHeader, SectionTitle } from '@mirhal/ui';
+import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@mirhal/forms';
 @Component({
   selector: 'lq-rewards',
   imports: [
@@ -28,7 +28,6 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     SectionTitle,
     FormField,
@@ -69,7 +68,10 @@ export class RewardsPage {
     return (
       reward.titleAr ||
       (reward.userId === null
-        ? this.i18n.t('Reward name not available in Arabic yet.', 'اسم المكافأة غير متاح بالعربية بعد.')
+        ? this.i18n.t(
+            'Reward name not available in Arabic yet.',
+            'اسم المكافأة غير متاح بالعربية بعد.',
+          )
         : reward.title)
     );
   }

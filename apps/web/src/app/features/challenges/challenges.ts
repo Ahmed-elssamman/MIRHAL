@@ -4,27 +4,11 @@ import { RouterLink } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmationService } from 'primeng/api';
-import {
-  Api,
-  Area,
-  Challenge,
-  Friend,
-  Habit,
-  Page,
-  Toasts,
-} from '@lifequest/data-access';
-import { AuthStore } from '@lifequest/auth';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import {
-  Pagination,
-  EmptyState,
-  ErrorState,
-  Icon,
-  PageHeader,
-  Progress,
-  Skeleton,
-} from '@lifequest/ui';
-import { applyServerValidation, FormField } from '@lifequest/forms';
+import { Api, Area, Challenge, Friend, Habit, Page, Toasts } from '@mirhal/data-access';
+import { AuthStore } from '@mirhal/auth';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Progress } from '@mirhal/ui';
+import { applyServerValidation, FormField } from '@mirhal/forms';
 @Component({
   selector: 'lq-challenges',
   imports: [
@@ -38,7 +22,6 @@ import { applyServerValidation, FormField } from '@lifequest/forms';
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     FormField,

@@ -6,9 +6,7 @@
       | translate
   "
 />
-@if (resource.loading() && !resource.data()) {
-  <lq-skeleton />
-} @else if (resource.error()) {
+@if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
 } @else if (resource.data(); as data) {
   <div class="mb-6 grid gap-4 sm:grid-cols-3">

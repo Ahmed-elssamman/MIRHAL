@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dateOnly, needsRecovery, repeatedMisses } from '@lifequest/domain';
+import { dateOnly, needsRecovery, repeatedMisses } from '@mirhal/domain';
 
 const schedule = {
   frequency: 'DAILY',

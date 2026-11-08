@@ -28,11 +28,14 @@ export class Preferences {
     const destroy = inject(DestroyRef);
     if (this.browser) {
       try {
-        const language = localStorage.getItem('lq-language');
+        const language =
+          localStorage.getItem('mirhal-language') ?? localStorage.getItem('lq-language');
         if (language === 'ar' || language === 'en') this.language.set(language);
-        const theme = localStorage.getItem('lq-theme');
+        const theme = localStorage.getItem('mirhal-theme') ?? localStorage.getItem('lq-theme');
         if (theme === 'dark' || theme === 'light') this.theme.set(theme);
-        const showAdditional = localStorage.getItem('lq-show-additional-nav');
+        const showAdditional =
+          localStorage.getItem('mirhal-show-additional-nav') ??
+          localStorage.getItem('lq-show-additional-nav');
         if (showAdditional !== null) this.showAdditionalNavigation.set(showAdditional === 'true');
       } catch {
         /* Private browsing may disable storage. */
@@ -62,10 +65,11 @@ export class Preferences {
     return this.rtl() ? ar : en;
   }
   private fallbackKey(value: string) {
-    const slug = value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '_')
-      .replace(/^_+|_+$/g, '') || 'copy';
+    const slug =
+      value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '') || 'copy';
     let hash = 2166136261;
     for (let index = 0; index < value.length; index++) {
       hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
@@ -95,6 +99,7 @@ export class Preferences {
   }
   setLanguage(value: 'en' | 'ar') {
     this.language.set(value);
+    this.persist('mirhal-language', value);
     this.persist('lq-language', value);
     this.apply();
     void this.translations?.use(value).subscribe({
@@ -103,11 +108,13 @@ export class Preferences {
   }
   setTheme(value: 'light' | 'dark' | 'system') {
     this.theme.set(value);
+    this.persist('mirhal-theme', value);
     this.persist('lq-theme', value);
     this.apply();
   }
   setShowAdditionalNavigation(value: boolean) {
     this.showAdditionalNavigation.set(value);
+    this.persist('mirhal-show-additional-nav', String(value));
     this.persist('lq-show-additional-nav', String(value));
   }
   applyAccountNavigation(userId: string, value: boolean | null | undefined) {
@@ -115,8 +122,11 @@ export class Preferences {
     if (this.navigationOwner && this.navigationOwner !== userId) fallback = false;
     if (this.browser) {
       try {
-        const owner = localStorage.getItem('lq-navigation-owner');
+        const owner =
+          localStorage.getItem('mirhal-navigation-owner') ??
+          localStorage.getItem('lq-navigation-owner');
         if (owner && owner !== userId) fallback = false;
+        localStorage.setItem('mirhal-navigation-owner', userId);
         localStorage.setItem('lq-navigation-owner', userId);
       } catch {
         // Storage may be unavailable; keep the in-memory preference for this session.
@@ -148,7 +158,7 @@ export class Preferences {
       root.style.colorScheme = dark ? 'dark' : 'light';
       this.document
         .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', dark ? '#14211e' : '#0e7165');
+        ?.setAttribute('content', dark ? '#1b2824' : '#0e7165');
     }
   }
 }

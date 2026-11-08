@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Feedback, Page, Toasts } from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { EmptyState, ErrorState, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
-import { applyServerValidation, FormField } from '@lifequest/forms';
+import { Api, Feedback, Page, Toasts } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { EmptyState, ErrorState, PageHeader, Pagination } from '@mirhal/ui';
+import { applyServerValidation, FormField } from '@mirhal/forms';
 @Component({
   selector: 'lq-admin-feedback',
   imports: [
@@ -17,7 +17,6 @@ import { applyServerValidation, FormField } from '@lifequest/forms';
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Pagination,
     FormField,
   ],

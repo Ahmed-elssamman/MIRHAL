@@ -5,4 +5,3 @@
   "ignore": ["apps/api/src/**/*.spec.ts"],
   "exec": "tsx --tsconfig apps/api/tsconfig.app.json apps/api/src/main.ts"
 }
-

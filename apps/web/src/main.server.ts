@@ -5,7 +5,7 @@ import { provideServerRendering, RenderMode, withRoutes } from '@angular/ssr';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { App } from './app/app';
 import { routes } from './app/app.routes';
-import { sharedConfig } from '@lifequest/config';
+import { sharedConfig } from '@mirhal/config';
 export default (context: BootstrapContext) =>
   bootstrapApplication(
     App,

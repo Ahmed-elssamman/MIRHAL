@@ -14,7 +14,7 @@ import {
   percent,
   projectProgress,
   ScoringEngine,
-} from '@lifequest/domain';
+} from '@mirhal/domain';
 const goal = { strategy: 'MANUAL', manualProgress: 40, numericValue: 10, numericTarget: 20 };
 const schedule = {
   frequency: 'DAILY',

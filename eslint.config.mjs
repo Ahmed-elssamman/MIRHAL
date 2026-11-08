@@ -27,7 +27,7 @@ export default tseslint.config(
         {
           allow: [],
           // AuthPage is isolated as a lazy library, while its singleton AuthStore is shared eagerly.
-          checkDynamicDependenciesExceptions: ['@lifequest/auth'],
+          checkDynamicDependenciesExceptions: ['@mirhal/auth'],
           depConstraints: [
             { sourceTag: 'scope:shared', onlyDependOnLibsWithTags: ['scope:shared'] },
             { sourceTag: 'scope:web', onlyDependOnLibsWithTags: ['scope:web', 'scope:shared'] },

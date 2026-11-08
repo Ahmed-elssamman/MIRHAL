@@ -3,18 +3,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Milestones } from './milestones';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Area, Goal, Page, Toasts } from '@lifequest/data-access';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import {
-  EmptyState,
-  ErrorState,
-  Icon,
-  PageHeader,
-  Pagination,
-  Progress,
-  Skeleton,
-} from '@lifequest/ui';
-import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
+import { Api, Area, Goal, Page, Toasts } from '@mirhal/data-access';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { EmptyState, ErrorState, Icon, PageHeader, Pagination, Progress } from '@mirhal/ui';
+import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@mirhal/forms';
 @Component({
   selector: 'lq-goals',
   imports: [
@@ -26,7 +18,6 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     Pagination,

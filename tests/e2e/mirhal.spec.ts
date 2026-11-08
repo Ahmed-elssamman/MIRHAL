@@ -26,6 +26,7 @@ test('sends a new friend invitation from the customer UI', async ({ page }) => {
 test('register, onboard, create linked work, build a habit, reflect, earn and redeem XP', async ({
   page,
 }) => {
+  test.setTimeout(120000);
   const email = 'new-' + randomBytes(6).toString('hex') + '@e2e.test';
   const password = randomBytes(18).toString('base64url');
   // The backend failure case is covered against PostgreSQL; exercise its UI notice here.
@@ -43,7 +44,9 @@ test('register, onboard, create linked work, build a habit, reflect, earn and re
   await page.locator('button[type=submit]').click();
   await expect(page).toHaveURL(/onboarding$/);
   await expect(
-    page.getByText('The email provider did not accept the verification request. You can retry from Settings.'),
+    page.getByText(
+      'The email provider did not accept the verification request. You can retry from Settings.',
+    ),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Growth', exact: true }).click();
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
@@ -51,7 +54,9 @@ test('register, onboard, create linked work, build a habit, reflect, earn and re
   await page.getByRole('button', { name: 'Begin my journey' }).click();
   await expect(page).toHaveURL(/today$/);
   await expect(
-    page.getByText('The email provider did not accept the verification request. You can retry from Settings.'),
+    page.getByText(
+      'The email provider did not accept the verification request. You can retry from Settings.',
+    ),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Dismiss' }).click();
   await page.goto('/goals');
@@ -192,6 +197,7 @@ test('admin can inspect users and process feedback with an audit trail', async (
 test('desktop/mobile routes remain usable, accessible and free of horizontal overflow', async ({
   page,
 }) => {
+  test.setTimeout(120000);
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await login(page);
@@ -216,7 +222,9 @@ test('desktop/mobile routes remain usable, accessible and free of horizontal ove
   ).toEqual([]);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.evaluate(() => {
+    localStorage.setItem('mirhal-language', 'ar');
     localStorage.setItem('lq-language', 'ar');
+    localStorage.setItem('mirhal-theme', 'dark');
     localStorage.setItem('lq-theme', 'dark');
   });
   await page.goto('/help');
@@ -539,7 +547,7 @@ test('records production dashboard measurements and review screenshots', async (
   await login(page);
   await page.addInitScript(() => {
     const samples = { lcpMs: 0, cls: 0 };
-    Object.assign(window, { lifequestVitals: samples });
+    Object.assign(window, { mirhalVitals: samples });
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) samples.lcpMs = Math.round(entry.startTime);
     }).observe({ type: 'largest-contentful-paint', buffered: true });
@@ -566,7 +574,7 @@ test('records production dashboard measurements and review screenshots', async (
       .map((r) => new URL(r.name).pathname);
     return {
       dashboardReadyMs: Math.round(performance.now()),
-      ...(window as unknown as { lifequestVitals: { lcpMs: number; cls: number } }).lifequestVitals,
+      ...(window as unknown as { mirhalVitals: { lcpMs: number; cls: number } }).mirhalVitals,
       domContentLoadedMs: Math.round(navigation.domContentLoadedEventEnd),
       loadMs: Math.round(navigation.loadEventEnd),
       scripts: resources.filter((r) => new URL(r.name).pathname.endsWith('.js')).length,

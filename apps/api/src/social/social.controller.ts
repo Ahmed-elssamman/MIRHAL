@@ -9,7 +9,7 @@ import {
   inviteResolveSchema,
   InputOf,
   paginationSchema,
-} from '@lifequest/contracts';
+} from '@mirhal/contracts';
 import { ApiRequest, CurrentUser, Identity, Public, Validate } from '../common/http';
 import { FriendsService } from './friends.service';
 import { ChallengesService } from './challenges.service';

@@ -69,11 +69,9 @@
     <lq-section-title
       [title]="'web.features.feedback.copy.your_conversations_299d3e72' | translate"
     />
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
-    } @else {
+    } @else if (resource.data()) {
       <div class="space-y-4">
         @for (item of resource.data()?.items; track item.id) {
           <article class="card p-5">

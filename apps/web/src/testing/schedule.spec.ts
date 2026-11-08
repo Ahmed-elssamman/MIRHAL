@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
-import { HabitScheduleFields } from '@lifequest/forms';
+import { HabitScheduleFields } from '@mirhal/forms';
 import {
   provideTranslateLoader,
   provideTranslateService,
   TranslateService,
 } from '@ngx-translate/core';
-import { MirhalTranslationLoader } from '@lifequest/i18n';
+import { MirhalTranslationLoader } from '@mirhal/i18n';
 import { firstValueFrom } from 'rxjs';
 
 describe('Reusable habit schedule fields', () => {

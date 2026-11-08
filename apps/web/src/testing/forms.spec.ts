@@ -11,8 +11,8 @@ import {
   unsavedChangesGuard,
   FormField,
   applyServerValidation,
-} from '@lifequest/forms';
-import { Preferences } from '@lifequest/utilities';
+} from '@mirhal/forms';
+import { Preferences } from '@mirhal/utilities';
 
 @Component({
   imports: [UnsavedForm, FormField, ReactiveFormsModule],

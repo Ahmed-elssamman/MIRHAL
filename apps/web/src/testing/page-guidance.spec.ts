@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { PageHeader } from '@lifequest/ui';
-import { Preferences } from '@lifequest/utilities';
+import { PageHeader } from '@mirhal/ui';
+import { Preferences } from '@mirhal/utilities';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 @Component({

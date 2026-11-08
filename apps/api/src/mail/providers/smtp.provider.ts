@@ -26,16 +26,15 @@ export class SmtpProvider implements MailProvider, OnModuleInit, OnModuleDestroy
     const host = this.options.host ?? process.env['SMTP_HOST'];
     const port = Number(this.options.port ?? process.env['SMTP_PORT'] ?? 465);
     const secure =
-      (this.options.secure ?? process.env['SMTP_SECURE']) === true ||
-      process.env['SMTP_SECURE'] === 'true';
+      this.options.secure ?? (process.env['SMTP_SECURE'] ?? String(port === 465)) === 'true';
     const user = this.options.user ?? process.env['SMTP_USER'];
     const pass = this.options.password ?? process.env['SMTP_PASSWORD'];
 
     this.transporter = nodemailer.createTransport({
       host,
       port,
-      secure: true,
-      requireTLS: true,
+      secure,
+      requireTLS: !secure,
       auth: user ? { user, pass } : undefined,
       connectionTimeout: 10000,
       socketTimeout: 15000,

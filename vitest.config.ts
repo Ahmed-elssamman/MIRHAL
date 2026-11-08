@@ -3,8 +3,8 @@ import { resolve } from 'node:path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@lifequest/domain': resolve('libs/domain/src/index.ts'),
-      '@lifequest/contracts': resolve('libs/contracts/src/index.ts'),
+      '@mirhal/domain': resolve('libs/domain/src/index.ts'),
+      '@mirhal/contracts': resolve('libs/contracts/src/index.ts'),
     },
   },
   test: {

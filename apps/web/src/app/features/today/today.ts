@@ -10,8 +10,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TimeoutError } from 'rxjs';
-import { Api, CheckIn, Habit, Page, Quest, Remote, Task, Toasts } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
+import { Api, CheckIn, Habit, Page, Quest, Remote, Task, Toasts } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
 import {
   ErrorState,
   HabitRow,
@@ -20,8 +20,7 @@ import {
   Pagination,
   Progress,
   SectionTitle,
-  Skeleton,
-} from '@lifequest/ui';
+} from '@mirhal/ui';
 import { CheckInForm } from './check-in';
 import { selectNextAction } from './next-action';
 @Component({
@@ -32,7 +31,6 @@ import { selectNextAction } from './next-action';
     PageHeader,
     Pagination,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     SectionTitle,
@@ -65,7 +63,11 @@ export class TodayPage {
   );
   readonly todayTasks = computed(() => this.tasks.data()?.items ?? []);
   readonly nextAction = computed(() =>
-    selectNextAction(this.todayTasks().filter((task) => !this.pendingTaskIds().has(task.id)), this.scheduled(), this.quests.data()?.items ?? []),
+    selectNextAction(
+      this.todayTasks().filter((task) => !this.pendingTaskIds().has(task.id)),
+      this.scheduled(),
+      this.quests.data()?.items ?? [],
+    ),
   );
   constructor() {
     effect(() => {
@@ -106,7 +108,11 @@ export class TodayPage {
       });
       this.tasks.data.update((current) => {
         if (!current || !current.items.some((item) => item.id === id)) return current;
-        return { ...current, items: current.items.filter((item) => item.id !== id), total: Math.max(0, current.total - 1) };
+        return {
+          ...current,
+          items: current.items.filter((item) => item.id !== id),
+          total: Math.max(0, current.total - 1),
+        };
       });
       // A list request started before this mutation may contain stale data.
       this.tasks.refreshIfLoading();
@@ -116,7 +122,10 @@ export class TodayPage {
       );
     } catch (error) {
       this.toasts.error(error);
-      if (error instanceof TimeoutError || (error instanceof HttpErrorResponse && error.status === 0))
+      if (
+        error instanceof TimeoutError ||
+        (error instanceof HttpErrorResponse && error.status === 0)
+      )
         void this.tasks.load();
     } finally {
       this.pendingTaskIds.update((set) => {

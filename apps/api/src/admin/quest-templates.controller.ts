@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { InputOf, paginationSchema, questTemplateSchema } from '@lifequest/contracts';
+import { InputOf, paginationSchema, questTemplateSchema } from '@mirhal/contracts';
 import { CurrentUser, Identity, Roles, Validate } from '../common/http';
 import { Database } from '../common/database';
 import { assertReferences, pageArgs, pageResult } from '../core/ownership';

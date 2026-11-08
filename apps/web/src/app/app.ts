@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { Preferences } from '@lifequest/utilities';
-import { Celebrations, LoadingService } from '@lifequest/data-access';
-import { LevelCelebration } from '@lifequest/ui/level-celebration';
+import { Preferences } from '@mirhal/utilities';
+import { Celebrations, LoadingService } from '@mirhal/data-access';
+import { LevelCelebration } from '@mirhal/ui/level-celebration';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -14,11 +14,11 @@ import {
 import { Meta, Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { GlobalLoader } from '@lifequest/ui/loader';
-import { Overlays } from '@lifequest/ui/overlays';
+import { GlobalLoader } from '@mirhal/ui/loader';
+import { Overlays } from '@mirhal/ui/overlays';
 import { PwaUpdates } from './pwa/updates';
 @Component({
-  selector: 'lq-root',
+  selector: 'mirhal-root, lq-root',
   imports: [RouterOutlet, Overlays, LevelCelebration, GlobalLoader],
   template: `
     <lq-global-loader />

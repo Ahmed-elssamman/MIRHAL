@@ -9,7 +9,7 @@ import {
   registerSchema,
   resetSchema,
   tokenSchema,
-} from '@lifequest/contracts';
+} from '@mirhal/contracts';
 import { ApiRequest, CurrentUser, Identity, Public, Validate } from '../common/http';
 import { Database } from '../common/database';
 import { AuthService, safeUser } from './auth.service';

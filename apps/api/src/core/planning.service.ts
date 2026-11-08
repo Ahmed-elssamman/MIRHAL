@@ -10,8 +10,8 @@ import {
   projectUpdateSchema,
   taskSchema,
   taskUpdateSchema,
-} from '@lifequest/contracts';
-import { dateOnly, goalProgress, localDate, projectProgress } from '@lifequest/domain';
+} from '@mirhal/contracts';
+import { dateOnly, goalProgress, localDate, projectProgress } from '@mirhal/domain';
 import { Database } from '../common/database';
 import { assertDateOrder, assertReferences, dates, pageArgs, pageResult } from './ownership';
 import { XpService } from '../gamification/xp.service';

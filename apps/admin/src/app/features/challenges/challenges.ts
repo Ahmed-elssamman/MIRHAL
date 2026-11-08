@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { Api, Page, Toasts } from '@lifequest/data-access';
-import { AuthStore } from '@lifequest/auth';
-import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { EmptyState, ErrorState, Icon, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
+import { Api, Page, Toasts } from '@mirhal/data-access';
+import { AuthStore } from '@mirhal/auth';
+import { LocalizedDatePipe, Preferences } from '@mirhal/utilities';
+import { EmptyState, ErrorState, Icon, PageHeader, Pagination } from '@mirhal/ui';
 import { AdminChallenge } from '../../models';
 @Component({
   selector: 'lq-admin-challenges',
@@ -17,21 +17,23 @@ import { AdminChallenge } from '../../models';
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Pagination,
   ],
   template: `<lq-page-header
-      [eyebrow]="('admin.features.challenges.copy.fair_play_thoughtful_moderation_d82d8f97' | translate)"
-      [title]="('admin.features.challenges.copy.keep_shared_journeys_healthy_2a66d72f' | translate)"
+      [eyebrow]="
+        'admin.features.challenges.copy.fair_play_thoughtful_moderation_d82d8f97' | translate
+      "
+      [title]="'admin.features.challenges.copy.keep_shared_journeys_healthy_2a66d72f' | translate"
       [description]="
-        ('admin.features.challenges.copy.inspect_lifecycle_and_participation_without_exposing_private_behavioral_details_d2976394' | translate)
+        'admin.features.challenges.copy.inspect_lifecycle_and_participation_without_exposing_private_behavioral_details_d2976394'
+          | translate
       "
     />
     <form class="mb-6 flex flex-wrap items-end gap-3" (ngSubmit)="page(1)">
       <div class="min-w-0 flex-1">
         <label class="field-label" for="challenge-search">{{
-          ('admin.features.challenges.copy.find_a_challenge_6415ac68' | translate)
+          'admin.features.challenges.copy.find_a_challenge_6415ac68' | translate
         }}</label>
         <input
           id="challenge-search"
@@ -43,7 +45,9 @@ import { AdminChallenge } from '../../models';
         />
       </div>
       <div>
-        <label class="field-label" for="challenge-status">{{ ('common.copy.status_005ef20f' | translate) }}</label>
+        <label class="field-label" for="challenge-status">{{
+          'common.copy.status_005ef20f' | translate
+        }}</label>
         <select
           id="challenge-status"
           name="status"
@@ -51,19 +55,21 @@ import { AdminChallenge } from '../../models';
           [ngModel]="status()"
           (ngModelChange)="status.set($event); page(1)"
         >
-          <option value="">{{ ('admin.features.challenges.copy.all_stages_7f58b21b' | translate) }}</option>
+          <option value="">
+            {{ 'admin.features.challenges.copy.all_stages_7f58b21b' | translate }}
+          </option>
           @for (stage of statuses; track stage) {
             <option [value]="stage">{{ i18n.label(stage) }}</option>
           }
         </select>
       </div>
-      <button class="btn btn-secondary" type="submit">{{ ('common.copy.search_c646a2c9' | translate) }}</button>
+      <button class="btn btn-secondary" type="submit">
+        {{ 'common.copy.search_c646a2c9' | translate }}
+      </button>
     </form>
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
-    } @else {
+    } @else if (resource.data()) {
       <div class="grid gap-5 md:grid-cols-2">
         @for (item of resource.data()?.items; track item.id) {
           <article class="card p-6">
@@ -73,7 +79,8 @@ import { AdminChallenge } from '../../models';
             </div>
             <h2 class="text-lg font-semibold">{{ item.title }}</h2>
             <p class="mt-3 text-xs text-muted">
-              {{ item._count.participants }} {{ ('admin.features.challenges.copy.participants_8fd01987' | translate) }} ·
+              {{ item._count.participants }}
+              {{ 'admin.features.challenges.copy.participants_8fd01987' | translate }} ·
               {{ item.startDate | date: 'MMM d' }} – {{ item.endDate | date: 'MMM d' }}
             </p>
             @if (
@@ -84,7 +91,7 @@ import { AdminChallenge } from '../../models';
                 (click)="selected.set(item); reason.set('')"
               >
                 <lq-icon name="shield" [size]="15" />{{
-                  ('admin.features.challenges.copy.moderate_challenge_21e161b9' | translate)
+                  'admin.features.challenges.copy.moderate_challenge_21e161b9' | translate
                 }}
               </button>
             }
@@ -92,9 +99,10 @@ import { AdminChallenge } from '../../models';
         } @empty {
           <lq-empty
             icon="swords"
-            [title]="('admin.features.challenges.copy.no_shared_journeys_yet_681c8800' | translate)"
+            [title]="'admin.features.challenges.copy.no_shared_journeys_yet_681c8800' | translate"
             [description]="
-              ('admin.features.challenges.copy.challenges_will_appear_as_people_connect_ce83b10f' | translate)
+              'admin.features.challenges.copy.challenges_will_appear_as_people_connect_ce83b10f'
+                | translate
             "
           />
         }
@@ -109,19 +117,20 @@ import { AdminChallenge } from '../../models';
       />
     }
     <p-dialog
-      [closeAriaLabel]="('common.copy.close_cd86acc3' | translate)"
-      [header]="('admin.features.challenges.copy.cancel_with_a_clear_reason_8b9cf3d1' | translate)"
+      [closeAriaLabel]="'common.copy.close_cd86acc3' | translate"
+      [header]="'admin.features.challenges.copy.cancel_with_a_clear_reason_8b9cf3d1' | translate"
       [visible]="!!selected()"
       (visibleChange)="!$event && selected.set(null)"
       [modal]="true"
       [style]="{ width: '32rem' }"
       ><p class="mb-4 text-xs leading-6 text-muted">
         {{
-          ('admin.features.challenges.copy.this_stops_the_challenge_for_all_participants_the_reason_is_retained_in_the_audit_trail_d20fa870' | translate)
+          'admin.features.challenges.copy.this_stops_the_challenge_for_all_participants_the_reason_is_retained_in_the_audit_trail_d20fa870'
+            | translate
         }}
       </p>
       <label class="field-label" for="moderation-reason">{{
-        ('admin.features.challenges.copy.reason_at_least_10_characters_9009a291' | translate)
+        'admin.features.challenges.copy.reason_at_least_10_characters_9009a291' | translate
       }}</label
       ><textarea
         id="moderation-reason"
@@ -135,7 +144,7 @@ import { AdminChallenge } from '../../models';
         [disabled]="busy() || reason().length < 10"
         (click)="cancel()"
       >
-        {{ ('admin.features.challenges.copy.cancel_and_record_reason_851b0c5d' | translate) }}
+        {{ 'admin.features.challenges.copy.cancel_and_record_reason_851b0c5d' | translate }}
       </button></p-dialog
     >`,
   changeDetection: ChangeDetectionStrategy.OnPush,

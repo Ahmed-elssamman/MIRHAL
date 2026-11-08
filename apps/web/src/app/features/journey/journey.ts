@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
-import { Api, Remote, Journey } from '@lifequest/data-access';
-import { Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, PageHeader, ProgressRing, SectionTitle, Skeleton } from '@lifequest/ui';
-import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
+import { Api, Remote, Journey } from '@mirhal/data-access';
+import { Preferences } from '@mirhal/utilities';
+import { ErrorState, Icon, PageHeader, ProgressRing, SectionTitle } from '@mirhal/ui';
+import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@mirhal/forms';
 @Component({
   selector: 'lq-journey',
   imports: [
@@ -15,7 +15,6 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
     DatePickerModule,
     PageHeader,
     ErrorState,
-    Skeleton,
     Icon,
     ProgressRing,
     SectionTitle,

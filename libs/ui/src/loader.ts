@@ -1,72 +1,54 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LoadingService } from '@lifequest/data-access';
+import { LoadingService } from '@mirhal/data-access';
 
 @Component({
-  selector: 'lq-global-loader',
+  selector: 'mirhal-global-loader, lq-global-loader',
   imports: [TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (loading.showOverlay()) {
       <div
         role="status"
         aria-live="polite"
         [attr.aria-label]="'common.fallbacks.loading_mirhal_060e96e4' | translate"
-        class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-surface-50/85 dark:bg-surface-950/85 backdrop-blur-sm transition-opacity duration-300"
+        class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-canvas/80 backdrop-blur-sm pointer-events-none transition-opacity duration-300 motion-safe:animate-[loader-fade-in_250ms_ease-out]"
       >
         <!-- Branded MIRHAL Container -->
         <div
-          class="relative flex flex-col items-center justify-center p-6 rounded-2xl bg-surface-0/95 dark:bg-surface-900/95 shadow-xl border border-line"
+          class="pointer-events-none flex flex-col items-center justify-center gap-3.5 rounded-2xl border border-line bg-surface p-7 shadow-xl motion-safe:animate-[loader-card-enter_250ms_ease-out]"
         >
-          <!-- Ambient Spinner Accent Ring -->
+          <img
+            src="/mirhal-mark.svg"
+            alt=""
+            class="size-16 select-none will-change-transform motion-safe:animate-[loader-settle_2.4s_ease-in-out_infinite]"
+            width="64"
+            height="64"
+          />
+
           <div
-            class="absolute -inset-1 rounded-2xl border-2 border-transparent border-t-brand/60 animate-spin motion-reduce:hidden pointer-events-none"
-          ></div>
-
-          <!-- Official MIRHAL Mark SVG -->
-          <div class="flex flex-col items-center gap-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 64 64"
-              class="size-14 select-none drop-shadow-sm transition-transform duration-300 motion-safe:animate-pulse"
-              aria-hidden="true"
-            >
-              <rect width="64" height="64" rx="18" fill="#183a35" />
-              <path
-                d="M14 48V18l18 21 18-21v30"
-                fill="none"
-                stroke="#f5f7f4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="5.5"
-              />
-              <circle cx="32" cy="39" r="3.4" fill="#86d7c2" />
-            </svg>
-
-            <div
-              class="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-muted select-none"
-            >
-              <span>مِرحال</span>
-              <span class="text-brand">·</span>
-              <span>MIRHAL</span>
-            </div>
+            class="flex items-center gap-2 text-xs font-semibold tracking-wider text-muted select-none"
+          >
+            <span>مِرحال</span>
+            <span class="text-brand">·</span>
+            <span>MIRHAL</span>
           </div>
         </div>
       </div>
     }
 
-    @if (loading.showTopBar()) {
+    @if (loading.showOverlay()) {
       <div
         role="progressbar"
         [attr.aria-label]="'common.loading' | translate"
         aria-valuemin="0"
         aria-valuemax="100"
-        class="fixed inset-x-0 top-0 z-[10000] h-1 overflow-hidden bg-brand/15 shadow-sm pointer-events-none"
+        class="fixed inset-x-0 top-0 z-[10000] h-1 overflow-hidden bg-brand/15 shadow-sm "
       >
         <div class="loading-bar h-full bg-brand"></div>
       </div>
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GlobalLoader {
   readonly loading = inject(LoadingService);

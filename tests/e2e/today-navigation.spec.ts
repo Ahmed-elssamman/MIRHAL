@@ -21,7 +21,10 @@ test('Today shows one next step and keeps advanced planning reachable on mobile'
 
   await page.getByRole('button', { name: 'Open navigation' }).click();
   await expect(page.getByRole('button', { name: 'More', exact: true })).toHaveCount(0);
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Habits', exact: true }).click();
+  await page
+    .getByRole('navigation', { name: 'Main navigation' })
+    .getByRole('link', { name: 'Habits', exact: true })
+    .click();
   await expect(page).toHaveURL(/\/habits$/);
   await expect(page.locator('h1')).toBeVisible();
   await page.goto('/goals');

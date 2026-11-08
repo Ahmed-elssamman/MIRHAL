@@ -8,7 +8,7 @@ Integration suites boot the actual NestJS app and use Supertest against migrated
 
 Coverage scopes are explicit: domain/contracts and backend source, with 80% statements/functions/lines and 70% branches. Reports use separate sibling directories, `coverage/domain` and `coverage/api`, so cleaning one report cannot delete the other's temporary files. Backend startup is exercised by E2E and excluded from integration instrumentation. Explicit DI avoids generated reflection branches; production and tests use the same setting. Never add coverage-ignore directives or reduce thresholds merely to get green checks.
 
-Playwright starts production customer/admin builds and a dedicated API against `lifequest_e2e_test`. It covers registration/onboarding, linked work, habits/check-in/quests, XP/rewards, feedback/admin, social challenges, mobile widths, RTL/themes/reduced-motion and axe checks. Failures retain ignored traces/screenshots for diagnosis. These artifacts can contain test account or personal fixture data and are not source assets.
+Playwright starts production customer/admin builds and a dedicated API against a fresh random `mirhal_e2e_*_test` database. It covers registration/onboarding, linked work, habits/check-in/quests, XP/rewards, feedback/admin, social challenges, mobile widths, RTL/themes/reduced-motion and axe checks. Failures retain ignored traces/screenshots for diagnosis. These artifacts can contain test account or personal fixture data and are not source assets.
 
 Run the commands in the README in order after changes. A build is necessary before E2E. Avoid simultaneous integration runs against the same database. CI runs all validation stages and uploads only failure artifacts with short retention; it does not deploy.
 
