@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { Api, Page } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { AccessibleTable, ErrorState, Icon, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
+import { AccessibleTable, ErrorState, Icon, PageHeader, Pagination } from '@lifequest/ui';
 import { AdminUser } from '../../models';
 @Component({
   selector: 'lq-admin-users',
@@ -18,7 +18,6 @@ import { AdminUser } from '../../models';
     AccessibleTable,
     PageHeader,
     ErrorState,
-    Skeleton,
     Icon,
     Pagination,
   ],

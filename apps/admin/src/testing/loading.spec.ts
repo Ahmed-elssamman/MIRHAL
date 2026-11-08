@@ -26,7 +26,15 @@ describe('Admin shared loading experience', () => {
       providers: [
         provideRouter([]),
         provideTranslateService({ fallbackLang: 'en' }),
-        { provide: LoadingService, useValue: { isLoading, setNavigating } },
+        {
+          provide: LoadingService,
+          useValue: {
+            isLoading,
+            setNavigating,
+            showOverlay: signal(false),
+            showTopBar: isLoading,
+          },
+        },
       ],
     });
     await TestBed.compileComponents();
@@ -56,7 +64,15 @@ describe('Admin shared loading experience', () => {
           { path: 'destination', component: Destination, canActivate: [waitForNavigation] },
         ]),
         provideTranslateService({ fallbackLang: 'en' }),
-        { provide: LoadingService, useValue: { isLoading, setNavigating } },
+        {
+          provide: LoadingService,
+          useValue: {
+            isLoading,
+            setNavigating,
+            showOverlay: signal(false),
+            showTopBar: isLoading,
+          },
+        },
       ],
     });
     await TestBed.compileComponents();

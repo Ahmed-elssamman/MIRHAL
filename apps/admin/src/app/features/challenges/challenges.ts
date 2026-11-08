@@ -5,7 +5,7 @@ import { DialogModule } from 'primeng/dialog';
 import { Api, Page, Toasts } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { EmptyState, ErrorState, Icon, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
+import { EmptyState, ErrorState, Icon, PageHeader, Pagination } from '@lifequest/ui';
 import { AdminChallenge } from '../../models';
 @Component({
   selector: 'lq-admin-challenges',
@@ -17,7 +17,6 @@ import { AdminChallenge } from '../../models';
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Pagination,
   ],
@@ -59,11 +58,9 @@ import { AdminChallenge } from '../../models';
       </div>
       <button class="btn btn-secondary" type="submit">{{ ('common.copy.search_c646a2c9' | translate) }}</button>
     </form>
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
-    } @else {
+    } @else if (resource.data()) {
       <div class="grid gap-5 md:grid-cols-2">
         @for (item of resource.data()?.items; track item.id) {
           <article class="card p-6">

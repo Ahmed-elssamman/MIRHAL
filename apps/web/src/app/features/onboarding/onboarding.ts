@@ -5,7 +5,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Api, Area, User } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, Logo, Progress, Skeleton } from '@lifequest/ui';
+import { ErrorState, Icon, Logo, Progress } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-onboarding',
@@ -16,7 +16,6 @@ import { applyServerValidation, FormField } from '@lifequest/forms';
     Icon,
     Logo,
     Progress,
-    Skeleton,
     FormField,
   ],
   templateUrl: './onboarding.html',

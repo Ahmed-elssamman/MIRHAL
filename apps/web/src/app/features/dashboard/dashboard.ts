@@ -11,7 +11,6 @@ import {
   Progress,
   ProgressRing,
   SectionTitle,
-  Skeleton,
   StatCard,
 } from '@lifequest/ui';
 @Component({
@@ -23,7 +22,6 @@ import {
     LocalizedDatePipe,
     Icon,
     ErrorState,
-    Skeleton,
     StatCard,
     Progress,
     ProgressRing,

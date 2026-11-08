@@ -1,4 +1,4 @@
-﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { KeyValuePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -6,7 +6,7 @@ import { ConfirmationService } from 'primeng/api';
 import { Api, Toasts } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, PageHeader, Skeleton } from '@lifequest/ui';
+import { ErrorState, Icon, PageHeader } from '@lifequest/ui';
 import { AdminUser } from '../../models';
 const countLabels: Record<string, [string, string]> = {
   goals: ['Goals', 'الأهداف'],
@@ -21,7 +21,7 @@ const countLabels: Record<string, [string, string]> = {
 @Component({
   selector: 'lq-admin-user-detail',
   imports: [
-    TranslatePipe,RouterLink, LocalizedDatePipe, KeyValuePipe, PageHeader, ErrorState, Skeleton, Icon],
+    TranslatePipe,RouterLink, LocalizedDatePipe, KeyValuePipe, PageHeader, ErrorState, Icon],
   template: `<lq-page-header
       [eyebrow]="('admin.features.users.copy.privacy_respecting_support_07c4054f' | translate)"
       [title]="
@@ -34,9 +34,7 @@ const countLabels: Record<string, [string, string]> = {
         ><lq-icon name="arrow-left" [size]="16" />{{ ('admin.features.users.copy.all_people_0a28306f' | translate) }}</a
       ></lq-page-header
     >
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
     } @else if (resource.data(); as user) {
       <section class="card mb-6 p-6">

@@ -15,7 +15,7 @@ import {
   XpSummary,
 } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { EmptyState, ErrorState, Icon, PageHeader, SectionTitle, Skeleton } from '@lifequest/ui';
+import { EmptyState, ErrorState, Icon, PageHeader, SectionTitle } from '@lifequest/ui';
 import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
 @Component({
   selector: 'lq-rewards',
@@ -28,7 +28,6 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     SectionTitle,
     FormField,

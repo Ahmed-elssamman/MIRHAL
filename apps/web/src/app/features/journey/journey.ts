@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Api, Remote, Journey } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, PageHeader, ProgressRing, SectionTitle, Skeleton } from '@lifequest/ui';
+import { ErrorState, Icon, PageHeader, ProgressRing, SectionTitle } from '@lifequest/ui';
 import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
 @Component({
   selector: 'lq-journey',
@@ -15,7 +15,6 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
     DatePickerModule,
     PageHeader,
     ErrorState,
-    Skeleton,
     Icon,
     ProgressRing,
     SectionTitle,

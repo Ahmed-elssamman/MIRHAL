@@ -8,11 +8,9 @@
     <lq-icon name="plus" [size]="17" />{{ ('web.features.challenges.copy.new_challenge_230ecdcc' | translate) }}
   </button></lq-page-header
 >
-@if (resource.loading() && !resource.data()) {
-  <lq-skeleton />
-} @else if (resource.error()) {
+@if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
-} @else {
+} @else if (resource.data()) {
   <div class="grid items-start gap-6 lg:grid-cols-2">
     @for (challenge of resource.data()?.items; track challenge.id) {
       <article class="card overflow-hidden">

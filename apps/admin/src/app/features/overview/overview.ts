@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Api } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, PageHeader, SectionTitle, Skeleton, StatCard } from '@lifequest/ui';
+import { ErrorState, Icon, PageHeader, SectionTitle, StatCard } from '@lifequest/ui';
 import { Overview } from '../../models';
 @Component({
   selector: 'lq-admin-overview',
@@ -14,7 +14,6 @@ import { Overview } from '../../models';
     TranslatePipe,
     PageHeader,
     ErrorState,
-    Skeleton,
     Icon,
     SectionTitle,
     StatCard,

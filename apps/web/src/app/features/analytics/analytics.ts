@@ -10,7 +10,6 @@ import {
   Progress,
   ProgressRing,
   SectionTitle,
-  Skeleton,
   StatCard,
 } from '@lifequest/ui';
 import { ActivityChart } from './activity-chart';
@@ -21,7 +20,6 @@ import { ActivityChart } from './activity-chart';
     RouterLink,
     PageHeader,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     ProgressRing,

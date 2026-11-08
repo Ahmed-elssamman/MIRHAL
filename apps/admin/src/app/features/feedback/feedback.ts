@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { Api, Feedback, Page, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { EmptyState, ErrorState, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
+import { EmptyState, ErrorState, PageHeader, Pagination } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-admin-feedback',
@@ -17,7 +17,6 @@ import { applyServerValidation, FormField } from '@lifequest/forms';
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Pagination,
     FormField,
   ],

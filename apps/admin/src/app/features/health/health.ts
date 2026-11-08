@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Api } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, PageHeader, Skeleton, StatCard } from '@lifequest/ui';
+import { ErrorState, Icon, PageHeader, StatCard } from '@lifequest/ui';
 import { Health } from '../../models';
 @Component({
   selector: 'lq-admin-health',
   imports: [
-    TranslatePipe,LocalizedDatePipe, PageHeader, ErrorState, Skeleton, Icon, StatCard],
+    TranslatePipe,LocalizedDatePipe, PageHeader, ErrorState, Icon, StatCard],
   template: `<lq-page-header
       [eyebrow]="('admin.features.health.copy.keep_the_foundations_healthy_03308ec4' | translate)"
       [title]="('admin.features.health.copy.a_pulse_on_the_system_6b48dd80' | translate)"
@@ -18,9 +18,7 @@ import { Health } from '../../models';
         <lq-icon name="refresh" [size]="16" />{{ ('admin.features.health.copy.check_now_4f0e0677' | translate) }}
       </button></lq-page-header
     >
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
     } @else if (resource.data(); as data) {
       <section class="mb-6 flex items-center gap-4 rounded-2xl bg-mint p-7 text-mint-ink">

@@ -98,11 +98,9 @@
     (change)="savingsPage($event)"
   />
 }
-@if (resource.loading() && !resource.data()) {
-  <lq-skeleton />
-} @else if (resource.error()) {
+@if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
-} @else {
+} @else if (resource.data()) {
   <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
     @for (reward of resource.data()?.items; track reward.id) {
       <article class="card flex flex-col overflow-hidden">
@@ -182,11 +180,9 @@
 }
 <section class="mt-9">
   <lq-section-title [title]="('web.features.rewards.copy.little_joys_you_ve_earned_bd78fac2' | translate)" />
-  @if (history.loading() && !history.data()) {
-    <lq-skeleton />
-  } @else if (history.error()) {
+  @if (history.error()) {
     <lq-error [message]="history.error()" (retry)="history.load()" />
-  } @else {
+  } @else if (history.data()) {
     <div class="card divide-y divide-line">
       @for (item of history.data()?.items; track item.id) {
         <div class="flex flex-wrap items-center gap-3 p-4">

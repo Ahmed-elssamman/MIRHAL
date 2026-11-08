@@ -9,9 +9,7 @@
     {{ 'admin.features.quests.copy.new_template_9e679e11' | translate }}
   </button></lq-page-header
 >
-@if (resource.loading() && !resource.data()) {
-  <lq-skeleton />
-} @else if (resource.error()) {
+@if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
 } @else if (resource.data(); as data) {
   <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

@@ -11,12 +11,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { Api, Remote } from '@lifequest/data-access';
-import { ErrorState, Icon, Logo, Skeleton } from '@lifequest/ui';
+import { ErrorState, Icon, Logo } from '@lifequest/ui';
 import { Preferences } from '@lifequest/utilities';
 
 @Component({
   selector: 'lq-help',
-  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, ErrorState, Icon, Logo, Skeleton],
+  imports: [TranslatePipe, ReactiveFormsModule, RouterLink, ErrorState, Icon, Logo],
   templateUrl: './help.html',
   styleUrl: './help.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

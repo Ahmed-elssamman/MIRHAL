@@ -7,7 +7,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { DialogModule } from 'primeng/dialog';
 import { Api, Goal, Page, Project, Task, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { EmptyState, ErrorState, Icon, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
+import { EmptyState, ErrorState, Icon, PageHeader, Pagination } from '@lifequest/ui';
 import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
 @Component({
   selector: 'lq-tasks',
@@ -20,7 +20,6 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Pagination,
     FormField,

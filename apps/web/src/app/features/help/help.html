@@ -383,9 +383,6 @@
         {{ 'web.features.help.redesign.faqTitle' | translate }}
       </h2>
       <div class="space-y-3">
-        @if (articles.loading() && !articles.data()) {
-          <lq-skeleton />
-        }
         @if (articles.error()) {
           <lq-error [message]="articles.error()" (retry)="articles.load()" />
         }

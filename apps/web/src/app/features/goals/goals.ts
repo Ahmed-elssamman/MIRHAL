@@ -12,7 +12,6 @@ import {
   PageHeader,
   Pagination,
   Progress,
-  Skeleton,
 } from '@lifequest/ui';
 import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@lifequest/forms';
 @Component({
@@ -26,7 +25,6 @@ import { applyServerValidation, FormField, DiscardChanges, UnsavedForm } from '@
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     Pagination,

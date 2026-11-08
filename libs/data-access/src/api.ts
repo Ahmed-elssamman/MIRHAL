@@ -17,132 +17,172 @@ export interface ApiRequestOptions {
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly inFlight = signal(0);
-  private readonly blockingCount = signal(0);
+
+  // Concurrency-safe active request tracking via Sets
+  private readonly globalRequests = signal<Set<string | symbol>>(new Set());
+  private readonly blockingRequests = signal<Set<string | symbol>>(new Set());
+  private readonly localRequests = signal<Set<string | symbol>>(new Set());
   private readonly navigating = signal(false);
+
   // Smooth, debounced visual signals that prevent flickers
   readonly showTopBar = signal(false);
   readonly showOverlay = signal(false);
-  readonly isLoading = computed(() => this.inFlight() > 0 || this.navigating());
-  readonly isBlocking = computed(() => this.blockingCount() > 0);
+  readonly isLoading = computed(
+    () => this.globalRequests().size > 0 || this.blockingRequests().size > 0 || this.navigating(),
+  );
+  readonly isBlocking = computed(() => this.blockingRequests().size > 0);
+  readonly activeCount = computed(() => this.globalRequests().size);
 
-  private showTopBarTimer: ReturnType<typeof setTimeout> | null = null;
-  private hideTopBarTimer: ReturnType<typeof setTimeout> | null = null;
-  private topBarVisibleSince = 0;
-
-  private showOverlayTimer: ReturnType<typeof setTimeout> | null = null;
-  private hideOverlayTimer: ReturnType<typeof setTimeout> | null = null;
-  private overlayVisibleSince = 0;
+  private showTimer: ReturnType<typeof setTimeout> | null = null;
+  private hideTimer: ReturnType<typeof setTimeout> | null = null;
+  private visibleSince = 0;
 
   // Centralized, configurable display thresholds
-  readonly DISPLAY_DELAY_MS = 150;
-  readonly MIN_VISIBLE_MS = 300;
+  readonly DISPLAY_DELAY_MS = 250;
+  readonly MIN_VISIBLE_MS = 500;
+  readonly HIDE_TRANSITION_MS = 250;
 
-  start() {
-    this.inFlight.update((c) => c + 1);
-    this.evaluateTopBarState();
+  /**
+   * Registers a new active request with concurrency-safe ID tracking.
+   * Defaults to 'global' scope. Returns the request ID.
+   */
+  start(id: string | symbol = Symbol('request'), scope: LoadingScope = 'global'): string | symbol {
+    if (scope === 'silent') return id;
+
+    if (scope === 'local') {
+      this.localRequests.update((set) => new Set(set).add(id));
+      return id;
+    }
+
+    this.globalRequests.update((set) => new Set(set).add(id));
+    this.evaluateVisualState();
+    return id;
   }
 
-  stop() {
-    this.inFlight.update((c) => Math.max(0, c - 1));
-    this.evaluateTopBarState();
+  /**
+   * Safely releases a request from active tracking.
+   * If no ID is passed, safely removes any active request (backward compatibility).
+   * Concurrency-safe and idempotent (calling multiple times will never make count negative).
+   */
+  stop(id?: string | symbol): void {
+    if (id !== undefined) {
+      this.localRequests.update((set) => {
+        if (!set.has(id)) return set;
+        const next = new Set(set);
+        next.delete(id);
+        return next;
+      });
+      this.blockingRequests.update((set) => {
+        if (!set.has(id)) return set;
+        const next = new Set(set);
+        next.delete(id);
+        return next;
+      });
+      this.globalRequests.update((set) => {
+        if (!set.has(id)) return set;
+        const next = new Set(set);
+        next.delete(id);
+        return next;
+      });
+    } else {
+      this.globalRequests.update((set) => {
+        if (set.size === 0) return set;
+        const next = new Set(set);
+        const first = next.values().next().value;
+        if (first !== undefined) next.delete(first);
+        return next;
+      });
+    }
+
+    this.evaluateVisualState();
   }
 
-  startBlocking() {
-    this.blockingCount.update((c) => c + 1);
-    this.evaluateOverlayState();
+  startBlocking(id: string | symbol = Symbol('blocking')): string | symbol {
+    this.blockingRequests.update((set) => new Set(set).add(id));
+    this.evaluateVisualState();
+    return id;
   }
 
-  stopBlocking() {
-    this.blockingCount.update((c) => Math.max(0, c - 1));
-    this.evaluateOverlayState();
+  stopBlocking(id?: string | symbol): void {
+    if (id !== undefined) {
+      this.blockingRequests.update((set) => {
+        if (!set.has(id)) return set;
+        const next = new Set(set);
+        next.delete(id);
+        return next;
+      });
+    } else {
+      this.blockingRequests.update((set) => {
+        if (set.size === 0) return set;
+        const next = new Set(set);
+        const first = next.values().next().value;
+        if (first !== undefined) next.delete(first);
+        return next;
+      });
+    }
+    this.evaluateVisualState();
   }
 
   setNavigating(val: boolean) {
     this.navigating.set(val);
-    this.evaluateTopBarState();
-    this.evaluateOverlayState();
+    this.evaluateVisualState();
   }
 
-  private evaluateTopBarState() {
+  private evaluateVisualState() {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    const shouldShow = this.inFlight() > 0 || this.navigating();
+    const hasGlobalWork =
+      this.globalRequests().size > 0 || this.blockingRequests().size > 0 || this.navigating();
 
-    if (shouldShow) {
-      if (this.hideTopBarTimer) {
-        clearTimeout(this.hideTopBarTimer);
-        this.hideTopBarTimer = null;
+    if (hasGlobalWork) {
+      // Cancel pending hide timer if new work arrives
+      if (this.hideTimer) {
+        clearTimeout(this.hideTimer);
+        this.hideTimer = null;
       }
-      if (!this.showTopBar() && !this.showTopBarTimer) {
-        this.showTopBarTimer = setTimeout(() => {
-          this.showTopBarTimer = null;
-          this.showTopBar.set(true);
-          this.topBarVisibleSince = Date.now();
-        }, this.DISPLAY_DELAY_MS);
-      }
-    } else {
-      if (this.showTopBarTimer) {
-        clearTimeout(this.showTopBarTimer);
-        this.showTopBarTimer = null;
-      }
-      if (this.showTopBar() && !this.hideTopBarTimer) {
-        const elapsed = Date.now() - this.topBarVisibleSince;
-        const remaining = Math.max(0, this.MIN_VISIBLE_MS - elapsed);
-        this.hideTopBarTimer = setTimeout(() => {
-          this.hideTopBarTimer = null;
-          this.showTopBar.set(false);
-          this.topBarVisibleSince = 0;
-        }, remaining);
-      }
-    }
-  }
 
-  private evaluateOverlayState() {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    const shouldShow = this.blockingCount() > 0 || this.navigating();
-
-    if (shouldShow) {
-      if (this.hideOverlayTimer) {
-        clearTimeout(this.hideOverlayTimer);
-        this.hideOverlayTimer = null;
-      }
-      if (!this.showOverlay() && !this.showOverlayTimer) {
-        const delay = this.blockingCount() > 0 ? 50 : 250;
-        this.showOverlayTimer = setTimeout(() => {
-          this.showOverlayTimer = null;
+      // Schedule show timer if not already visible and not already scheduled
+      if (!this.showOverlay() && !this.showTimer) {
+        const delay = this.blockingRequests().size > 0 ? 50 : this.DISPLAY_DELAY_MS;
+        this.showTimer = setTimeout(() => {
+          this.showTimer = null;
           this.showOverlay.set(true);
-          this.overlayVisibleSince = Date.now();
+          this.showTopBar.set(true);
+          this.visibleSince = Date.now();
         }, delay);
       }
     } else {
-      if (this.showOverlayTimer) {
-        clearTimeout(this.showOverlayTimer);
-        this.showOverlayTimer = null;
+      // No active global work
+      if (this.showTimer) {
+        clearTimeout(this.showTimer);
+        this.showTimer = null;
       }
-      if (this.showOverlay() && !this.hideOverlayTimer) {
-        const elapsed = Date.now() - this.overlayVisibleSince;
+
+      if ((this.showOverlay() || this.showTopBar()) && !this.hideTimer) {
+        const elapsed = Date.now() - this.visibleSince;
         const remaining = Math.max(0, this.MIN_VISIBLE_MS - elapsed);
-        this.hideOverlayTimer = setTimeout(() => {
-          this.hideOverlayTimer = null;
+        this.hideTimer = setTimeout(() => {
+          this.hideTimer = null;
           this.showOverlay.set(false);
-          this.overlayVisibleSince = 0;
+          this.showTopBar.set(false);
+          this.visibleSince = 0;
         }, remaining);
       }
     }
   }
 
   reset() {
-    if (this.showTopBarTimer) clearTimeout(this.showTopBarTimer);
-    if (this.hideTopBarTimer) clearTimeout(this.hideTopBarTimer);
-    if (this.showOverlayTimer) clearTimeout(this.showOverlayTimer);
-    if (this.hideOverlayTimer) clearTimeout(this.hideOverlayTimer);
-    this.inFlight.set(0);
-    this.blockingCount.set(0);
+    if (this.showTimer) clearTimeout(this.showTimer);
+    if (this.hideTimer) clearTimeout(this.hideTimer);
+    this.showTimer = null;
+    this.hideTimer = null;
+    this.visibleSince = 0;
+    this.globalRequests.set(new Set());
+    this.blockingRequests.set(new Set());
+    this.localRequests.set(new Set());
     this.navigating.set(false);
-    this.showTopBar.set(false);
     this.showOverlay.set(false);
+    this.showTopBar.set(false);
   }
 }
 
@@ -156,7 +196,7 @@ export class Api {
   private context(options: ApiRequestOptions = {}) {
     return new HttpContext()
       .set(API_ERROR_TOAST, options.notifyOnError ?? false)
-      .set(API_LOADING_SCOPE, options.loading ?? 'silent');
+      .set(API_LOADING_SCOPE, options.loading ?? 'global');
   }
 
   errorMessage(error: unknown) {
@@ -223,8 +263,8 @@ export class Api {
       }),
     );
   }
-  resource<T>(path: string) {
-    const resource = new Remote<T>(this, path);
+  resource<T>(path: string, options: ApiRequestOptions = { loading: 'global' }) {
+    const resource = new Remote<T>(this, path, options);
     void resource.load();
     return resource;
   }
@@ -237,6 +277,7 @@ export class Remote<T> {
   constructor(
     private readonly api: Api,
     private path: string,
+    private readonly options: ApiRequestOptions = { loading: 'global' },
   ) {}
   refreshIfLoading() {
     if (this.loading()) void this.load();
@@ -247,7 +288,7 @@ export class Remote<T> {
     this.loading.set(true);
     this.error.set('');
     try {
-      const data = await this.api.get<T>(path);
+      const data = await this.api.get<T>(path, this.options);
       if (request === this.request) this.data.set(data);
     } catch (error) {
       if (request === this.request) this.error.set(this.api.errorMessage(error));

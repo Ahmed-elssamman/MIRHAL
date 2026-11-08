@@ -1,4 +1,4 @@
-﻿<lq-page-header
+<lq-page-header
   [eyebrow]="'admin.overview.eyebrow' | translate"
   [title]="'admin.overview.title' | translate"
   [description]="'admin.overview.description' | translate"
@@ -7,9 +7,7 @@
     <lq-icon name="refresh" [size]="16" />{{ 'admin.overview.refresh' | translate }}
   </button>
 </lq-page-header>
-@if (resource.loading() && !resource.data()) {
-  <lq-skeleton />
-} @else if (resource.error()) {
+@if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
 } @else if (resource.data(); as data) {
   <div class="mb-6 rounded-2xl bg-[#302943] p-6 text-white sm:p-8">

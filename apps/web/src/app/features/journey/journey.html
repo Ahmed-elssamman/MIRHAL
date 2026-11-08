@@ -32,9 +32,7 @@
     />
   </div>
 </lq-page-header>
-@if (resource.loading() && !resource.data()) {
-  <lq-skeleton />
-} @else if (resource.error()) {
+@if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
 } @else if (resource.data(); as data) {
   @for (season of data.seasons; track season.id) {

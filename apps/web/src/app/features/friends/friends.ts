@@ -6,7 +6,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmationService } from 'primeng/api';
 import { Api, Page, Friend, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
-import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '@lifequest/ui';
+import { Pagination, EmptyState, ErrorState, Icon, PageHeader } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-friends',
@@ -19,7 +19,6 @@ import { applyServerValidation, FormField } from '@lifequest/forms';
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     FormField,
   ],

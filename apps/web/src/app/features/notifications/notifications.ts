@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { Api, Page, Notification, Toasts } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '@lifequest/ui';
+import { Pagination, EmptyState, ErrorState, Icon, PageHeader } from '@lifequest/ui';
 @Component({
   selector: 'lq-notifications',
   imports: [
@@ -15,7 +15,6 @@ import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '
     Pagination,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
   ],
   template: `<lq-page-header
@@ -28,11 +27,9 @@ import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '
         {{ ('web.features.notifications.copy.mark_all_as_read_6d267c97' | translate) }}
       </button></lq-page-header
     >
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
-    } @else {
+    } @else if (resource.data()) {
       <div class="space-y-3">
         @for (item of resource.data()?.items; track item.id) {
           <a

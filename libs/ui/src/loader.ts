@@ -60,7 +60,7 @@ import { LoadingService } from '@lifequest/data-access';
         [attr.aria-label]="'common.loading' | translate"
         aria-valuemin="0"
         aria-valuemax="100"
-        class="fixed inset-x-0 top-0 z-[10000] h-1 overflow-hidden bg-brand/15 shadow-sm pointer-events-none"
+        class="fixed inset-x-0 top-0 z-[10000] h-1 overflow-hidden bg-brand/15 shadow-sm pointer-events-none duration-500 ease-out"
       >
         <div class="loading-bar h-full bg-brand"></div>
       </div>

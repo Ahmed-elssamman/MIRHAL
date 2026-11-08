@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Api, Achievement, XpSummary } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { ErrorState, Icon, PageHeader, Progress, ProgressRing, Skeleton } from '@lifequest/ui';
+import { ErrorState, Icon, PageHeader, Progress, ProgressRing } from '@lifequest/ui';
 @Component({
   selector: 'lq-achievements',
   imports: [
-    TranslatePipe,LocalizedDatePipe, PageHeader, ErrorState, Skeleton, Icon, Progress, ProgressRing],
+    TranslatePipe,LocalizedDatePipe, PageHeader, ErrorState, Icon, Progress, ProgressRing],
   template: `
     <lq-page-header
       [eyebrow]="('web.features.achievements.copy.look_how_far_you_have_come_bbecf664' | translate)"
@@ -36,11 +36,9 @@ import { ErrorState, Icon, PageHeader, Progress, ProgressRing, Skeleton } from '
         </div>
       </section>
     }
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
-    } @else {
+    } @else if (resource.data()) {
       <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         @for (item of resource.data(); track item.id) {
           <article class="card p-6" [class.border-brand/30]="!!item.unlockedAt">

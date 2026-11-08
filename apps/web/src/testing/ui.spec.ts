@@ -229,6 +229,13 @@ describe('Accessible shared components', () => {
     expect(fixture.nativeElement.querySelector('[aria-busy=true]')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('button')).toBeNull();
   });
+  it('supports disabling skeleton animation via input or static class', () => {
+    const fixture = TestBed.createComponent(Skeleton);
+    fixture.componentRef.setInput('animate', false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.skeleton-static')).toBeTruthy();
+    expect(fixture.nativeElement.querySelectorAll('.skeleton').length).toBeGreaterThan(0);
+  });
   it('applies Arabic direction, theme and reduced motion', () => {
     vi.stubGlobal('matchMedia', () => ({
       matches: false,

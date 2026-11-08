@@ -22,7 +22,6 @@ import {
   Icon,
   PageHeader,
   Progress,
-  Skeleton,
 } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
@@ -38,7 +37,6 @@ import { applyServerValidation, FormField } from '@lifequest/forms';
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     FormField,

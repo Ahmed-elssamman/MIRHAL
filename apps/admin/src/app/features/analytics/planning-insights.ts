@@ -1,7 +1,7 @@
-﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Api } from '@lifequest/data-access';
-import { ErrorState, Progress, Skeleton } from '@lifequest/ui';
+import { ErrorState, Progress } from '@lifequest/ui';
 import { Preferences } from '@lifequest/utilities';
 interface StatusCount {
   status: string;
@@ -19,11 +19,9 @@ interface Insights {
 @Component({
   selector: 'lq-planning-insights',
   imports: [
-    TranslatePipe,ErrorState, Progress, Skeleton],
+    TranslatePipe,ErrorState, Progress],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `@if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+  template: `@if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
     } @else if (resource.data(); as data) {
       <section class="card mt-6 p-6">

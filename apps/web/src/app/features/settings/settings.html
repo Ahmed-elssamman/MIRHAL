@@ -1,11 +1,9 @@
-﻿<lq-page-header
+<lq-page-header
   [eyebrow]="'settings.eyebrow' | translate"
   [title]="'settings.title' | translate"
   [description]="'settings.description' | translate"
 />
-@if (!auth.user()) {
-  <lq-skeleton />
-} @else {
+@if (auth.user()) {
   <div class="mx-auto max-w-3xl">
     <section class="card p-6">
       <form [formGroup]="form" [lqUnsavedForm]="form" (ngSubmit)="save()">

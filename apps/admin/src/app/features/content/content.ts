@@ -5,7 +5,7 @@ import { FormControl, FormRecord, ReactiveFormsModule, Validators } from '@angul
 import { DialogModule } from 'primeng/dialog';
 import { Api, Page, Toasts } from '@lifequest/data-access';
 import { Preferences } from '@lifequest/utilities';
-import { Pagination, EmptyState, ErrorState, Icon, PageHeader, Skeleton } from '@lifequest/ui';
+import { Pagination, EmptyState, ErrorState, Icon, PageHeader } from '@lifequest/ui';
 import { applyServerValidation, FormField } from '@lifequest/forms';
 import { catalogs } from './catalogs';
 type CatalogItem = {
@@ -31,7 +31,6 @@ type CatalogItem = {
     PageHeader,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     FormField,
   ],

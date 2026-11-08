@@ -1,4 +1,4 @@
-﻿import { PlanningInsights } from './planning-insights';
+import { PlanningInsights } from './planning-insights';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Api } from '@lifequest/data-access';
@@ -16,9 +16,7 @@ import { Overview } from '../../models';
         ('admin.features.analytics.copy.aggregate_product_activity_no_journals_moods_or_private_habit_details_1d95973b' | translate)
       "
     />
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
     } @else if (resource.data(); as data) {
       <div class="mb-6 grid gap-4 sm:grid-cols-3">

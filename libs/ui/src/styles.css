@@ -94,6 +94,10 @@
   --lq-area-growth-ink: #1d694b;
   --lq-area-mind-bg: #e9f1fc;
   --lq-area-mind-ink: #245da8;
+  --lq-skeleton-base: var(--lq-line);
+  --lq-skeleton-highlight: #edf2ec;
+  --lq-skeleton-animation-duration: 3s;
+  --lq-skeleton-animation-timing: ease-in-out;
   color-scheme: light;
 }
 .dark {
@@ -145,6 +149,8 @@
   --lq-area-growth-ink: #a1e0b8;
   --lq-area-mind-bg: #1e3049;
   --lq-area-mind-ink: #9ec3ff;
+  --lq-skeleton-base: var(--lq-line);
+  --lq-skeleton-highlight: #445650;
   color-scheme: dark;
 }
 @layer base {
@@ -223,8 +229,23 @@
   }
   .skeleton {
     border-radius: 0.75rem;
-    background-color: var(--lq-line);
-    animation: lq-skeleton-pulse 5.5s ease-in-out infinite;
+    background-color: var(--lq-skeleton-base, var(--lq-line));
+    background-image: linear-gradient(
+      90deg,
+      var(--lq-skeleton-base, var(--lq-line)) 0%,
+      var(--lq-skeleton-highlight, #edf2ec) 50%,
+      var(--lq-skeleton-base, var(--lq-line)) 100%
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+    animation: lq-skeleton-shimmer var(--lq-skeleton-animation-duration, 3s)
+      var(--lq-skeleton-animation-timing, ease-in-out) infinite;
+  }
+  .skeleton-static,
+  .skeleton-static .skeleton,
+  .skeleton.no-animation {
+    animation: none !important;
+    background-image: none !important;
   }
   .area-faith {
     background: var(--lq-area-faith-bg);
@@ -253,13 +274,20 @@
     transform: translateY(0);
   }
 }
-@keyframes lq-skeleton-pulse {
-  0%,
-  100% {
-    opacity: 1;
+@keyframes lq-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
   }
-  50% {
-    opacity: 0.35;
+  100% {
+    background-position: -200% 0;
+  }
+}
+@keyframes lq-skeleton-shimmer-rtl {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 @keyframes lq-loading-bar-ltr {
@@ -292,7 +320,15 @@
 html[dir='rtl'] .loading-bar {
   animation-name: lq-loading-bar-rtl;
 }
+[dir='rtl'] .skeleton,
+html[dir='rtl'] .skeleton {
+  animation-name: lq-skeleton-shimmer-rtl;
+}
 @media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none !important;
+    background-image: none !important;
+  }
   *,
   *::before,
   *::after {
@@ -301,6 +337,10 @@ html[dir='rtl'] .loading-bar {
     transition-duration: 0.1ms !important;
     scroll-behavior: auto !important;
   }
+}
+.reduce-motion .skeleton {
+  animation: none !important;
+  background-image: none !important;
 }
 .reduce-motion *,
 .reduce-motion *::before,

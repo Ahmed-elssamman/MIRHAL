@@ -74,11 +74,12 @@ export class ErrorState {
   selector: 'lq-skeleton',
   imports: [TranslatePipe],
   template:
-    '<div aria-busy="true" [attr.aria-label]="(\'shared.ui.copy.loading_c84b4a51\' | translate)" class="space-y-5"><div class="skeleton h-8 w-1/3"></div><div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">@for (item of [1,2,3]; track item) { <div class="card p-6"><div class="skeleton mb-5 size-11"></div><div class="skeleton mb-3 h-5 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div> }</div><div class="skeleton h-64 w-full"></div></div>',
+    '<div aria-busy="true" [attr.aria-label]="(\'shared.ui.copy.loading_c84b4a51\' | translate)" class="space-y-5" [class.skeleton-static]="!animate()"><div class="skeleton h-8 w-1/3"></div><div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">@for (item of [1,2,3]; track item) { <div class="card p-6"><div class="skeleton mb-5 size-11"></div><div class="skeleton mb-3 h-5 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div> }</div><div class="skeleton h-64 w-full"></div></div>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Skeleton {
   readonly i18n = inject(Preferences);
+  readonly animate = input(true);
 }
 @Component({
   selector: 'lq-progress',

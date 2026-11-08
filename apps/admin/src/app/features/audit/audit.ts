@@ -1,9 +1,9 @@
-﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TableModule } from 'primeng/table';
 import { Api, Page } from '@lifequest/data-access';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { AccessibleTable, ErrorState, PageHeader, Pagination, Skeleton } from '@lifequest/ui';
+import { AccessibleTable, ErrorState, PageHeader, Pagination } from '@lifequest/ui';
 import { Audit } from '../../models';
 const actionLabels: Record<string, [string, string]> = {
   REWARD_CREATED: ['Reward created', 'إنشاء مكافأة'],
@@ -49,7 +49,6 @@ const entityLabels: Record<string, [string, string]> = {
     AccessibleTable,
     PageHeader,
     ErrorState,
-    Skeleton,
     Pagination,
   ],
   template: `<lq-page-header
@@ -59,9 +58,7 @@ const entityLabels: Record<string, [string, string]> = {
         ('admin.features.audit.copy.sensitive_actions_are_recorded_here_permanently_this_history_cannot_be_silently_edited_fb00d6da' | translate)
       "
     />
-    @if (resource.loading() && !resource.data()) {
-      <lq-skeleton />
-    } @else if (resource.error()) {
+    @if (resource.error()) {
       <lq-error [message]="resource.error()" (retry)="resource.load()" />
     } @else if (resource.data(); as data) {
       <div class="card overflow-hidden">

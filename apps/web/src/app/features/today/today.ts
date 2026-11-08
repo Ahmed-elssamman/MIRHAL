@@ -20,7 +20,6 @@ import {
   Pagination,
   Progress,
   SectionTitle,
-  Skeleton,
 } from '@lifequest/ui';
 import { CheckInForm } from './check-in';
 import { selectNextAction } from './next-action';
@@ -32,7 +31,6 @@ import { selectNextAction } from './next-action';
     PageHeader,
     Pagination,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     SectionTitle,

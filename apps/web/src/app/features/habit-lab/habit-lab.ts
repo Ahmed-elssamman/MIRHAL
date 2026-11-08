@@ -12,7 +12,6 @@ import {
   PageHeader,
   Pagination,
   Progress,
-  Skeleton,
 } from '@lifequest/ui';
 import {
   applyServerValidation,
@@ -32,7 +31,6 @@ import {
     Pagination,
     EmptyState,
     ErrorState,
-    Skeleton,
     Icon,
     Progress,
     FormField,

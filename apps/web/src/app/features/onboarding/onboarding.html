@@ -31,11 +31,9 @@
       <form [formGroup]="form" (ngSubmit)="next()">
         @switch (step()) {
           @case (0) {
-            @if (areas.loading() && !areas.data()) {
-              <lq-skeleton />
-            } @else if (areas.error()) {
+            @if (areas.error()) {
               <lq-error [message]="areas.error()" (retry)="areas.load()" />
-            } @else {
+            } @else if (areas.data()) {
               <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 @for (area of areas.data(); track area.id) {
                   <button

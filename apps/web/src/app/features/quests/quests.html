@@ -30,11 +30,9 @@
     </div>
   </details>
 }
-@if (resource.loading() && !resource.data()) {
-  <lq-skeleton />
-} @else if (resource.error()) {
+@if (resource.error()) {
   <lq-error [message]="resource.error()" (retry)="resource.load()" />
-} @else {
+} @else if (resource.data()) {
   <div class="grid items-start gap-6 lg:grid-cols-2">
     @for (quest of resource.data()?.items; track quest.id) {
       <article class="card overflow-hidden">

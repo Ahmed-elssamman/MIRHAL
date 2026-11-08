@@ -5,7 +5,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Api, Profile } from '@lifequest/data-access';
 import { AuthStore } from '@lifequest/auth';
 import { LocalizedDatePipe, Preferences } from '@lifequest/utilities';
-import { Avatar, Icon, PageHeader, Skeleton } from '@lifequest/ui';
+import { Avatar, Icon, PageHeader } from '@lifequest/ui';
 import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms';
 @Component({
   selector: 'lq-profile',
@@ -19,7 +19,6 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
     PageHeader,
     Icon,
     FormField,
-    Skeleton,
   ],
   template: `<lq-page-header
       [eyebrow]="'web.features.profile.copy.the_person_behind_the_progress_ef4454d7' | translate"
@@ -28,9 +27,7 @@ import { UnsavedForm, applyServerValidation, FormField } from '@lifequest/forms'
         'web.features.profile.copy.update_your_name_avatar_bio_and_time_zone_eab9b0f9' | translate
       "
     />
-    @if (!auth.user()) {
-      <lq-skeleton />
-    } @else {
+    @if (auth.user()) {
       <div class="grid items-start gap-6 lg:grid-cols-[1fr_1.6fr]">
         <section class="card p-8 text-center">
           <lq-avatar
