@@ -122,27 +122,77 @@ describe('Rate Limiting Architecture (Database Independent)', () => {
   });
 
   describe('RedisRateLimitStorage', () => {
-    it('throws when Redis client is not initialized or fails', async () => {
+    it('fails startup when Redis client is not initialized', async () => {
       const storage = new RedisRateLimitStorage();
-      await expect(storage.increment('k', 60000, 5, 60000)).rejects.toThrow(/not configured/);
+      await expect(storage.onModuleInit()).rejects.toThrow(/requires a valid Redis connection/);
+      await expect(storage.increment('k', 60000, 5, 60000)).rejects.toThrow(/unavailable/);
     });
 
-    it('calls eval script atomically on Redis client', async () => {
+    it('connects once, verifies readiness, and runs one atomic Redis script per operation', async () => {
       const mockEval = vi.fn().mockResolvedValue([2, 59, 0, 0]);
       const mockClient = {
         eval: mockEval,
+        ping: vi.fn().mockResolvedValue('PONG'),
         status: 'ready',
+        on: vi.fn(),
         quit: vi.fn(),
         disconnect: vi.fn(),
       } as unknown as import('ioredis').default;
 
-      const storage = new RedisRateLimitStorage(undefined, mockClient);
+      const storage = new RedisRateLimitStorage(undefined, 'lq:rl:', mockClient);
+      await storage.onModuleInit();
       const res = await storage.increment('user-login-key', 60000, 5, 60000);
 
       expect(mockEval).toHaveBeenCalledOnce();
+      expect(mockClient.ping).toHaveBeenCalledOnce();
       expect(res.totalHits).toBe(2);
       expect(res.timeToExpire).toBe(59);
       expect(res.isBlocked).toBe(false);
+    });
+
+    it('does not expose Redis error details to callers', async () => {
+      const mockClient = {
+        eval: vi.fn().mockRejectedValue(new Error('redis://user:password@private-host')),
+        ping: vi.fn().mockResolvedValue('PONG'),
+        status: 'ready',
+        on: vi.fn(),
+        quit: vi.fn(),
+        disconnect: vi.fn(),
+      } as unknown as import('ioredis').default;
+      const storage = new RedisRateLimitStorage(undefined, 'lq:rl:', mockClient);
+      await expect(storage.increment('safe-key', 60000, 5, 60000)).rejects.toThrow(
+        'Distributed rate limit storage is unavailable.',
+      );
+    });
+
+    it('fails initialization with a sanitized error if Redis cannot connect', async () => {
+      const mockClient = {
+        status: 'wait',
+        connect: vi.fn().mockRejectedValue(new Error('redis://user:password@private-host')),
+        ping: vi.fn(),
+        on: vi.fn(),
+        quit: vi.fn(),
+        disconnect: vi.fn(),
+      } as unknown as import('ioredis').default;
+      const storage = new RedisRateLimitStorage(undefined, 'lq:rl:', mockClient);
+
+      await expect(storage.onModuleInit()).rejects.toThrow(
+        'Production rate limiting could not connect to Redis.',
+      );
+      expect(mockClient.disconnect).toHaveBeenCalledOnce();
+    });
+
+    it('reports Redis health without exposing connection errors', async () => {
+      const mockClient = {
+        status: 'ready',
+        ping: vi.fn().mockRejectedValue(new Error('redis://user:password@private-host')),
+        on: vi.fn(),
+        quit: vi.fn(),
+        disconnect: vi.fn(),
+      } as unknown as import('ioredis').default;
+      const storage = new RedisRateLimitStorage(undefined, 'lq:rl:', mockClient);
+
+      await expect(storage.isReady()).resolves.toBe(false);
     });
   });
 });

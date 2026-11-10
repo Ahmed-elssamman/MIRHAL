@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { configureApp } from './bootstrap';
 import { ChallengesService } from './social/challenges.service';
 import { AttachmentCleanup } from './core/attachment-cleanup';
@@ -10,6 +9,7 @@ import { cleanupExpiredRecords } from './common/maintenance.controller';
 import { StartupConfigurationError, validateStartupEnvironment } from './common/startup';
 async function main() {
   validateStartupEnvironment();
+  const { AppModule } = await import('./app.module');
   const app = configureApp(
     await NestFactory.create(AppModule, { logger: ['warn', 'error'], bodyParser: false }),
   );

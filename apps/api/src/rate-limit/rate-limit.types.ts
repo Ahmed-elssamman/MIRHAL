@@ -9,7 +9,9 @@ export interface RateLimitStorageRecord {
   timeToBlockExpire: number;
 }
 
-export type RateLimiterStorage = ThrottlerStorage;
+export interface RateLimiterStorage extends ThrottlerStorage {
+  isReady(): Promise<boolean>;
+}
 
 export interface TierConfig {
   ttl: number; // in milliseconds

@@ -11,6 +11,10 @@ import { AuthService } from '../../apps/api/src/auth/auth.service';
 import { cleanupExpiredRecords } from '../../apps/api/src/common/maintenance.controller';
 import { ChallengeLifecycleService } from '../../apps/api/src/social/challenge-lifecycle.service';
 import { seed } from '../../prisma/seed';
+import {
+  RATE_LIMIT_STORAGE,
+  RateLimiterStorage,
+} from '../../apps/api/src/rate-limit/rate-limit.types';
 let app: INestApplication;
 let db: Database;
 let cookie = '';
@@ -56,6 +60,15 @@ describe('MIRHAL HTTP workflows on migrated isolated PostgreSQL', () => {
     expect((await http().get('/api/health')).status).toBe(200);
     expect((await http().get('/api/goals')).status).toBe(401);
     expect((await http().post('/api/auth/register').send(body)).status).toBe(403);
+  });
+  it('does not report ready when mandatory Redis rate-limit storage is unavailable', async () => {
+    const storage = app.get<RateLimiterStorage>(RATE_LIMIT_STORAGE);
+    const isReady = vi.spyOn(storage, 'isReady').mockResolvedValueOnce(false);
+    const response = await http().get('/api/health');
+    expect(response.status).toBe(503);
+    expect(response.body.message).toBe('Service dependencies are unavailable.');
+    expect(JSON.stringify(response.body)).not.toContain('REDIS_URL');
+    isReady.mockRestore();
   });
   it('registers with a private cookie and verifies email once', async () => {
     const response = await http().post('/api/auth/register').set('Origin', origin).send(body);
