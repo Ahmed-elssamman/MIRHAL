@@ -42,7 +42,7 @@ describe('auth email', () => {
       expect(email.text).not.toContain('تنتهي هذه الدعوة');
     }
   });
-  it('accepts database-backed storage in standalone production', () => {
+  it('accepts Redis-backed storage in standalone production', () => {
     process.env['NODE_ENV'] = 'production';
     process.env['REDIS_URL'] = 'redis://localhost:6379';
     process.env['DATABASE_URL'] = 'postgresql://example.test/db';

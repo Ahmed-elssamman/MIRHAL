@@ -18,6 +18,12 @@ jobs:
         options: >-
           --health-cmd "pg_isready -U postgres"
           --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       DATABASE_URL: postgresql://postgres:${{ github.run_id }}@localhost:5432/lifequest_test
       DIRECT_URL: postgresql://postgres:${{ github.run_id }}@localhost:5432/lifequest_test
@@ -40,6 +46,9 @@ jobs:
       - run: npm run test:coverage
       - run: npm run test:frontend
       - run: npm run test:integration -- --coverage
+      - run: npm run test:integration -- tests/integration/rate-limit.redis.spec.ts
+        env:
+          TEST_REDIS_URL: redis://127.0.0.1:6379
       - run: npm run db:validate
       - run: npm run db:check-migrations
       - run: npm run build

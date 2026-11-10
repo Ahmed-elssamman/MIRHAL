@@ -1,14 +1,15 @@
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
-import { ThrottlerStorage } from '@nestjs/throttler';
+import { Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import Redis from 'ioredis';
 import { createHash } from 'node:crypto';
-import { RateLimitStorageRecord } from '../rate-limit.types';
+import { RateLimiterStorage, RateLimitStorageRecord } from '../rate-limit.types';
 
-@Injectable()
-export class RedisRateLimitStorage implements ThrottlerStorage, OnModuleDestroy {
+const UNAVAILABLE_MESSAGE = 'Distributed rate limit storage is unavailable.';
+const STARTUP_CONNECTION_TIMEOUT_MS = 8_000;
+
+export class RedisRateLimitStorage implements RateLimiterStorage, OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(RedisRateLimitStorage.name);
-  private client: Redis | null = null;
-  private readonly isReady: Promise<boolean>;
+  private readonly client: Redis | null;
+  private connectionErrorLogged = false;
 
   private static readonly LUA_SCRIPT = `
     local bucket_key = KEYS[1]
@@ -17,59 +18,100 @@ export class RedisRateLimitStorage implements ThrottlerStorage, OnModuleDestroy 
     local limit = tonumber(ARGV[2])
     local block_duration_ms = tonumber(ARGV[3])
 
-    -- Increment hits
     local hits = redis.call('INCR', bucket_key)
     if hits == 1 then
       redis.call('PEXPIRE', bucket_key, ttl_ms)
     end
 
-    local pttl = redis.call('PTTL', bucket_key)
-    if pttl < 0 then
-      pttl = ttl_ms
+    local ttl = redis.call('PTTL', bucket_key)
+    if ttl < 0 then
+      ttl = ttl_ms
       redis.call('PEXPIRE', bucket_key, ttl_ms)
     end
 
-    -- Check if already blocked
-    local block_pttl = redis.call('PTTL', block_key)
-    if block_pttl > 0 then
-      return {hits, math.ceil(block_pttl / 1000), 1, math.ceil(block_pttl / 1000)}
+    local block_ttl = redis.call('PTTL', block_key)
+    if block_ttl > 0 then
+      return {hits, math.ceil(ttl / 1000), 1, math.ceil(block_ttl / 1000)}
     end
 
-    local is_blocked = 0
-    local time_to_block = 0
     if hits > limit and block_duration_ms > 0 then
       redis.call('SET', block_key, '1', 'PX', block_duration_ms)
-      is_blocked = 1
-      time_to_block = math.ceil(block_duration_ms / 1000)
+      return {hits, math.ceil(ttl / 1000), 1, math.ceil(block_duration_ms / 1000)}
     end
 
-    return {hits, math.max(0, math.ceil(pttl / 1000)), is_blocked, time_to_block}
+    return {hits, math.ceil(ttl / 1000), 0, 0}
   `;
 
   constructor(
-    private readonly redisUrl?: string,
+    redisUrl?: string,
+    private readonly keyPrefix = 'lq:rl:',
     clientInstance?: Redis,
   ) {
     if (clientInstance) {
       this.client = clientInstance;
-      this.isReady = Promise.resolve(true);
     } else if (redisUrl) {
-      this.client = new Redis(redisUrl, {
-        lazyConnect: true,
-        maxRetriesPerRequest: 2,
-        connectTimeout: 5000,
-        enableAutoPipelining: true,
-        retryStrategy: (times) => (times > 3 ? null : Math.min(times * 100, 1000)),
-      });
-      this.isReady = this.client
-        .connect()
-        .then(() => true)
-        .catch((err) => {
-          this.logger.error('Failed to connect to Redis', err);
-          return false;
+      try {
+        this.client = new Redis(redisUrl, {
+          lazyConnect: true,
+          connectTimeout: 3000,
+          commandTimeout: 1000,
+          maxRetriesPerRequest: 1,
+          enableOfflineQueue: false,
+          retryStrategy: (times) => Math.min(times * 100, 1000),
         });
+      } catch {
+        this.client = null;
+      }
     } else {
-      this.isReady = Promise.resolve(false);
+      this.client = null;
+    }
+
+    this.client?.on('error', (error: Error) => this.logConnectionError(error));
+    this.client?.on('ready', () => {
+      this.connectionErrorLogged = false;
+    });
+  }
+
+  async onModuleInit(): Promise<void> {
+    if (!this.client) {
+      throw new Error('Production rate limiting requires a valid Redis connection.');
+    }
+
+    try {
+      if (this.client.status === 'wait') {
+        let timeout: ReturnType<typeof setTimeout> | undefined;
+        try {
+          await Promise.race([
+            this.client.connect(),
+            new Promise<never>((_, reject) => {
+              timeout = setTimeout(() => {
+                this.client?.disconnect();
+                reject(new Error('Redis startup connection timed out.'));
+              }, STARTUP_CONNECTION_TIMEOUT_MS);
+              timeout.unref();
+            }),
+          ]);
+        } finally {
+          if (timeout) clearTimeout(timeout);
+        }
+      }
+      if (this.client.status !== 'ready') throw new Error('Redis is not ready.');
+      await this.client.ping();
+    } catch (error) {
+      this.logConnectionError(error);
+      this.client.disconnect();
+      throw new Error('Production rate limiting could not connect to Redis.');
+    }
+  }
+
+  async isReady(): Promise<boolean> {
+    if (!this.client || this.client.status !== 'ready') return false;
+    try {
+      await this.client.ping();
+      return true;
+    } catch (error) {
+      this.logConnectionError(error);
+      return false;
     }
   }
 
@@ -80,57 +122,64 @@ export class RedisRateLimitStorage implements ThrottlerStorage, OnModuleDestroy 
     blockDuration: number,
     _throttlerName?: string,
   ): Promise<RateLimitStorageRecord> {
-    if (!this.client) {
-      throw new Error('Redis client is not configured for distributed rate limiting.');
+    if (!this.client || this.client.status !== 'ready') {
+      throw new Error(UNAVAILABLE_MESSAGE);
     }
 
-    const ready = await this.isReady;
-    if (!ready && this.client.status !== 'ready' && this.client.status !== 'connecting') {
-      throw new Error('Redis rate limit storage is currently unavailable.');
-    }
-
-    const hashedKey = `lq:rl:${createHash('sha256').update(key).digest('hex')}`;
-    const blockKey = `${hashedKey}:blocked`;
+    const digest = createHash('sha256').update(key).digest('hex');
+    const bucketKey = `${this.keyPrefix}{${digest}}`;
+    const blockKey = `${bucketKey}:blocked`;
 
     try {
       const result = (await this.client.eval(
         RedisRateLimitStorage.LUA_SCRIPT,
         2,
-        hashedKey,
+        bucketKey,
         blockKey,
-        ttl,
-        limit,
-        blockDuration,
+        Math.max(1, ttl),
+        Math.max(1, limit),
+        Math.max(0, blockDuration),
       )) as [number, number, number, number];
 
-      const [totalHits, timeToExpire, isBlockedNum, timeToBlockExpire] = result;
-
       return {
-        totalHits: Number(totalHits),
-        timeToExpire: Math.max(0, Number(timeToExpire)),
-        isBlocked: Number(isBlockedNum) === 1,
-        timeToBlockExpire: Math.max(0, Number(timeToBlockExpire)),
+        totalHits: Number(result[0]),
+        timeToExpire: Math.max(0, Number(result[1])),
+        isBlocked: Number(result[2]) === 1,
+        timeToBlockExpire: Math.max(0, Number(result[3])),
       };
-    } catch (error) {
-      this.logger.error(
-        JSON.stringify({
-          level: 'error',
-          code: 'RATE_LIMIT_REDIS_ERROR',
-          message: error instanceof Error ? error.message : 'Unknown Redis error',
-        }),
-      );
-      throw error;
+    } catch {
+      throw new Error(UNAVAILABLE_MESSAGE);
     }
   }
 
-  async onModuleDestroy() {
-    if (this.client) {
+  async onModuleDestroy(): Promise<void> {
+    if (!this.client) return;
+    if (this.client.status === 'ready') {
       try {
         await this.client.quit();
+        return;
       } catch {
-        this.client.disconnect();
+        // Force-close a connection that cannot complete the graceful QUIT.
       }
-      this.client = null;
     }
+    this.client.disconnect();
+  }
+
+  private logConnectionError(error: unknown): void {
+    if (this.connectionErrorLogged) return;
+    this.connectionErrorLogged = true;
+    const code =
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      typeof error.code === 'string'
+        ? error.code
+        : undefined;
+    this.logger.error(
+      JSON.stringify({
+        event: 'rate_limit_redis_unavailable',
+        ...(code ? { errorCode: code } : {}),
+      }),
+    );
   }
 }

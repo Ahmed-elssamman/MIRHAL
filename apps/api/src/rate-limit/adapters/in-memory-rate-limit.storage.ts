@@ -1,6 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { ThrottlerStorage } from '@nestjs/throttler';
-import { RateLimitStorageRecord } from '../rate-limit.types';
+import { RateLimiterStorage, RateLimitStorageRecord } from '../rate-limit.types';
 
 interface BucketEntry {
   hits: number;
@@ -8,8 +6,7 @@ interface BucketEntry {
   blockedUntil: number | null;
 }
 
-@Injectable()
-export class InMemoryRateLimitStorage implements ThrottlerStorage {
+export class InMemoryRateLimitStorage implements RateLimiterStorage {
   private readonly buckets = new Map<string, BucketEntry>();
 
   constructor() {
@@ -18,6 +15,10 @@ export class InMemoryRateLimitStorage implements ThrottlerStorage {
         'In-memory rate limiting is strictly prohibited in production. A distributed Redis store is required.',
       );
     }
+  }
+
+  async isReady(): Promise<boolean> {
+    return true;
   }
 
   async increment(

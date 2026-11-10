@@ -1,10 +1,11 @@
-import { Module, Global } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerModule, ThrottlerStorage } from '@nestjs/throttler';
-import { RATE_LIMIT_STORAGE } from './rate-limit.types';
-import { RedisRateLimitStorage } from './adapters/redis-rate-limit.storage';
-import { InMemoryRateLimitStorage } from './adapters/in-memory-rate-limit.storage';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { AppConfig } from '../common/config/app.config';
+import type { RateLimitConfig } from '../common/config/rate-limit.config';
+import { RATE_LIMIT_STORAGE, RateLimiterStorage } from './rate-limit.types';
+import { createRateLimitStorage } from './rate-limit.factory';
 import { AppThrottlerGuard } from './guards/app-throttler.guard';
 import { clientTracker } from './client-tracker';
 import { Request } from 'express';
@@ -14,7 +15,7 @@ import { Request } from 'express';
   imports: [
     ThrottlerModule.forRootAsync({
       inject: [RATE_LIMIT_STORAGE],
-      useFactory: (storage: ThrottlerStorage) => ({
+      useFactory: (storage: RateLimiterStorage) => ({
         throttlers: [{ name: 'default', ttl: 60000, limit: 180 }],
         getTracker: (_request, context) =>
           clientTracker(context.switchToHttp().getRequest<Request>()),
@@ -26,23 +27,13 @@ import { Request } from 'express';
     {
       provide: RATE_LIMIT_STORAGE,
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        const isProd = config.get<string>('NODE_ENV') === 'production';
-        const redisUrl = config.get<string>('REDIS_URL');
-        const mode = config.get<string>('RATE_LIMIT_MODE');
-
-        if (redisUrl && (mode === 'redis' || mode === 'auto' || isProd)) {
-          return new RedisRateLimitStorage(redisUrl);
+      useFactory: (config: ConfigService): RateLimiterStorage => {
+        const appConfig = config.get<AppConfig>('app');
+        const rateLimitConfig = config.get<RateLimitConfig>('rateLimit');
+        if (!appConfig || !rateLimitConfig) {
+          throw new Error('Rate limit configuration is unavailable.');
         }
-
-        if (isProd && mode === 'redis') {
-          throw new Error(
-            'Production rate limiting with RATE_LIMIT_MODE=redis requires REDIS_URL to be configured.',
-          );
-        }
-
-        // Local development, memory mode, or production fallback when REDIS_URL is omitted
-        return new InMemoryRateLimitStorage();
+        return createRateLimitStorage(rateLimitConfig, appConfig.isProduction);
       },
     },
     {

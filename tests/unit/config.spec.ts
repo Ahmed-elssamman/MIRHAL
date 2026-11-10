@@ -87,16 +87,33 @@ describe('Configuration Architecture', () => {
     ).toThrow(/WEB_ORIGIN must be an HTTPS origin/);
   });
 
-  it('requires REDIS_URL in production when RATE_LIMIT_MODE is redis', () => {
+  it('requires REDIS_URL in production even when RATE_LIMIT_MODE is auto', () => {
     const prodEnv = {
       ...baseValidEnv,
       NODE_ENV: 'production',
       WEB_ORIGIN: 'https://app.mirhal.com',
       ADMIN_ORIGIN: 'https://admin.mirhal.com',
       APP_URL: 'https://app.mirhal.com',
-      RATE_LIMIT_MODE: 'redis',
+      RATE_LIMIT_MODE: 'auto',
     };
     expect(() => validateEnvironment(prodEnv)).toThrow(/REDIS_URL to be configured/);
+  });
+
+  it('rejects invalid Redis URLs and production memory rate limiting', () => {
+    const prodEnv = {
+      ...baseValidEnv,
+      NODE_ENV: 'production',
+      WEB_ORIGIN: 'https://app.mirhal.example',
+      ADMIN_ORIGIN: 'https://admin.mirhal.example',
+      APP_URL: 'https://app.mirhal.example',
+      REDIS_URL: 'redis://localhost:6379',
+    };
+    expect(() => validateEnvironment({ ...prodEnv, REDIS_URL: 'https://redis.example' })).toThrow(
+      /REDIS_URL must be a valid redis:\/\/ or rediss:\/\/ URL/,
+    );
+    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'memory' })).toThrow(
+      /not allowed in production/,
+    );
   });
 
   it('accepts the Render production email mode and rejects the old invalid enabled value', () => {
@@ -125,6 +142,7 @@ describe('Configuration Architecture', () => {
       WEB_ORIGIN: 'https://app.mirhal.example',
       ADMIN_ORIGIN: 'https://admin.mirhal.example',
       APP_URL: 'https://app.mirhal.example',
+      REDIS_URL: 'redis://localhost:6379',
       MAIL_MODE: 'disabled',
       EMAIL_PROVIDER: undefined,
       SMTP_HOST: undefined,
