@@ -13,6 +13,12 @@ config({ quiet: true });
 
 const root = process.cwd();
 const renderDeployment = process.argv.includes('--render');
+const vercelOutput = process.argv.includes('--vercel-output');
+const selectedApp = process.argv.find((arg) => arg.startsWith('--app='))?.slice('--app='.length);
+if (selectedApp && selectedApp !== 'web' && selectedApp !== 'admin') {
+  throw new Error('--app must be either web or admin.');
+}
+const apps = selectedApp ? [selectedApp] : ['web', 'admin'];
 function httpsOrigin(name, required = true) {
   const value = process.env[name];
   if (!value && !required) return undefined;
@@ -27,7 +33,9 @@ function httpsOrigin(name, required = true) {
 }
 const origin = httpsOrigin('VERCEL_WEB_ORIGIN');
 const apiOrigin = httpsOrigin('VERCEL_API_ORIGIN', renderDeployment);
-if (renderDeployment) httpsOrigin('VERCEL_ADMIN_ORIGIN');
+if (renderDeployment && (!selectedApp || selectedApp === 'admin')) {
+  httpsOrigin('VERCEL_ADMIN_ORIGIN');
+}
 const writeJson = (path, value) => writeFile(path, JSON.stringify(value, null, 2));
 const headerRoutes = [
   {
@@ -51,17 +59,19 @@ const headerRoutes = [
   },
 ];
 
-for (const name of ['web', 'admin']) {
-  const out = resolve(root, `.local/vercel/${name}/.vercel/output`);
+for (const name of apps) {
+  const out = resolve(
+    root,
+    vercelOutput ? '.vercel/output' : `.local/vercel/${name}/.vercel/output`,
+  );
   await rm(out, { recursive: true, force: true });
   await mkdir(out, { recursive: true });
   const staticRoot = `${out}/static`;
   await cp(resolve(root, `dist/${name}/browser`), staticRoot, { recursive: true });
-  const api =
-    name === 'web'
-      ? apiOrigin
-        ? { src: '/api(/.*)?', dest: `${apiOrigin}/api$1` }
-        : { src: '/api(?:/.*)?', dest: '/api' }
+  const api = apiOrigin
+    ? { src: '/api(/.*)?', dest: `${apiOrigin}/api$1` }
+    : name === 'web'
+      ? { src: '/api(?:/.*)?', dest: '/api' }
       : { src: '/api(/.*)?', dest: `${origin}/api$1` };
   const routes = [...headerRoutes, api];
   if (name === 'web')
