@@ -61,7 +61,7 @@ It includes a customer app, a separate administration app, and a shared API. Eng
 
 ## Quick start
 
-Use **Node.js 22.12+** (Node 24 is used on Vercel), **npm**, and **PostgreSQL**. Keep the lockfile and install with `npm ci`.
+Use **Node.js 24.21.0**, **npm**, and **PostgreSQL**. Keep the lockfile and install with `npm ci`.
 
 ```bash
 git clone https://github.com/Ahmed-elssamman/LifeQuest.git

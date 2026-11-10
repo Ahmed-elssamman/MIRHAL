@@ -4,7 +4,7 @@ Start with the [operator setup runbook](operator-setup.md) for the remaining Ren
 
 ## Local
 
-1. Use Node 22.12+ and run `npm ci`.
+1. Use Node 24.21.0 and run `npm ci`.
 2. Copy `.env.example` to `.env`. Set `DATABASE_URL` and `DIRECT_URL` to local PostgreSQL. `npm run db:local` can create isolated local databases when PostgreSQL binaries are available.
 3. Run `npm run db:generate`, `npm run db:deploy`, then `npm run db:seed` if you want reference data.
 4. Set `EMAIL_PROVIDER=file` to inspect messages under `.local/mail`. For real local Gmail delivery use the SMTP values in [email-provider.md](email-provider.md) and a Google App Password.

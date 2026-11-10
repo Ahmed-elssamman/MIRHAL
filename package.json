@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=22.12.0"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "node tools/local-env.mjs dev",
@@ -19,6 +19,8 @@
     "prebuild": "npm run db:generate",
     "build:api": "nx build api",
     "build": "nx run-many -t build -p web admin api",
+    "vercel:build:web": "nx build web --configuration=production && node tools/vercel/package.mjs --render --app=web --vercel-output",
+    "vercel:build:admin": "nx build admin --configuration=production && node tools/vercel/package.mjs --render --app=admin --vercel-output",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -121,8 +123,19 @@
     "vitest": "^4.0.8",
     "yaml": "2.9.0"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "@parcel/watcher@2.6.0": false,
+    "@scarf/scarf@1.4.0": false,
+    "argon2@0.44.0": true,
+    "esbuild@0.28.1": true,
+    "esbuild@0.28.2": true,
+    "less@4.5.1": false,
+    "lmdb@3.5.1": false,
+    "msgpackr-extract@3.0.4": false,
+    "nx@22.7.12": false,
+    "prisma@6.19.3": true
   },
   "overrides": {
     "@nestjs/swagger": {

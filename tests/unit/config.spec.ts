@@ -9,8 +9,14 @@ import {
 describe('Configuration Architecture', () => {
   it('declares production Redis as an owner-provided Render environment variable', () => {
     const blueprint = parse(readFileSync('render.yaml', 'utf8')) as {
-      services: { envVars: { key: string; sync?: boolean }[] }[];
+      services: {
+        branch: string;
+        autoDeployTrigger: string;
+        envVars: { key: string; sync?: boolean }[];
+      }[];
     };
+    expect(blueprint.services[0]?.branch).toBe('main');
+    expect(blueprint.services[0]?.autoDeployTrigger).toBe('commit');
     expect(blueprint.services[0]?.envVars).toContainEqual({ key: 'REDIS_URL', sync: false });
     expect(blueprint.services[0]?.envVars).toContainEqual({
       key: 'RATE_LIMIT_MODE',
@@ -110,5 +116,22 @@ describe('Configuration Architecture', () => {
     expect(validateEnvironment(prodEnv).MAIL_MODE).toBe('production');
     expect(validateEnvironment(prodEnv).SUPPORT_EMAIL).toBe('support@mirhal.example');
     expect(() => validateEnvironment({ ...prodEnv, MAIL_MODE: 'enabled' })).toThrow(/MAIL_MODE/);
+  });
+
+  it('allows disabled email delivery in production without provider credentials', () => {
+    const config = validateEnvironment({
+      ...baseValidEnv,
+      NODE_ENV: 'production',
+      WEB_ORIGIN: 'https://app.mirhal.example',
+      ADMIN_ORIGIN: 'https://admin.mirhal.example',
+      APP_URL: 'https://app.mirhal.example',
+      MAIL_MODE: 'disabled',
+      EMAIL_PROVIDER: undefined,
+      SMTP_HOST: undefined,
+      SMTP_USER: undefined,
+      SMTP_PASSWORD: undefined,
+      SMTP_FROM: undefined,
+    });
+    expect(config.MAIL_MODE).toBe('disabled');
   });
 });

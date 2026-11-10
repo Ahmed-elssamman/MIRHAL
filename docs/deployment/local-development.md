@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 22.12 or newer and npm.
+- Node.js 24.21.0 and npm.
 - PostgreSQL command line tools (`initdb`, `pg_ctl`, `psql`, and `createdb`) on `PATH`.
 - Dependencies installed with `npm ci`.
 
