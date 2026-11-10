@@ -2,7 +2,7 @@
 
 The MIRHAL production target is **separate Vercel frontend projects + Render API + Neon + Resend**. Both Vercel projects use the repository root and Node 24.x. The `mirhal-web` project builds only the customer app with `npm run vercel:build:web`; `mirhal-admin` builds only the admin app with `npm run vercel:build:admin`. Each command writes a Build Output API v3 artifact to `.vercel/output` and routes API requests to Render. Set each project's Production Branch to `main`.
 
-The customer project serves Angular's prerendered public pages and lazy client routes. The administration project serves only the admin frontend. Host-only HttpOnly cookies keep each application's session separate. Both origins must be explicitly allowed by the API.
+The customer project serves Angular's prerendered public pages and lazy client routes. The administration project serves only the admin frontend. Host-only HttpOnly cookies keep each application's session separate. Both origins must be explicitly allowed by the API. Preview builds return 503 for `/api` and never route to the production Render service.
 
 The API, database access, rate limiting, and maintenance tasks run on Render. Vercel builds contain frontend assets only and do not require Prisma or API build artifacts.
 

@@ -13,6 +13,7 @@ config({ quiet: true });
 
 const root = process.cwd();
 const renderDeployment = process.argv.includes('--render');
+const previewDeployment = process.env['VERCEL_ENV'] === 'preview';
 const vercelOutput = process.argv.includes('--vercel-output');
 const selectedApp = process.argv.find((arg) => arg.startsWith('--app='))?.slice('--app='.length);
 if (selectedApp && selectedApp !== 'web' && selectedApp !== 'admin') {
@@ -31,9 +32,17 @@ function httpsOrigin(name, required = true) {
   }
   throw new Error(`${name} must be an HTTPS origin without a path, query, or credentials.`);
 }
-const origin = httpsOrigin('VERCEL_WEB_ORIGIN');
-const apiOrigin = httpsOrigin('VERCEL_API_ORIGIN', renderDeployment);
-if (renderDeployment && (!selectedApp || selectedApp === 'admin')) {
+const origin = previewDeployment
+  ? (httpsOrigin('VERCEL_WEB_ORIGIN', false) ??
+    (process.env['VERCEL_URL'] ? `https://${process.env['VERCEL_URL']}` : undefined))
+  : httpsOrigin('VERCEL_WEB_ORIGIN');
+if (!origin) {
+  throw new Error('A Vercel deployment origin is required to build the frontend.');
+}
+const apiOrigin = previewDeployment
+  ? undefined
+  : httpsOrigin('VERCEL_API_ORIGIN', renderDeployment);
+if (renderDeployment && !previewDeployment && (!selectedApp || selectedApp === 'admin')) {
   httpsOrigin('VERCEL_ADMIN_ORIGIN');
 }
 const writeJson = (path, value) => writeFile(path, JSON.stringify(value, null, 2));
@@ -68,11 +77,13 @@ for (const name of apps) {
   await mkdir(out, { recursive: true });
   const staticRoot = `${out}/static`;
   await cp(resolve(root, `dist/${name}/browser`), staticRoot, { recursive: true });
-  const api = apiOrigin
-    ? { src: '/api(/.*)?', dest: `${apiOrigin}/api$1` }
-    : name === 'web'
-      ? { src: '/api(?:/.*)?', dest: '/api' }
-      : { src: '/api(/.*)?', dest: `${origin}/api$1` };
+  const api = previewDeployment
+    ? { src: '/api(/.*)?', status: 503 }
+    : apiOrigin
+      ? { src: '/api(/.*)?', dest: `${apiOrigin}/api$1` }
+      : name === 'web'
+        ? { src: '/api(?:/.*)?', dest: '/api' }
+        : { src: '/api(/.*)?', dest: `${origin}/api$1` };
   const routes = [...headerRoutes, api];
   if (name === 'web')
     routes.push(
@@ -102,11 +113,11 @@ for (const name of apps) {
   await writeJson(`${out}/config.json`, {
     version: 3,
     routes,
-    ...(name === 'web' && !apiOrigin
+    ...(name === 'web' && !previewDeployment && !apiOrigin
       ? { crons: [{ path: '/api/internal/maintenance', schedule: '0 3 * * *' }] }
       : {}),
   });
-  if (name !== 'web' || apiOrigin) continue;
+  if (name !== 'web' || apiOrigin || previewDeployment) continue;
   const func = `${out}/functions/api.func`;
   await mkdir(func, { recursive: true });
   const entry = 'dist/api/apps/api/src/serverless.js';
