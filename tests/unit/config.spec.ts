@@ -7,7 +7,7 @@ import {
 } from '../../apps/api/src/common/config/env.schema';
 
 describe('Configuration Architecture', () => {
-  it('declares production Redis as an owner-provided Render environment variable', () => {
+  it('keeps Render production configuration independent of Redis', () => {
     const blueprint = parse(readFileSync('render.yaml', 'utf8')) as {
       services: {
         branch: string;
@@ -17,11 +17,8 @@ describe('Configuration Architecture', () => {
     };
     expect(blueprint.services[0]?.branch).toBe('main');
     expect(blueprint.services[0]?.autoDeployTrigger).toBe('commit');
-    expect(blueprint.services[0]?.envVars).toContainEqual({ key: 'REDIS_URL', sync: false });
-    expect(blueprint.services[0]?.envVars).toContainEqual({
-      key: 'RATE_LIMIT_MODE',
-      value: 'redis',
-    });
+    expect(blueprint.services[0]?.envVars.map(({ key }) => key)).not.toContain('REDIS_URL');
+    expect(blueprint.services[0]?.envVars.map(({ key }) => key)).not.toContain('RATE_LIMIT_MODE');
   });
   const baseValidEnv = {
     NODE_ENV: 'development',
@@ -75,7 +72,6 @@ describe('Configuration Architecture', () => {
       WEB_ORIGIN: 'https://app.mirhal.com',
       ADMIN_ORIGIN: 'https://admin.mirhal.com',
       APP_URL: 'https://app.mirhal.com',
-      REDIS_URL: 'redis://localhost:6379',
     };
     expect(() => validateEnvironment(prodEnv)).not.toThrow();
 
@@ -87,33 +83,16 @@ describe('Configuration Architecture', () => {
     ).toThrow(/WEB_ORIGIN must be an HTTPS origin/);
   });
 
-  it('requires REDIS_URL in production even when RATE_LIMIT_MODE is auto', () => {
+  it('accepts valid production configuration without Redis settings', () => {
     const prodEnv = {
       ...baseValidEnv,
       NODE_ENV: 'production',
       WEB_ORIGIN: 'https://app.mirhal.com',
       ADMIN_ORIGIN: 'https://admin.mirhal.com',
       APP_URL: 'https://app.mirhal.com',
-      RATE_LIMIT_MODE: 'auto',
     };
-    expect(() => validateEnvironment(prodEnv)).toThrow(/REDIS_URL to be configured/);
-  });
-
-  it('rejects invalid Redis URLs and production memory rate limiting', () => {
-    const prodEnv = {
-      ...baseValidEnv,
-      NODE_ENV: 'production',
-      WEB_ORIGIN: 'https://app.mirhal.example',
-      ADMIN_ORIGIN: 'https://admin.mirhal.example',
-      APP_URL: 'https://app.mirhal.example',
-      REDIS_URL: 'redis://localhost:6379',
-    };
-    expect(() => validateEnvironment({ ...prodEnv, REDIS_URL: 'https://redis.example' })).toThrow(
-      /REDIS_URL must be a valid redis:\/\/ or rediss:\/\/ URL/,
-    );
-    expect(() => validateEnvironment({ ...prodEnv, RATE_LIMIT_MODE: 'memory' })).toThrow(
-      /not allowed in production/,
-    );
+    expect(() => validateEnvironment(prodEnv)).not.toThrow();
+    expect(validateEnvironment(prodEnv)).not.toHaveProperty('REDIS_URL');
   });
 
   it('accepts the Render production email mode and rejects the old invalid enabled value', () => {
@@ -128,7 +107,6 @@ describe('Configuration Architecture', () => {
       RESEND_API_KEY: 'mock-key-for-test',
       SMTP_FROM: 'MIRHAL <mail@mirhal.example>',
       SUPPORT_EMAIL: 'support@mirhal.example',
-      REDIS_URL: 'redis://localhost:6379',
     };
     expect(validateEnvironment(prodEnv).MAIL_MODE).toBe('production');
     expect(validateEnvironment(prodEnv).SUPPORT_EMAIL).toBe('support@mirhal.example');
@@ -142,7 +120,6 @@ describe('Configuration Architecture', () => {
       WEB_ORIGIN: 'https://app.mirhal.example',
       ADMIN_ORIGIN: 'https://admin.mirhal.example',
       APP_URL: 'https://app.mirhal.example',
-      REDIS_URL: 'redis://localhost:6379',
       MAIL_MODE: 'disabled',
       EMAIL_PROVIDER: undefined,
       SMTP_HOST: undefined,

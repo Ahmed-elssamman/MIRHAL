@@ -967,16 +967,6 @@ model QuestTemplateItem {
   @@index([templateId])
 }
 
-// Ephemeral hashed rate-limit counters shared by serverless instances.
-model RateLimitBucket {
-  key          String    @id
-  hits         Int
-  expiresAt    DateTime
-  blockedUntil DateTime?
-
-  @@index([expiresAt])
-}
-
 enum OutboxStatus {
   PENDING
   PROCESSING

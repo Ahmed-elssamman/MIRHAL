@@ -2,7 +2,7 @@
 
 ## System Overview & Architecture Principles
 
-The MIRHAL backend is built with NestJS, Express, Prisma, and PostgreSQL. It enforces strict separation of concerns, fail-fast startup configuration, decoupled security layers, distributed multi-instance safe throttling, durable transactional outbox background processing, and resilient mail delivery with circuit breaking.
+The MIRHAL backend is built with NestJS, Express, Prisma, and PostgreSQL. It enforces strict separation of concerns, fail-fast startup configuration, distinct authentication and authorization layers, durable transactional outbox background processing, and resilient mail delivery with circuit breaking.
 
 The API contracts are the single source of truth for all consumers (`apps/web` customer frontend and `apps/admin` admin dashboard).
 
@@ -12,9 +12,8 @@ The API contracts are the single source of truth for all consumers (`apps/web` c
 
 The codebase is organized into domain and infrastructure feature modules:
 
-- `common/config/` (`AppConfigModule`): Centralized, type-safe configuration. Validates environment variables at bootstrap using Zod schemas (`env.schema.ts`). Exposes scoped config namespaces (`app`, `database`, `auth`, `mail`, `rateLimit`, `storage`). Fails startup immediately with actionable error codes if mandatory variables are missing. Business services inject `ConfigService` rather than accessing `process.env` directly.
+- `common/config/` (`AppConfigModule`): Centralized, type-safe configuration. Validates environment variables at bootstrap using Zod schemas (`env.schema.ts`). Exposes scoped config namespaces (`app`, `database`, `auth`, `mail`, `storage`). Fails startup immediately with actionable error codes if mandatory variables are missing. Business services inject `ConfigService` rather than accessing `process.env` directly.
 - `auth/` (`AuthModule`): Manages authentication, session tokens (Argon2id hashing), password recovery, and email verification.
-- `rate-limit/` (`RateLimitModule`): Database-independent, multi-instance rate limiting.
 - `mail/` (`MailModule`): Strategy-based mail delivery with a resilient Circuit Breaker.
 - `notifications/` (`NotificationsModule`): User notifications and Transactional Outbox background processing.
 - `admin/` (`AdminModule`): Staff operations, user moderation, announcements, and audit logging.
@@ -44,26 +43,9 @@ Security responsibilities are decoupled across distinct guards:
 
 ---
 
-## 3. Distributed Rate Limiting (Decoupled from Database)
+## 3. Request Abuse Protection
 
-Rate limiting is completely decoupled from PostgreSQL/Prisma queries to protect the primary database under heavy load or brute-force attempts:
-
-- **Storage Adapters**:
-  - `RedisRateLimitStorage`: Production adapter utilizing an atomic Redis Lua script (`INCR`, `PTTL`, `PEXPIRE`, and dynamic `blockDuration`). Works seamlessly with standalone Redis, Redis clusters, or Upstash. Multi-instance and serverless safe.
-  - `InMemoryRateLimitStorage`: Zero-dependency in-memory store strictly limited to local tests and local development. Throws an error on startup if instantiated in `NODE_ENV === 'production'`.
-- **Client IP & Trusted Proxy Strategy**:
-  - `ClientTracker` resolves client IP securely.
-  - Proxy headers (`x-forwarded-for`, `x-real-ip`) are only trusted when explicit trusted proxy conditions are met (e.g., behind verified Vercel edge rewrite when `VERCEL === '1'`).
-  - Untrusted clients default to direct connection IP to prevent header spoofing.
-- **Tiered Endpoint Decorators**:
-  - `@RateLimitLogin()`: Strict brute-force protection (5 requests per 60s, 300s block).
-  - `@RateLimitRegister()`: Account creation protection (3 requests per 60s).
-  - `@RateLimitForgotPassword()` & `@RateLimitResetPassword()`: Recovery rate limiting.
-  - `@RateLimitUpload()`: File upload rate limiting.
-  - `@RateLimitAdmin()`: Sensitive admin mutation rate limiting.
-  - `@RateLimitPublic()` & `@RateLimitAuthenticated()`: General read/write limits.
-- **HTTP 429 Responses**:
-  - Returns stable error code `TOO_MANY_REQUESTS`, `Retry-After` header, request ID, and localized safe message.
+The API does not apply request-level rate limiting and has no Redis dependency. This increases exposure of login, registration, password recovery, email verification, invitation, and other routes to brute-force attempts and automated abuse. Authentication, authorization, input validation, password hashing, request-size limits, and database constraints remain active. Email-token issuance retains a per-account business budget of five tokens per purpose per hour; this is separate from request-level rate limiting. Browser event throttling does not protect API routes.
 
 ---
 
@@ -93,7 +75,7 @@ Mail delivery follows the Strategy and Factory patterns with an integrated Circu
   - `MemoryMailProvider`: In-memory test provider capturing sent messages without side effects.
 - **Circuit Breaker States**:
   - **CLOSED**: Normal operation. Failures are counted within a rolling failure window.
-  - **OPEN**: Triggered when failures exceed threshold (e.g., 5 failures in 60s). Immediate fail-fast without hitting external APIs, preventing request hangs and rate-limit penalties.
+  - **OPEN**: Triggered when failures exceed threshold. Immediate fail-fast without hitting external APIs, preventing request hangs.
   - **HALF_OPEN**: After a cooldown period (e.g., 30s), a single probe request is permitted to test provider recovery. Success closes the circuit; failure immediately returns it to OPEN.
 - **Error Classification**: Distinguishes transient failures (timeouts, 5xx, network drops) from permanent failures (invalid recipient, template error, authentication failure). Transient errors trigger outbox retries; permanent errors terminate immediately without wasteful retries.
 

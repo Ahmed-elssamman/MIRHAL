@@ -1,4 +1,5 @@
 import { habitStreaks } from './habit-streaks';
+import { buildActivitySeries } from './activity-series';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import {
   addDays,
@@ -14,6 +15,7 @@ import {
 import { Database } from '../common/database';
 import { Identity } from '../common/http';
 import { XpService } from '../gamification/xp.service';
+
 @Injectable()
 export class DashboardService {
   constructor(
@@ -165,18 +167,7 @@ export class DashboardService {
       habits: habitScores.filter((habit) => habit.areaId === area.id).length,
       goals: goals.filter((goal) => goal.areaId === area.id).length,
     }));
-    const activity = Array.from({ length: periodDays }, (_, i) => {
-      const date = addDays(start, i).toISOString().slice(0, 10);
-      return {
-        date,
-        habits: habits.reduce(
-          (sum, habit) =>
-            sum + habit.logs.filter((log) => log.date.toISOString().slice(0, 10) === date).length,
-          0,
-        ),
-        checkIn: checkIns.some((checkIn) => checkIn.date.toISOString().slice(0, 10) === date),
-      };
-    });
+    const activity = buildActivitySeries(start, periodDays, habits, checkIns);
     return {
       profile,
       periodStart: start,

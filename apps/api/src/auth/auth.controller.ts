@@ -1,6 +1,5 @@
 import { Body, Req, Controller, Get, HttpCode, Inject, Post, Res } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { Throttle } from '@nestjs/throttler';
 import { Response } from 'express';
 import {
   emailSchema,
@@ -38,7 +37,6 @@ export class AuthController {
   }
   @Public()
   @Post('register')
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({ summary: 'Create an account and secure session' })
   async register(
     @Body(new Validate(registerSchema)) input: InputOf<typeof registerSchema>,
@@ -51,7 +49,6 @@ export class AuthController {
   @Public()
   @Post('login')
   @HttpCode(200)
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
   async login(
     @Body(new Validate(loginSchema)) input: InputOf<typeof loginSchema>,
     @Res({ passthrough: true }) response: Response,
@@ -91,13 +88,11 @@ export class AuthController {
   }
   @Public()
   @Post('forgot-password')
-  @Throttle({ default: { limit: 3, ttl: 60000 } })
   forgot(@Body(new Validate(emailSchema)) input: InputOf<typeof emailSchema>) {
     return this.auth.forgot(input.email);
   }
   @Public()
   @Post('reset-password')
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
   reset(@Body(new Validate(resetSchema)) input: InputOf<typeof resetSchema>) {
     return this.auth.consume(input.token, 'RESET_PASSWORD', input.password);
   }
@@ -107,7 +102,6 @@ export class AuthController {
     return this.auth.consume(input.token, 'VERIFY_EMAIL');
   }
   @Post('resend-verification')
-  @Throttle({ default: { limit: 2, ttl: 60000 } })
   async resend(@CurrentUser() identity: Identity) {
     const user = await this.db.user.findUniqueOrThrow({ where: { id: identity.id } });
     if (user.emailVerifiedAt) return { status: 'already-verified' as const };

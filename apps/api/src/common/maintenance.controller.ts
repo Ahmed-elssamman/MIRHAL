@@ -9,12 +9,6 @@ import { OutboxWorker } from '../notifications/outbox/outbox.worker';
 
 export async function cleanupExpiredRecords(db: Database) {
   const now = new Date();
-  await db.rateLimitBucket.deleteMany({
-    where: {
-      expiresAt: { lt: now },
-      OR: [{ blockedUntil: null }, { blockedUntil: { lt: now } }],
-    },
-  });
   await db.session.deleteMany({ where: { expiresAt: { lt: now } } });
   await db.authToken.deleteMany({ where: { expiresAt: { lt: now } } });
 }

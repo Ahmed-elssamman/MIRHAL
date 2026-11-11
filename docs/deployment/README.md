@@ -27,9 +27,9 @@ Use [render.yaml](../../render.yaml) as the web service blueprint. It runs `npm 
 
 The blueprint selects Render Free. A free service may sleep when idle; the first API request after sleep can be slow. Background challenge, attachment, and expired-record maintenance runs in the standalone API process only while it is awake. Continuous availability and reliably timed work require a non-sleeping service or a proper scheduled worker. Feedback screenshots are stored in PostgreSQL, with a 100 MiB shared attachment limit and a 2 MiB per-file limit. Monitor database capacity and backup usage independently of this application quota.
 
-### Rate Limiting & Redis
+### Request abuse protection
 
-Production rate limiting is decoupled from the database and runs on Redis. Set `REDIS_URL` in the Render environment (pointing to Upstash Redis or a managed Redis instance). The rate limiter uses atomic Redis Lua scripts to track request counts and apply lockout windows. In local testing or development, `RATE_LIMIT_MODE=memory` is supported; production strictly rejects in-memory rate limiting at startup.
+The API no longer applies request-level rate limiting and has no Redis dependency. Login, registration, password recovery, email verification, and invitation routes therefore have greater exposure to automated abuse and brute-force traffic. Keep authentication, authorization, DTO validation, and the account-level email-token issuance budget in place. The email-token budget is a domain rule, not an HTTP request limiter. Browser event throttling would not protect these API routes.
 
 ### Background Worker & Transactional Outbox
 
@@ -57,7 +57,6 @@ Use Resend on Render as described in [email-provider.md](email-provider.md). Run
 
 - **CORS or 403:** confirm Render `WEB_ORIGIN` and `ADMIN_ORIGIN` exactly match browser origins, including scheme and no trailing path. The browser must use the Vercel `/api` route.
 - **401 after login:** inspect the Vercel rewrite, host scoped cookie, HTTPS, and forwarded `Set-Cookie`; test in a real browser.
-- **Unexpected 429 across users:** inspect how Render resolves `request.ip` behind the Vercel rewrite. Confirm separate visitors do not share a rate-limit bucket, and ensure direct Render requests cannot spoof any client address used for throttling. Keep proxy trust narrow and based on the verified production hop chain.
 - **Database failure:** check pooled/direct Neon URLs, TLS, network access, and applied migrations. The health endpoint queries the DB.
 - **Slow first request:** Render Free may be waking from sleep. Use an always-on plan for a latency guarantee.
 - **Email failure:** check `EMAIL_PROVIDER`, `SMTP_FROM`, Resend key, domain verification, and provider dashboard. For Gmail, use an App Password and port 465 with TLS.

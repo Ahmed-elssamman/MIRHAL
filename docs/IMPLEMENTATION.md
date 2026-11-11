@@ -4,7 +4,7 @@
 
 MIRHAL now has separate Angular 21 customer and administration applications, a NestJS API, and an Nx 22.7 workspace with explicit shared-library projects. Strict TypeScript, signals, lazy feature routes, Tailwind and supported PrimeNG 21 peers are in place. npm and its lockfile are preserved.
 
-Neon runtime and direct connections live only in ignored `.env`. Six versioned migrations were observed on Neon, including immutable challenge snapshots, relational quest templates, and shared serverless rate limits. Three additive migrations add query indexes, a durable attachment-deletion outbox and reward preferences/savings; all nine migrations replay locally and the new three await release to Neon. Development seed data is deterministic. Integration and browser tests use separate local PostgreSQL databases, never Neon.
+Neon runtime and direct connections live only in ignored `.env`. The Prisma history includes a forward migration removing the obsolete shared serverless rate-limit bucket table; migration files are preserved. Development seed data is deterministic. Integration and browser tests use separate local PostgreSQL databases, never Neon.
 
 Customer workflows include registration/sign-in/recovery/verification, short onboarding and privacy settings; linked goals, milestones, projects and subtasks with advanced dates, priorities, notes, units and lifecycle settings; daily/weekly/custom habits, minimum actions and schedule-aware Habit Lab experiments with repeated-miss suggestions; check-ins, weekly quests and editable staff-published templates; append-only XP, levels, achievements, personal reward editing, favorites, savings targets, optional ratings, deterministic suggestions and reward redemption/refund; friendships and private deterministic challenges; notifications, feedback with private screenshots, profile/avatar choices, monthly reflection/history and analytics. Today offers one next action from due tasks, scheduled habits or a lazily loaded active quest.
 
@@ -19,7 +19,7 @@ Shared forms show client/server field errors, associate errors with inputs, and 
 - Long habit streaks are calculated from complete indexed evidence in PostgreSQL rather than truncated client history. Unit/domain and integration cases cover daily, custom and weekly schedules, including a 1,100-day history.
 - Profiles, notes, check-ins and exact behavioral logs stay private. Account deletion cancels unfinished challenges and erases personal content and screenshot files, invalidates sessions and pseudonymizes retained integrity evidence. Exports are audited.
 - Screenshot uploads accept PNG/JPEG signatures, enforce 2 MB and three-image limits, use private randomized storage keys, require ownership or support authorization to download, force attachment disposition, and persist bytes in PostgreSQL.
-- Argon2id passwords, hashed opaque sessions/recovery tokens, HttpOnly cookies, strict origins, Helmet, rate limits, validated DTOs, safe errors and request IDs are implemented. Production email uses configurable TLS SMTP; development messages stay in ignored private files.
+- Argon2id passwords, hashed opaque sessions/recovery tokens, HttpOnly cookies, strict origins, Helmet, validated DTOs, safe errors and request IDs are implemented. API request-level rate limiting has been removed, increasing brute-force and automated-abuse exposure. A per-account email-token issuance budget remains. Production email uses configurable TLS SMTP; development messages stay in ignored private files.
 
 ## Verification
 

@@ -1,7 +1,7 @@
-<div class="grid min-h-screen bg-surface lg:grid-cols-2">
-  <div class="flex flex-col px-6 py-8 sm:px-14 lg:px-16 xl:px-24">
+<div class="grid min-h-dvh bg-canvas lg:grid-cols-[1.05fr_0.95fr]">
+  <main class="flex flex-col px-5 py-6 sm:px-12 sm:py-8 lg:px-16 xl:px-24">
     <a routerLink="/" class="w-fit"><lq-logo /></a>
-    <div class="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-16">
+    <div class="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-12 sm:py-16">
       <p class="eyebrow mb-4 text-brand">
         {{ (isAdmin ? 'auth.brandAdmin' : 'auth.brandWeb') | translate }}
       </p>
@@ -12,114 +12,122 @@
             | translate
         }}
       </p>
-      @if (mode() === 'register' && invitationBanner(); as banner) {
-        <div class="mb-5 rounded-xl border border-line bg-brand-soft p-4 text-sm leading-6">
-          <div class="flex items-center gap-2 font-medium text-brand">
-            <lq-icon name="users" [size]="18" />
-            <span>{{ banner.title }}</span>
+      <div class="rounded-3xl border border-line bg-surface p-5 shadow-sm sm:p-7">
+        @if (mode() === 'register' && invitationBanner(); as banner) {
+          <div class="mb-5 rounded-xl border border-line bg-brand-soft p-4 text-sm leading-6">
+            <div class="flex items-center gap-2 font-medium text-brand">
+              <lq-icon name="users" [size]="18" />
+              <span>{{ banner.title }}</span>
+            </div>
+            <p class="mt-1 text-xs text-muted">{{ banner.message }}</p>
           </div>
-          <p class="mt-1 text-xs text-muted">{{ banner.message }}</p>
-        </div>
-      }
-      @if (mode() === 'register' && notice()) {
-        <p class="mb-5 rounded-xl bg-brand-soft p-4 text-xs leading-6 text-muted">{{ notice() }}</p>
-      }
-      <form (ngSubmit)="submit()" [formGroup]="form" class="space-y-2">
-        @if (
-          capabilities.data()?.emailDelivery === false &&
-          (mode() === 'register' || mode() === 'forgot-password')
-        ) {
-          <p role="status" class="mb-4 rounded-xl bg-brand-soft p-4 text-sm leading-6 text-muted">
-            {{
-              'shared.auth-page.copy.email_verification_and_password_recovery_are_currently_unavailable_keep_your_password_safe_c2f4fb47'
-                | translate
-            }}
+        }
+        @if (mode() === 'register' && notice()) {
+          <p class="mb-5 rounded-xl bg-brand-soft p-4 text-xs leading-6 text-muted">
+            {{ notice() }}
           </p>
         }
-        @if (mode() === 'register') {
-          <lq-field
-            id="displayName"
-            [label]="'shared.auth-page.copy.your_name_3a0663bd' | translate"
-            ><input
-              class="field"
+        <form (ngSubmit)="submit()" [formGroup]="form" class="space-y-2">
+          @if (
+            capabilities.data()?.emailDelivery === false &&
+            (mode() === 'register' || mode() === 'forgot-password')
+          ) {
+            <p role="status" class="mb-4 rounded-xl bg-brand-soft p-4 text-sm leading-6 text-muted">
+              {{
+                'shared.auth-page.copy.email_verification_and_password_recovery_are_currently_unavailable_keep_your_password_safe_c2f4fb47'
+                  | translate
+              }}
+            </p>
+          }
+          @if (mode() === 'register') {
+            <lq-field
               id="displayName"
-              formControlName="displayName"
-              autocomplete="name"
-              [placeholder]="'shared.auth-page.copy.how_should_we_call_you_901774e0' | translate"
-          /></lq-field>
-        }
-        @if (mode() === 'login' || mode() === 'register' || mode() === 'forgot-password') {
-          <lq-field id="email" [label]="'shared.auth-page.copy.email_address_ae595053' | translate"
-            ><input
-              class="field"
+              [label]="'shared.auth-page.copy.your_name_3a0663bd' | translate"
+              ><input
+                class="field"
+                id="displayName"
+                formControlName="displayName"
+                autocomplete="name"
+                [placeholder]="'shared.auth-page.copy.how_should_we_call_you_901774e0' | translate"
+            /></lq-field>
+          }
+          @if (mode() === 'login' || mode() === 'register' || mode() === 'forgot-password') {
+            <lq-field
               id="email"
-              type="email"
-              formControlName="email"
-              autocomplete="email"
-              [placeholder]="'auth.placeholders.email' | translate"
-              dir="ltr"
-          /></lq-field>
-        }
-        @if (mode() === 'login' || mode() === 'register' || mode() === 'reset-password') {
-          <lq-field
-            id="password"
-            [label]="'shared.auth-page.copy.password_2cc30838' | translate"
-            [hint]="
-              mode() === 'register'
-                ? ('shared.auth-page.copy.at_least_12_characters_make_it_uniquely_yours_91f0837f'
-                  | translate)
-                : ''
-            "
-            ><input
-              class="field"
+              [label]="'shared.auth-page.copy.email_address_ae595053' | translate"
+              ><input
+                class="field"
+                id="email"
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                [placeholder]="'auth.placeholders.email' | translate"
+                dir="ltr"
+            /></lq-field>
+          }
+          @if (mode() === 'login' || mode() === 'register' || mode() === 'reset-password') {
+            <lq-field
               id="password"
-              type="password"
-              formControlName="password"
-              [autocomplete]="mode() === 'login' ? 'current-password' : 'new-password'"
-          /></lq-field>
-        }
-        @if (mode() === 'login') {
-          <div class="pb-4 text-end">
-            <a routerLink="/auth/forgot-password" class="text-xs font-medium text-brand">{{
-              'shared.auth-page.copy.forgot_password_e2619568' | translate
+              [label]="'shared.auth-page.copy.password_2cc30838' | translate"
+              [hint]="
+                mode() === 'register'
+                  ? ('shared.auth-page.copy.at_least_12_characters_make_it_uniquely_yours_91f0837f'
+                    | translate)
+                  : ''
+              "
+              ><input
+                class="field"
+                id="password"
+                type="password"
+                formControlName="password"
+                [autocomplete]="mode() === 'login' ? 'current-password' : 'new-password'"
+            /></lq-field>
+          }
+          @if (mode() === 'login') {
+            <div class="pb-4 text-end">
+              <a routerLink="/auth/forgot-password" class="text-xs font-medium text-brand">{{
+                'shared.auth-page.copy.forgot_password_e2619568' | translate
+              }}</a>
+            </div>
+          }
+          @if (error()) {
+            <p role="alert" class="rounded-xl bg-danger-soft p-3 text-sm text-danger">
+              {{ error() }}
+            </p>
+          }
+          @if (success()) {
+            <p role="status" class="rounded-xl bg-mint p-4 text-sm leading-relaxed text-mint-ink">
+              {{ success() }}
+            </p>
+            <a routerLink="/auth/login" class="btn btn-secondary w-full">{{
+              'shared.auth-page.copy.back_to_sign_in_5b7ba2af' | translate
             }}</a>
-          </div>
-        }
-        @if (error()) {
-          <p role="alert" class="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">{{ error() }}</p>
-        }
-        @if (success()) {
-          <p role="status" class="rounded-xl bg-mint p-4 text-sm leading-relaxed text-mint-ink">
-            {{ success() }}
-          </p>
-          <a routerLink="/auth/login" class="btn btn-secondary w-full">{{
-            'shared.auth-page.copy.back_to_sign_in_5b7ba2af' | translate
-          }}</a>
-        } @else {
-          <button
-            class="btn btn-primary mt-3 w-full"
-            type="submit"
-            [disabled]="
-              busy() ||
-              (mode() === 'forgot-password' && capabilities.data()?.emailDelivery !== true)
-            "
-          >
-            {{
-              busy()
-                ? ('shared.auth-page.copy.one_moment_cf936b69' | translate)
-                : mode() === 'register'
-                  ? ('shared.auth-page.copy.begin_my_journey_1765f593' | translate)
-                  : mode() === 'forgot-password'
-                    ? ('shared.auth-page.copy.send_recovery_link_2e662ed2' | translate)
-                    : mode() === 'verify-email'
-                      ? ('shared.auth-page.copy.verify_my_email_02b0c6a6' | translate)
-                      : mode() === 'reset-password'
-                        ? ('shared.auth-page.copy.save_new_password_971e82ef' | translate)
-                        : ('shared.auth-page.copy.step_back_in_75af1801' | translate)
-            }}<lq-icon name="arrow-right" [size]="17" />
-          </button>
-        }
-      </form>
+          } @else {
+            <button
+              class="btn btn-primary mt-3 w-full"
+              type="submit"
+              [disabled]="
+                busy() ||
+                (mode() === 'forgot-password' && capabilities.data()?.emailDelivery !== true)
+              "
+            >
+              {{
+                busy()
+                  ? ('shared.auth-page.copy.one_moment_cf936b69' | translate)
+                  : mode() === 'register'
+                    ? ('shared.auth-page.copy.begin_my_journey_1765f593' | translate)
+                    : mode() === 'forgot-password'
+                      ? ('shared.auth-page.copy.send_recovery_link_2e662ed2' | translate)
+                      : mode() === 'verify-email'
+                        ? ('shared.auth-page.copy.verify_my_email_02b0c6a6' | translate)
+                        : mode() === 'reset-password'
+                          ? ('shared.auth-page.copy.save_new_password_971e82ef' | translate)
+                          : ('shared.auth-page.copy.step_back_in_75af1801' | translate)
+              }}<lq-icon name="arrow-right" [size]="17" />
+            </button>
+          }
+        </form>
+      </div>
       @if (!isAdmin && (mode() === 'login' || mode() === 'register')) {
         <p class="mt-7 text-center text-xs text-muted">
           {{
@@ -143,31 +151,40 @@
     <p class="text-center text-[11px] text-muted">
       {{ 'shared.auth-page.copy.progress_beats_perfection_always_06d268b3' | translate }}
     </p>
-  </div>
+  </main>
   <aside
-    class="relative hidden flex-col justify-center overflow-hidden bg-[#292440] p-16 text-white lg:flex"
+    class="relative hidden flex-col justify-center overflow-hidden bg-brand-panel p-16 text-brand-panel-ink lg:flex"
   >
-    <div class="absolute -end-32 -top-24 size-[500px] rounded-full border border-white/10"></div>
-    <div class="absolute -end-16 -top-8 size-[370px] rounded-full border border-white/10"></div>
-    <div class="absolute bottom-8 start-8 size-64 rounded-full bg-violet-500/10 blur-3xl"></div>
+    <div
+      aria-hidden="true"
+      class="absolute -end-32 -top-24 size-[500px] rounded-full border border-brand-panel-muted/15"
+    ></div>
+    <div
+      aria-hidden="true"
+      class="absolute -end-16 -top-8 size-[370px] rounded-full border border-brand-panel-muted/15"
+    ></div>
+    <div
+      aria-hidden="true"
+      class="absolute bottom-8 start-8 size-64 rounded-full bg-brand-accent/10 blur-3xl"
+    ></div>
     <div class="relative mx-auto max-w-sm">
       <span
-        class="mb-8 inline-flex rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs text-violet-200"
+        class="mb-8 inline-flex rounded-full border border-brand-panel-muted/20 bg-white/5 px-4 py-2 text-xs text-brand-panel-muted"
         >{{ 'common.productName' | translate }}</span
       >
-      <h2 class="text-5xl font-medium leading-[1.15] tracking-tight">
+      <h2 class="max-w-[12ch] text-5xl font-medium leading-[1.15] tracking-tight">
         {{ 'shared.auth-page.copy.build_a_life_37bf80ac' | translate }}<br /><span
-          class="text-[#bfb1fa]"
+          class="text-brand-panel-muted"
           >{{ 'shared.auth-page.copy.not_just_a_streak_2b4f4a67' | translate }}</span
         >
       </h2>
-      <p class="mt-6 text-sm leading-7 text-white/60">
+      <p class="mt-6 max-w-sm text-sm leading-7 text-brand-panel-ink/70">
         {{
           'shared.auth-page.copy.your_goals_habits_and_little_everyday_wins_finally_in_one_place_that_sees_the_whole_you_9b7818b4'
             | translate
         }}
       </p>
-      <div class="mt-12 rounded-2xl border border-white/10 bg-white/5 p-5">
+      <div class="mt-12 rounded-2xl border border-brand-panel-muted/15 bg-white/5 p-5">
         <div class="flex items-center gap-3">
           <span class="flex size-10 items-center justify-center rounded-xl bg-mint text-mint-ink"
             ><lq-icon name="sprout"
@@ -176,7 +193,7 @@
             <p class="text-sm font-medium">
               {{ 'shared.auth-page.copy.small_is_a_perfectly_good_start_4ba001b4' | translate }}
             </p>
-            <p class="mt-1 text-xs text-white/50">
+            <p class="mt-1 text-xs text-brand-panel-ink/60">
               {{ 'shared.auth-page.copy.two_minutes_count_showing_up_counts_e28e2443' | translate }}
             </p>
           </div>

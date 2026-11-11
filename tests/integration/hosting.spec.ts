@@ -3,11 +3,9 @@ import { NestFactory } from '@nestjs/core';
 import { INestApplication, ServiceUnavailableException } from '@nestjs/common';
 import request from 'supertest';
 import { execFileSync } from 'node:child_process';
-import { Request } from 'express';
 import { AppModule } from '../../apps/api/src/app.module';
 import { configureApp } from '../../apps/api/src/bootstrap';
 import { Database } from '../../apps/api/src/common/database';
-import { clientTracker, DatabaseRateLimit } from '../../apps/api/src/common/rate-limit';
 import { MailAdapter } from '../../apps/api/src/auth/mail.adapter';
 
 let app: INestApplication;
@@ -130,36 +128,6 @@ describe('Production hosting behavior', () => {
       ).toBe(200);
       expect(tick).toHaveBeenCalledOnce();
       tick.mockRestore();
-    } finally {
-      vi.unstubAllEnvs();
-    }
-  });
-  it('shares atomic rate limits between instances and resets expired windows', async () => {
-    const first = new DatabaseRateLimit(db),
-      second = new DatabaseRateLimit(db);
-    const key = crypto.randomUUID();
-    const results = await Promise.all(
-      Array.from({ length: 8 }, (_, index) =>
-        (index % 2 ? first : second).increment(key, 60000, 3, 60000),
-      ),
-    );
-    expect(results.filter((result) => !result.isBlocked)).toHaveLength(3);
-    expect(results.map((result) => result.totalHits).sort((a, b) => a - b)).toEqual([
-      1, 2, 3, 4, 5, 6, 7, 8,
-    ]);
-    await db.rateLimitBucket.updateMany({
-      data: { expiresAt: new Date(0), blockedUntil: new Date(0) },
-    });
-    expect((await first.increment(key, 60000, 3, 60000)).totalHits).toBe(1);
-  });
-  it('only trusts the platform client header inside Vercel', () => {
-    const req = { ip: '127.0.0.1', headers: { 'x-vercel-forwarded-for': '192.0.2.10' } } as Request;
-    expect(clientTracker(req)).toBe('127.0.0.1');
-    vi.stubEnv('VERCEL', '1');
-    try {
-      expect(clientTracker(req)).toBe('192.0.2.10');
-      req.headers['x-vercel-forwarded-for'] = 'invalid';
-      expect(clientTracker(req)).toBe('127.0.0.1');
     } finally {
       vi.unstubAllEnvs();
     }

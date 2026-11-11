@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Inject, Param, Post, Query, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Throttle } from '@nestjs/throttler';
 import { z } from 'zod';
 import {
   challengeAcceptSchema,
@@ -48,7 +47,6 @@ export class SocialController {
     return this.friends.list(user.id, query);
   }
   @Post('friends')
-  @Throttle({ default: { limit: 3, ttl: 60000 } })
   requestFriend(
     @Req() request: ApiRequest,
     @CurrentUser() user: Identity,
