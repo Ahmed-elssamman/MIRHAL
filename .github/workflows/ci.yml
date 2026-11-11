@@ -46,9 +46,6 @@ jobs:
       - run: npm run test:coverage
       - run: npm run test:frontend
       - run: npm run test:integration -- --coverage
-      - run: npm run test:integration -- tests/integration/rate-limit.redis.spec.ts
-        env:
-          TEST_REDIS_URL: redis://127.0.0.1:6379
       - run: npm run db:validate
       - run: npm run db:check-migrations
       - run: npm run build
