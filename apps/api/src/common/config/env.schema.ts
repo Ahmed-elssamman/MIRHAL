@@ -1,14 +1,5 @@
 import { z } from 'zod';
 
-const redisUrlSchema = z.string().refine((value) => {
-  try {
-    const url = new URL(value);
-    return (url.protocol === 'redis:' || url.protocol === 'rediss:') && url.hostname.length > 0;
-  } catch {
-    return false;
-  }
-}, 'REDIS_URL must be a valid redis:// or rediss:// URL.');
-
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().min(1).max(65535).default(3333),
@@ -31,8 +22,6 @@ export const envSchema = z.object({
   SMTP_FROM: z.string().optional(),
   SUPPORT_EMAIL: z.union([z.string().email(), z.literal('')]).optional(),
   RESEND_API_KEY: z.string().optional(),
-  REDIS_URL: redisUrlSchema.optional(),
-  RATE_LIMIT_MODE: z.enum(['auto', 'redis', 'memory']).default('auto'),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
@@ -89,16 +78,6 @@ export function validateEnvironment(env: Record<string, unknown> = process.env):
         );
       }
     }
-
-    if (!config.REDIS_URL) {
-      throw new StartupConfigurationError(
-        'Production rate limiting requires REDIS_URL to be configured.',
-      );
-    }
-    if (config.RATE_LIMIT_MODE === 'memory')
-      throw new StartupConfigurationError(
-        'RATE_LIMIT_MODE=memory is not allowed in production. Configure Redis-backed rate limiting.',
-      );
   }
 
   // Development and production both use a real transport when email delivery is enabled.

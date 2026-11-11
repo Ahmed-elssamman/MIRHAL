@@ -24,8 +24,6 @@ For a fresh local setup, copy `.env.example` to an ignored local `.env`. **This 
 | `VERCEL_WEB_ORIGIN`                                                   | Packaging shell                | —                                  | Exact customer origin   | Existing Vercel artifact packager                                    |
 | `VERCEL_ADMIN_ORIGIN`                                                 | Packaging shell                | —                                  | Exact admin origin      | Existing deployment tooling                                          |
 | `VERCEL_API_ORIGIN`                                                   | Packaging shell                | —                                  | Exact Render API origin | Routes customer `/api` to Render                                     |
-| `REDIS_URL`                                                           | `redis://127.0.0.1:6379`       | Upstash or Redis connection URL    | —                       | Multi-instance rate limiting                                         |
-| `RATE_LIMIT_MODE`                                                     | `memory` (dev/test only)       | `redis`                            | —                       | Rate limiter adapter selection                                       |
 
 Previously documented public values need reconfirmation: on 2026-10-30 both old Vercel aliases below returned 404. Do not use them as deployment inputs until the owner verifies the current projects and aliases.
 

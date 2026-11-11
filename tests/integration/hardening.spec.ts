@@ -15,7 +15,6 @@ import { challengeSchema, challengeAcceptSchema } from '@mirhal/contracts';
 import { dateOnly, localDate } from '@mirhal/domain';
 import { DashboardService } from '../../apps/api/src/core/dashboard.service';
 import { habitStreaks } from '../../apps/api/src/core/habit-streaks';
-import { DatabaseRateLimit } from '../../apps/api/src/common/rate-limit';
 import { XpService } from '../../apps/api/src/gamification/xp.service';
 import { AttachmentStorage } from '../../apps/api/src/core/attachment-storage';
 import { AttachmentCleanup } from '../../apps/api/src/core/attachment-cleanup';
@@ -173,10 +172,6 @@ describe('Security boundaries under malformed requests and concurrent account ch
       });
       await db.$transaction(async (tx) => {
         await tx.$queryRaw`SELECT set_config('TimeZone', ${timezone}, true)`;
-        const rateLimit = new DatabaseRateLimit(tx);
-        const result = await rateLimit.increment(randomUUID(), 60_000, 3, 60_000);
-        expect(result.timeToExpire).toBeGreaterThanOrEqual(59);
-        expect(result.timeToExpire).toBeLessThanOrEqual(60);
         expect((await habitStreaks(tx, [habit.id], today)).get(habit.id)).toBe(2);
         // Route raw SQL through this session without changing Prisma's shared delegates.
         const connection = new Proxy(db, {

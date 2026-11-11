@@ -64,7 +64,7 @@ export function documentValidation(app: INestApplication, document: OpenAPIObjec
             ];
           }
         }
-        for (const code of ['400', '401', '403', '404', '409', '429', '500']) {
+        for (const code of ['400', '401', '403', '404', '409', '500']) {
           operation.responses[code] ??= {
             description: {
               '400': 'Validation or business rule rejected',
@@ -72,7 +72,6 @@ export function documentValidation(app: INestApplication, document: OpenAPIObjec
               '403': 'Insufficient permissions or invalid origin',
               '404': 'Owned resource not found',
               '409': 'Duplicate request or conflict',
-              '429': 'Rate limit exceeded',
               '500': 'Safe internal error; use requestId for support',
             }[code]!,
             content: {

@@ -16,8 +16,6 @@ process.env['UPLOAD_DIR'] = '.local/integration-uploads';
 // A developer's deployment credentials must never change test storage or send mail.
 for (const key of [
   'VERCEL',
-  'REDIS_URL',
-  'RATE_LIMIT_MODE',
   'BLOB_READ_WRITE_TOKEN',
   'SMTP_HOST',
   'SMTP_USER',
@@ -29,18 +27,6 @@ for (const key of [
   'DEMO_ADMIN_PASSWORD',
 ])
   delete process.env[key];
-const testRedisUrl = process.env['TEST_REDIS_URL'];
-if (testRedisUrl) {
-  const redisUrl = new URL(testRedisUrl);
-  if (
-    !['redis:', 'rediss:'].includes(redisUrl.protocol) ||
-    !['localhost', '127.0.0.1'].includes(redisUrl.hostname)
-  ) {
-    throw new Error('Integration tests require TEST_REDIS_URL to use a local Redis service.');
-  }
-  process.env['REDIS_URL'] = testRedisUrl;
-  process.env['RATE_LIMIT_MODE'] = 'redis';
-}
 process.env['MAIL_MODE'] = 'development';
 process.env['EMAIL_PROVIDER'] = 'file';
 process.env['WEB_ORIGIN'] = 'http://localhost:4200';

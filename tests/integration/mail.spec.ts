@@ -42,9 +42,8 @@ describe('auth email', () => {
       expect(email.text).not.toContain('تنتهي هذه الدعوة');
     }
   });
-  it('accepts Redis-backed storage in standalone production', () => {
+  it('accepts standalone production configuration without Redis', () => {
     process.env['NODE_ENV'] = 'production';
-    process.env['REDIS_URL'] = 'redis://localhost:6379';
     process.env['DATABASE_URL'] = 'postgresql://example.test/db';
     process.env['DIRECT_URL'] = 'postgresql://example.test/db';
     process.env['WEB_ORIGIN'] = 'https://web.example.test';
@@ -58,7 +57,6 @@ describe('auth email', () => {
 
   it('rejects production origins that browsers cannot send exactly', () => {
     process.env['NODE_ENV'] = 'production';
-    process.env['REDIS_URL'] = 'redis://localhost:6379';
     process.env['DATABASE_URL'] = 'postgresql://example.test/db';
     process.env['DIRECT_URL'] = 'postgresql://example.test/db';
     process.env['WEB_ORIGIN'] = 'https://web.example.test/';

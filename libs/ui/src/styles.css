@@ -32,6 +32,7 @@
   --color-info: var(--mirhal-info-ink);
   --color-info-soft: var(--mirhal-info-bg);
   --color-brand-panel: var(--mirhal-brand-panel);
+  --color-brand-panel-ink: var(--mirhal-brand-panel-ink);
   --color-brand: var(--mirhal-brand);
   --color-brand-hover: var(--mirhal-brand-hover);
   --color-brand-accent: var(--mirhal-brand-accent);

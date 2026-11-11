@@ -4,7 +4,7 @@ The MIRHAL production target is **separate Vercel frontend projects + Render API
 
 The customer project serves Angular's prerendered public pages and lazy client routes. The administration project serves only the admin frontend. Host-only HttpOnly cookies keep each application's session separate. Both origins must be explicitly allowed by the API. Preview builds return 503 for `/api` and never route to the production Render service.
 
-The API, database access, rate limiting, and maintenance tasks run on Render. Vercel builds contain frontend assets only and do not require Prisma or API build artifacts.
+The API, database access, and maintenance tasks run on Render. Vercel builds contain frontend assets only and do not require Prisma or API build artifacts.
 
 ## Project environment
 

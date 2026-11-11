@@ -14,7 +14,6 @@ Run this only after the reviewed Neon migrations, Render API, Resend domain, and
 1. In a real browser on the customer origin, register a dedicated test user. Confirm the `/api/auth/register` response sets `lq_session` with `HttpOnly`, `Secure`, `SameSite=Lax`, and path `/api`. Do not copy the cookie value into the test record.
 2. Refresh, call `/api/auth/me` through the customer origin, sign out, and verify the session no longer works. Sign in again. Repeat sign-in and refresh on the admin origin with a dedicated staff account.
 3. Send an `OPTIONS` preflight to the direct Render API using each configured Vercel origin and a write method; confirm the matching `Access-Control-Allow-Origin` and credentials response. Repeat with an unrelated origin; it must not be allowed. A write request with that unrelated Origin must return 403. Use test data and never send a session cookie with the unrelated-origin probe.
-4. Test the customer and admin sites from two independent client networks. Check that normal actions do not share a 429 rate-limit bucket through the Vercel rewrite. Also test the direct Render origin. Record the observed client-address behavior before changing proxy trust.
 
 ## Email and language
 

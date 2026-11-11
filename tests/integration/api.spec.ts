@@ -11,10 +11,6 @@ import { AuthService } from '../../apps/api/src/auth/auth.service';
 import { cleanupExpiredRecords } from '../../apps/api/src/common/maintenance.controller';
 import { ChallengeLifecycleService } from '../../apps/api/src/social/challenge-lifecycle.service';
 import { seed } from '../../prisma/seed';
-import {
-  RATE_LIMIT_STORAGE,
-  RateLimiterStorage,
-} from '../../apps/api/src/rate-limit/rate-limit.types';
 let app: INestApplication;
 let db: Database;
 let cookie = '';
@@ -60,15 +56,6 @@ describe('MIRHAL HTTP workflows on migrated isolated PostgreSQL', () => {
     expect((await http().get('/api/health')).status).toBe(200);
     expect((await http().get('/api/goals')).status).toBe(401);
     expect((await http().post('/api/auth/register').send(body)).status).toBe(403);
-  });
-  it('does not report ready when mandatory Redis rate-limit storage is unavailable', async () => {
-    const storage = app.get<RateLimiterStorage>(RATE_LIMIT_STORAGE);
-    const isReady = vi.spyOn(storage, 'isReady').mockResolvedValueOnce(false);
-    const response = await http().get('/api/health');
-    expect(response.status).toBe(503);
-    expect(response.body.message).toBe('Service dependencies are unavailable.');
-    expect(JSON.stringify(response.body)).not.toContain('REDIS_URL');
-    isReady.mockRestore();
   });
   it('registers with a private cookie and verifies email once', async () => {
     const response = await http().post('/api/auth/register').set('Origin', origin).send(body);
@@ -721,17 +708,8 @@ describe('MIRHAL HTTP workflows on migrated isolated PostgreSQL', () => {
     expect(results.map((result) => result.status).sort()).toEqual([201, 400]);
     expect((await http().get('/api/xp').set('Cookie', cookie)).body.balance).toBe(0);
   });
-  it('prunes expired maintenance records while preserving live rate limits', async () => {
+  it('prunes expired authentication records', async () => {
     const expired = new Date(Date.now() - 60_000);
-    const future = new Date(Date.now() + 60_000);
-    const expiredKey = crypto.randomUUID();
-    const liveKey = crypto.randomUUID();
-    await db.rateLimitBucket.createMany({
-      data: [
-        { key: expiredKey, hits: 1, expiresAt: expired },
-        { key: liveKey, hits: 1, expiresAt: future },
-      ],
-    });
     const token = await db.authToken.create({
       data: {
         userId,
@@ -744,8 +722,6 @@ describe('MIRHAL HTTP workflows on migrated isolated PostgreSQL', () => {
       data: { userId, tokenHash: crypto.randomUUID(), expiresAt: expired },
     });
     await cleanupExpiredRecords(db);
-    expect(await db.rateLimitBucket.findUnique({ where: { key: expiredKey } })).toBeNull();
-    expect(await db.rateLimitBucket.findUnique({ where: { key: liveKey } })).not.toBeNull();
     expect(await db.authToken.findUnique({ where: { id: token.id } })).toBeNull();
     expect(await db.session.findUnique({ where: { id: session.id } })).toBeNull();
   });
